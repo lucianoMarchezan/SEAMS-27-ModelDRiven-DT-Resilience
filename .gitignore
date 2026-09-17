@@ -1,0 +1,50 @@
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Eclipse metadata
+.metadata/
+
+# Java / Maven / Gradle build output
+bin/
+target/
+build/
+out/
+
+# Xtext / Xtend generated sources
+src-gen/
+xtend-gen/
+
+# EMF generated files
+*.genmodel~
+*.ecorediag
+*.aird
+
+# Xtext generated artifacts
+.xtextbin/
+
+# Eclipse/Xtext generated folders
+src/main/xtext-gen/
+src/main/xtend-gen/
+
+# Maven
+.mvn/timing.properties
+
+# Gradle
+.gradle/
+
+# Java
+*.class
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+*~
