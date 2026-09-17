@@ -1,0 +1,114 @@
+Belonging model bm-adaptive {
+    belonging-state Disengaged
+    belonging-state Prepared
+    belonging-state Passive
+    belonging-state Available
+    belonging-state Negotiating
+    belonging-state Active
+    belonging-state PendingEntry
+    belonging-state Participating
+    belonging-state FullRole
+    belonging-state RestrictedRole
+    belonging-state PendingExit
+
+    transition Disengaged -> Prepared: prepare_for_so_s
+    transition Prepared -> Disengaged: disengage_from_so_s
+
+    transition Prepared -> Passive: join_so_s
+    transition Passive -> Prepared: leave_so_s
+
+    transition Available -> Negotiating: join_request
+    transition Available -> Negotiating: join_invitation
+
+    transition Negotiating -> Available: admission_rejected
+    transition Negotiating -> Active: join_constellation
+
+    transition Active -> Prepared: health_failed
+    transition Passive -> Prepared: health_failed
+
+    transition PendingEntry -> Participating: after Δ
+    transition PendingEntry -> PendingExit: leave_constellation
+
+    transition Participating -> FullRole: health in {Ideal, Defective, Faulty}
+    transition Participating -> RestrictedRole: health in {Erroneous, Malfunctioning}
+    transition Participating -> PendingExit: health = Degraded
+    transition Participating -> PendingExit: leave_constellation
+
+    transition FullRole -> RestrictedRole: health in {Erroneous, Malfunctioning}
+
+    transition RestrictedRole -> FullRole: health in {Ideal, Defective, Faulty}
+    transition RestrictedRole -> PendingExit: uncertainty_threshold_exceeded
+
+    transition PendingExit -> Participating: exit_denied
+    transition PendingExit -> Passive: after Δ
+}
+
+reliability-profile Adaptive {
+    Health model: hm
+    Belonging model: bm-adaptive
+
+    constraint failed-participation {
+        when health = Failed and belonging = Active
+        transition Active -> Prepared
+    }
+
+    constraint failed-admission {
+        when health = Failed and belonging = Prepared
+        deny transition Prepared -> Passive
+    }
+
+    constraint join-request {
+        when health = Ideal and belonging = Available
+        transition Available -> Negotiating
+    }
+
+    constraint join-invitation {
+        when health in {Ideal, Defective, Faulty} and belonging = Available
+        transition Available -> Negotiating
+    }
+
+    adaptation admission-rejected {
+        when event = admission_rejected and belonging = Negotiating
+        transition Negotiating -> Available
+    }
+
+    adaptation admission-accepted {
+        when event = join_constellation and belonging = Negotiating
+        transition Negotiating -> Active
+    }
+
+    adaptation stabilize-entry {
+        when belonging = PendingEntry
+        transition PendingEntry -> Participating after Δ
+    }
+
+    adaptation full-role {
+        when health in {Ideal, Defective, Faulty} and belonging = RestrictedRole
+        transition RestrictedRole -> FullRole
+    }
+
+    adaptation restricted-role {
+        when health in {Erroneous, Malfunctioning} and belonging = FullRole
+        transition FullRole -> RestrictedRole
+    }
+
+    adaptation degraded-exit {
+        when health = Degraded and belonging = Participating
+        transition Participating -> PendingExit
+    }
+
+    adaptation uncertainty-exit {
+        when event = uncertainty_threshold_exceeded and belonging = RestrictedRole
+        transition RestrictedRole -> PendingExit
+    }
+
+    adaptation exit-denied {
+        when event = exit_denied and belonging = PendingExit and health != Degraded
+        transition PendingExit -> Participating
+    }
+
+    adaptation stabilize-exit {
+        when belonging = PendingExit
+        transition PendingExit -> Passive after Δ
+    }
+}

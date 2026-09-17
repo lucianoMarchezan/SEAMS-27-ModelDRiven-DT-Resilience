@@ -1,0 +1,36 @@
+reliability-profile Reactive {
+    Health model: hm
+    Belonging model: bm
+
+    policy Lifecycle {
+        transition Disengaged -> Prepared: prepare_for_so_s
+        transition Prepared -> Disengaged: disengage_from_so_s
+        transition Prepared -> Passive: join_so_s
+        transition Passive -> Prepared: leave_so_s
+        transition Passive -> Active: join_constellation
+        transition Active -> Passive: leave_constellation
+    }
+
+    policy HealthEvolution {
+        transition Ideal -> Defective: degrade
+        transition Defective -> Faulty: degrade
+        transition Faulty -> Erroneous: degrade
+        transition Erroneous -> Malfunctioning: degrade
+        transition Malfunctioning -> Degraded: degrade
+        transition Degraded -> Failed: degrade
+
+        transition Defective -> Ideal: full_recovery
+        transition Faulty -> Ideal: full_recovery
+        transition Erroneous -> Ideal: full_recovery
+        transition Malfunctioning -> Ideal: full_recovery
+        transition Degraded -> Ideal: full_recovery
+        transition Failed -> Ideal: full_recovery
+
+        transition Defective -> Ideal: improve
+        transition Faulty -> Defective: improve
+        transition Erroneous -> Faulty: improve
+        transition Malfunctioning -> Erroneous: improve
+        transition Degraded -> Malfunctioning: improve
+        transition Failed -> Degraded: improve
+    }
+}

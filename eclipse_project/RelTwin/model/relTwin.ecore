@@ -68,11 +68,6 @@
     <eLiterals name="ADAPTATION"/>
     <eLiterals name="CONSTRAINT" value="1"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="EvidenceType">
-    <eLiterals name="OBSERVATION"/>
-    <eLiterals name="EVENT" value="1"/>
-    <eLiterals name="METRIC" value="2"/>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="HealthState" eSuperTypes="#//State"/>
   <eClassifiers xsi:type="ecore:EClass" name="Transition" abstract="true">
     <eStructuralFeatures xsi:type="ecore:EReference" name="event" eType="#//Event"/>

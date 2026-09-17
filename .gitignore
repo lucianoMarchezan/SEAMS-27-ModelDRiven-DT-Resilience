@@ -36,6 +36,7 @@ src/main/xtend-gen/
 
 # Java
 *.class
+*.jar
 
 # OS files
 .DS_Store

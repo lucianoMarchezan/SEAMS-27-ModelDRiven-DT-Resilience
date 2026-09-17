@@ -1,0 +1,10 @@
+Belonging model bm {
+    belonging-state Disengaged
+    belonging-state Prepared
+    belonging-state Passive
+    belonging-state Active
+
+    transition Disengaged -> Prepared
+    transition Prepared -> Passive
+    transition Passive -> Active
+}

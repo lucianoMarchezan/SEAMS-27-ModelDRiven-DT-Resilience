@@ -13,11 +13,6 @@
       <genEnumLiterals ecoreEnumLiteral="relTwin.ecore#//PolicyType/ADAPTATION"/>
       <genEnumLiterals ecoreEnumLiteral="relTwin.ecore#//PolicyType/CONSTRAINT"/>
     </genEnums>
-    <genEnums typeSafeEnumCompatible="false" ecoreEnum="relTwin.ecore#//EvidenceType">
-      <genEnumLiterals ecoreEnumLiteral="relTwin.ecore#//EvidenceType/OBSERVATION"/>
-      <genEnumLiterals ecoreEnumLiteral="relTwin.ecore#//EvidenceType/EVENT"/>
-      <genEnumLiterals ecoreEnumLiteral="relTwin.ecore#//EvidenceType/METRIC"/>
-    </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="relTwin.ecore#//EventType">
       <genEnumLiterals ecoreEnumLiteral="relTwin.ecore#//EventType/INTERNAL"/>
       <genEnumLiterals ecoreEnumLiteral="relTwin.ecore#//EventType/EXTERNAL"/>

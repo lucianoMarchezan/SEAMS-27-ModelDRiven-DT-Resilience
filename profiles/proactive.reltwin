@@ -1,0 +1,50 @@
+Belonging model proactive-bm {
+    belonging-state Disengaged
+    belonging-state Prepared
+    belonging-state Passive
+    belonging-state Active
+
+    belonging-state PendingEntry
+    belonging-state Participating
+    belonging-state PendingExit
+
+    transition Disengaged -> Prepared: prepare_for_so_s
+    transition Prepared -> Passive: join_so_s
+    transition Passive -> Active: join_constellation
+
+    transition Active -> PendingEntry
+    transition PendingEntry -> Participating: after Δ
+
+    transition Participating -> PendingExit: leave_constellation
+    transition PendingExit -> Participating: exit_denied
+    transition PendingExit -> Passive: after Δ
+
+    transition Passive -> Prepared: leave_so_s
+    transition Active -> Prepared: health_failed
+}
+
+reliability-profile Proactive {
+    Health model: hm
+    Belonging model: proactive-bm
+
+    policy "Failed systems cannot participate" {
+        constraint {
+            when health = Failed
+            then require belonging = Prepared
+        }
+    }
+
+    policy "Stabilize entry" {
+        adaptation {
+            when belonging = PendingEntry
+            then maintain for Δ
+        }
+    }
+
+    policy "Stabilize exit" {
+        adaptation {
+            when belonging = PendingExit
+            then maintain for Δ
+        }
+    }
+}
