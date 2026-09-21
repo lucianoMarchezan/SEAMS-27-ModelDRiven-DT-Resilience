@@ -8,7 +8,7 @@ Reliability proactive extends adaptive {
 
     policy constraint "Failed systems cannot be admitted" {
             when hm = Failed
-            then deny transition bm-controlled::Prepared -> bm-controlled::Passive
+            then deny transition bm-proactive::Prepared -> bm-proactive::Passive
     }
 
     policy adaptation "Stabilize entry/exit" {
