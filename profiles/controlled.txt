@@ -1,0 +1,47 @@
+Reliability controlled extends proactive {
+    Belonging model: bm-controlled
+
+    policy constraint "Join request requires ideal health" {
+        when hm = Ideal and bm-controlled = Available
+        then transition bm-controlled::Available -> bm-controlled::Negotiating
+    }
+
+    policy constraint "Join invitation requires acceptable health" {
+        when hm in {Ideal, Defective, Faulty} and bm-controlled = Available
+        then transition bm-controlled::Available -> bm-controlled::Negotiating
+    }
+
+    policy adaptation "Controlled behavior" {
+        step 1 {
+            when event = join request and bm-controlled = Available
+            then transition bm-controlled::Available -> bm::Negotiating
+        }
+
+        step 2 {
+            when event = join invitation and bm-controlled = Available
+            then transition bm-controlled::Available -> bm::Negotiating
+        }
+
+        step 3 {
+            when event = admission_rejected and bm-controlled = Negotiating
+            then transition bm-controlled::Negotiating -> bm-controlled::Available
+        }
+
+        step 4 {
+            when event = announce and bm-controlled = Negotiating
+            then transition bm-controlled::Negotiating -> bm::Active
+        }
+        step 5 {
+            when event = dmission rejected and bm-controlled = Negotiating
+            then transition bm-controlled::Negotiating -> bm::Available
+        }
+    }
+
+    policy adaptation "Active behavior" {
+        step 1 {
+            when event = exit_denied and bm-controlled = PendingExit
+            then transition bm-controlled::PendingExit -> bm-controlled::Participating
+        }
+
+    }
+}

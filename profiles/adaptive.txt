@@ -1,0 +1,40 @@
+Reliability adaptive extends controlled { 
+    Belonging model: bm-adaptive
+
+    policy constraint "Join participating requires acceptable health" {
+        when hm in {Ideal, Defective, Faulty} and bm-adaptive = Participating
+        then transition bm-adaptive::Participating -> bm-adaptive::FullRole
+    }
+
+    policy constraint "Join participating with restriced health" {
+        when hm in {Erroneous, Malfunctioning} and bm-adaptive = Participating
+        then transition bm-adaptive::Participating -> bm-adaptive::RestrictedRole
+    }
+
+    policy constraint "Restricted role recovers acceptable health" {
+        when hm in {Ideal, Defective, Faulty} and bm-adaptive = RestrictedRole
+        then transition bm-adaptive::RestrictedRole -> bm-adaptive::FullRole
+    }
+
+    policy constraint "Full role with restriced health" {
+        when hm in {Erroneous, Malfunctioning} and bm-adaptive = FullRole
+        then transition bm-adaptive::FullRole -> bm-adaptive::RestrictedRole
+    }
+
+    policy constraint "Participating health degrades" {
+        when hm = Degraded and bm-adaptive = Participating
+        then transition bm-adaptive::Participating -> bm-adaptive::PendingExit
+    }
+
+    policy constraint "Prevent participating with degraded health" {
+        when hm = Degraded
+        then deny transition bm-adaptive::PendingExit -> bm-adaptive::Participating
+    }
+
+    policy adaptation "Adaptive behavior" {
+        step 1 {
+            when event = uncertainty exceeded and bm-adaptive = RestrictedRole
+            then transition bm-adaptive::RestrictedRole -> bm-adaptive::PendingExit
+        }
+    }
+}

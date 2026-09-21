@@ -1,0 +1,9 @@
+Model Type.BELONGING bm-adaptive extends bm-controlled {
+    state Participating {
+        state FullRole
+        state RestrictedRole
+    }    
+    
+    transition FullRole -> RestrictedRole
+    transition RestrictedRole -> FullRole 
+}

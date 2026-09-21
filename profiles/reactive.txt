@@ -1,0 +1,4 @@
+Reliability reactive {
+    Health model: hm
+    Belonging model: bm
+}

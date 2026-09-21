@@ -1,0 +1,11 @@
+Model Type.BELONGING bm-controlled extends bm-proactive {
+    state Passive {
+        initial Available
+        state Negotiating
+    }    
+
+    transition Available -> Negotiating: join_request
+    transition Available -> Negotiating: join_invitation
+    transition Negotiating -> Available: admission_rejected
+    transition Negotiating -> bm::Active: join_constellation
+}
