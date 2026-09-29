@@ -1,0 +1,59 @@
+#=====================Health Model=================================#
+health: health-base
+initial: Healthy
+states: [Healthy, Degraded, Failed]
+transitions:
+  - {id: h1, from: Healthy,  to: Degraded}
+  - {id: h2, from: Degraded, to: Failed}
+  - {id: h3, from: Degraded, to: Healthy}
+
+#======================Belonging Model================================#
+
+belonging: base
+initial: Disengaged
+states: [Disengaged, Prepared, Passive, Active]
+transitions:
+  - {id: b1, from: Disengaged, to: Prepared}
+  - {id: b2, from: Prepared,   to: Passive}
+  - {id: b3, from: Passive,    to: Active}
+  - {id: b4, from: Active,     to: Passive}
+
+#======================Proactive Belonging Model================================#
+
+belonging: proactive
+extends: base
+refine:                   # for new substates and transitions
+  Active:
+    initial: PendingEntry
+    substates: [PendingEntry, Participating, PendingExit]
+    transitions:
+      - {id: p1, from: PendingEntry,  to: Participating}
+      - {id: p2, from: Participating, to: PendingExit}
+overrides: 
+  - {id: b4, from: Active.PendingExit, to: Passive}
+add:
+  - {id: p3, from: Active.PendingEntry, to: Passive}  
+
+#======================Base Reliability Model================================#
+
+profile: reliability-L1-reactive
+level: 1
+health: health-base
+belonging: base
+rules:
+  - {id: t1, kind: trigger, on: {health: h1}, fire: {belonging: b2}}
+  - {id: t2, kind: trigger, on: {health: h2}, fire: {belonging: b4}}
+
+#======================Proactive Reliability Model================================#
+
+profile: reliability-L2-proactive
+extends: reliability-L1-reactive
+level: 2 
+belonging: proactive
+rules:                       # new rules only
+  - {id: r1, kind: guard, on: {belonging: b3}, blocked_when: {health: [Degraded, Failed]}}
+  - {id: r2, kind: guard, on: {belonging: p2}, blocked_when: {health: [Failed]}}
+overrides:                   # by id, full replacement
+  - {id: t2, kind: trigger, on: {health: h2}, fire: {belonging: [p3, b4]}}
+disable: []                  # ids to remove from the inherited set
+

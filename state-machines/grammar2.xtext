@@ -1,0 +1,172 @@
+grammar org.example.statemachine.StateMachine
+    with org.eclipse.xtext.common.Terminals
+
+generate stateMachine
+    "http://www.example.org/statemachine"
+
+Model:
+    elements+=Element*
+;
+
+Element:
+      HealthModel
+    | BelongingModel
+    | ReliabilityModel
+;
+
+HealthModel:
+    'Model' 'Type.HEALTH' name=ID
+    '{'
+        'initial' initial=[State|ID]
+        'states' states+=StateDecl (',' states+=StateDecl)*
+        transitions+=Transition*
+    '}'
+;
+
+BelongingModel:
+    'Model' 'Type.BELONGING' name=ID
+    ('extends' extends=[BelongingModel|ID])?
+    '{'
+        'initial' initial=[State|ID]
+        'states' states+=StateDecl (',' states+=StateDecl)*
+        transitions+=Transition*
+        refinements+=Refinement*
+        overrides+=TransitionOverride*
+        additions+=TransitionAdd*
+    '}'
+;
+
+Refinement:
+    'refine' state=[State|ID]
+    '{'
+        'initial' initial=[State|ID]
+        'substates' substates+=StateDecl (',' substates+=StateDecl)*
+        transitions+=Transition*
+    '}'
+;
+
+StateDecl:
+    name=ID
+;
+
+Transition:
+    'transition' id=ID
+    (
+        from=[State|QualifiedName]
+        |
+        '{'
+            fromMany+=[State|QualifiedName]
+            (',' fromMany+=[State|QualifiedName])*
+        '}'
+    )
+    '->'
+    to=[State|QualifiedName]
+    ':'
+    name=STRING
+;
+
+TransitionOverride:
+    'override' id=ID
+    (
+        from=[State|QualifiedName]
+        |
+        '{'
+            fromMany+=[State|QualifiedName]
+            (',' fromMany+=[State|QualifiedName])*
+        '}'
+    )
+    '->'
+    to=[State|QualifiedName]
+    ':'
+    name=STRING
+;
+
+TransitionAdd:
+    'add' id=ID
+    (
+        from=[State|QualifiedName]
+        |
+        '{'
+            fromMany+=[State|QualifiedName]
+            (',' fromMany+=[State|QualifiedName])*
+        '}'
+    )
+    '->'
+    to=[State|QualifiedName]
+    ':'
+    name=STRING
+;
+
+ReliabilityModel:
+    'Model' 'Type.RELIABILITY' name=ID
+    ('extends' extends=[ReliabilityModel|ID])?
+    '{'
+        'level' level=INT
+        'health' health=[HealthModel|ID]
+        'belonging' belonging=[BelongingModel|ID]
+        rules+=Rule*
+        overrides+=RuleOverride*
+        disables+=Disable*
+    '}'
+;
+
+Rule:
+      TriggerRule
+    | GuardRule
+;
+
+TriggerRule:
+    'trigger' id=ID
+    '{'
+        'on' on=Reference
+        'fire' fire=ReferenceList
+    '}'
+;
+
+GuardRule:
+    'guard' id=ID
+    '{'
+        'on' on=Reference
+        'blockedWhen' blockedWhen=StateReferenceList
+    '}'
+;
+
+RuleOverride:
+    'override' id=ID
+    '{'
+        'on' on=Reference
+        'fire' fire=ReferenceList
+    '}'
+;
+
+Disable:
+    'disable' id=ID
+;
+
+Reference:
+    type=ID '.' target=QualifiedName
+;
+
+ReferenceList:
+    type=ID
+    (
+        target=QualifiedName
+        |
+        '['
+            targets+=QualifiedName
+            (',' targets+=QualifiedName)*
+        ']'
+    )
+;
+
+StateReferenceList:
+    type=ID
+    '['
+        states+=QualifiedName
+        (',' states+=QualifiedName)*
+    ']'
+;
+
+QualifiedName:
+    ID ('.' ID)*
+;

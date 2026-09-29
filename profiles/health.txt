@@ -1,17 +1,12 @@
 Model Type.HEALTH hm {
     initial Ideal
-    state Defective
-    state Faulty
-    state Erroneous
-    state Malfunctioning
-    state Degraded
-    state Failed
+    states Defective, Faulty, Erroneous, Malfunctioning, Degraded, Failed
 
-    transition Ideal -> Defective: component deviation
-    transition Defective -> Faulty: defect activated
-    transition Faulty -> Erroneous: fault exercised
-    transition Erroneous -> Malfunctioning: error propagated
-    transition Malfunctioning -> Degraded: impact observed
-    transition Degraded -> Failed: threshold violated
-    transition {Defective, Faulty, Erroneous, Malfunctioning, Degraded, Failed} -> Ideal: recovery
+    transition component-deviation Ideal -> Defective
+    transition defect-activated Defective -> Faulty
+    transition fault-exercised Faulty -> Erroneous
+    transition error-propagated Erroneous -> Malfunctioning
+    transition impact-observed Malfunctioning -> Degraded
+    transition threshold-violated Degraded -> Failed
+    transition recovery {Defective, Faulty, Erroneous, Malfunctioning, Degraded, Failed} -> Ideal
 }

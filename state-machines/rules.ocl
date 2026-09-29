@@ -1,0 +1,36 @@
+-- Helpers
+context BelongingModel
+def: ancestors : Set(BelongingModel) = self->closure(extends)
+def: isDescendantOf(m : BelongingModel) : Boolean = self.ancestors->includes(m)
+
+context ReliabilityProfile
+def: ancestors : Set(ReliabilityProfile) = self->closure(extends)
+
+-- Rules
+
+-- preventing cycles
+context BelongingModel
+inv NoBelongingCycle:
+  not self.ancestors->includes(self)
+
+context ReliabilityProfile
+inv NoProfileCycle:
+  not self.ancestors->includes(self)
+
+-- Parent's belonging
+context ReliabilityProfile
+inv BelongingDescendsFromParent:
+  not self.extends.oclIsUndefined() implies
+    self.belonging.isDescendantOf(self.extends.belonging)
+
+-- health is fixed along the chain
+context ReliabilityProfile
+inv SameHealthAsParent:
+  not self.extends.oclIsUndefined() implies
+    self.health = self.extends.health
+
+-- Parent's ancestor profile
+context ReliabilityProfile
+inv BelongingNotUsedByAncestor:
+  self.ancestors->forAll(a : ReliabilityProfile | a.belonging <> self.belonging)
+

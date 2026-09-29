@@ -1,12 +1,12 @@
 Model Type.BELONGING bm-proactive extends bm {
-    state Active {
+    refine Active {
         initial PendingEntry
-        state PendingEntry
-        state Participating
-        state PendingExit
+        states PendingEntry, Participating, 
+        PendingExit
     }
-
-    transition PendingEntry -> Participating: after stabilization_time
-    transition {PendingEntry, Participating} -> PendingExit: leave_constellation 
-    transition PendingExit -> bm::Passive: after stabilization_time
+    
+    transition stabilization-complete PendingEntry -> Participating
+    transition leave-participation Participating -> PendingExit
+    transition stop-active Active -> bm::Prepared
+    override transition bm::leave-constellation PendingExit -> bm::Passive
 }

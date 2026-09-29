@@ -1,4 +1,8 @@
 Reliability reactive {
-    Health model: hm
-    Belonging model: bm
+    Health: hm
+    Belonging: bm
+
+    when Belonging::join-constellation {
+        require Health != Failed
+    }
 }

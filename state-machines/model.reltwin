@@ -1,0 +1,53 @@
+health health_base {
+    initial state Healthy
+    state Degraded
+    state Failed
+
+    transition h1: Healthy  -> Degraded
+    transition h2: Degraded -> Failed
+    transition h3: Degraded -> Healthy
+}
+
+belonging base {
+    initial state Disengaged
+    state Prepared
+    state Passive
+    state Active
+
+    transition b1: Disengaged -> Prepared
+    transition b2: Prepared   -> Passive
+    transition b3: Passive    -> Active
+    transition b4: Active     -> Passive
+}
+
+belonging proactive extends base {
+    refine Active {
+        initial state PendingEntry
+        state Participating
+        state PendingExit
+
+        transition p1: PendingEntry  -> Participating
+        transition p2: Participating -> PendingExit
+    }
+
+    override b4: Active.PendingExit -> Passive
+    transition p3: Active.PendingEntry -> Passive        // abort
+}
+
+profile reliability_L1_reactive {
+    level 1
+    health health_base
+    belonging base
+
+    trigger t1 on h1 fire b2
+    trigger t2 on h2 fire b4
+}
+
+profile reliability_L2_proactive extends reliability_L1_reactive {
+    level 2
+    belonging proactive
+
+    guard r1 on b3 blocked_when Degraded, Failed
+    guard r2 on p2 blocked_when Failed
+ 
+}

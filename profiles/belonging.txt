@@ -1,13 +1,11 @@
 Model Type.BELONGING bm {
     initial Disengaged
-    state Prepared
-    state Passive
-    state Active
+    states Prepared, Passive, Active
 
-    transition Disengaged -> Prepared: prepare for SoS
-    transition Prepared -> Disengaged: disengage from SoS
-    transition Prepared -> Passive: leave SoS
-    transition Passive -> Prepared: join SoS
-    transition Passive -> Active: join constellation
-    transition Active -> Passive: leave constellation
+    transition prepare-for-sos Disengaged -> Prepared
+    transition disengage-from-sos Prepared -> Disengaged
+    transition join-sos Prepared -> Passive
+    transition leave-sos Passive -> Prepared
+    transition join-constellation Passive -> Active
+    transition leave-constellation Active -> Passive
 }

@@ -1,24 +1,15 @@
-Reliability proactive extends adaptive {
-    Belonging model: bm-proactive
+Reliability proactive {
+    Health: hm
+    Belonging: bm-proactive
 
-    policy constraint "Failed systems cannot participate"  {
-            when hm = Failed and bm-proactive in {Active, Passive}
-            then require bm-proactive = Prepared
+    //guard for transitions
+    when Belonging::{stop-active, leave-sos} {
+     require Health = Failed
     }
 
-    policy constraint "Failed systems cannot be admitted" {
-            when hm = Failed
-            then deny transition bm-proactive::Prepared -> bm-proactive::Passive
+    //triggering transitions
+    if Health::recovery and Belonging = Disengaged { 
+        trigger Belonging::prepare-for-SoS
     }
-
-    policy adaptation "Stabilize entry/exit" {
-        step 1 {
-            when bm-proactive = PendingEntry
-            then maintain for stabilization_time
-        }
-        step 2 {
-            when bm-proactive = PendingExit
-            then maintain for stabilization_time
-        }
-    }
+ 
 }
