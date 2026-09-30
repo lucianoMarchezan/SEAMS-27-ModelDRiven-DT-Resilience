@@ -1,4 +1,19 @@
 -- figure it out the language
 -- use refinement instead of extends
 -- use transition names instead of states 
--- 
+-- ------------- 29 - 09
+
+
+-- TODO look into itemis create and python statemachines to see which one is better to implement
+
+-- the DSL will have two different types of transitions
+
+
+-- start with statecharts and formalism
+-- motivate why using statecharts is complex
+-- propose DSL
+-- here we decided to implement it with itemis create (update statecharts)
+-- generate Java code from the statecharts
+-- every DT has a different reliability model
+
+-- rq3 becomes discussion
