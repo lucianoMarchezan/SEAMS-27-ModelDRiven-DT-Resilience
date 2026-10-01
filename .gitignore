@@ -20,6 +20,7 @@ xtend-gen/
 *.genmodel~
 *.ecorediag
 *.aird
+*.pyc
 
 # Xtext generated artifacts
 .xtextbin/
