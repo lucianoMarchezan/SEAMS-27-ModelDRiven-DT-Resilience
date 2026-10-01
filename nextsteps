@@ -1,11 +1,10 @@
 -- figure it out the language
 -- use refinement instead of extends
 -- use transition names instead of states 
--- ------------- 29 - 09
+===================29 - 09=================== 
 
 
 -- TODO look into itemis create and python statemachines to see which one is better to implement
-
 -- the DSL will have two different types of transitions
 
 
@@ -14,6 +13,13 @@
 -- propose DSL
 -- here we decided to implement it with itemis create (update statecharts)
 -- generate Java code from the statecharts
--- every DT has a different reliability model
+-- every DT has a different reliability model 
 
--- rq3 becomes discussion
+
+ =======================01-10=================== 
+-- architecture for the orchestrator/coreography for the SoS element
+-- implement in py to demonstrate
+-- implement the disturbance scenarios
+-- a higher level policy for SoS (meta policy)
+-- each DT can have its resilience level (policy)
+-- the SoS can have its meta resilience level (policy)
