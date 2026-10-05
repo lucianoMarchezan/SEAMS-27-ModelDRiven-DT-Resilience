@@ -511,15 +511,15 @@
       "type": "Transition",
       "attrs": {},
       "source": {
-        "id": "9b3acbe5-c224-495c-98eb-835345fb5f9b"
+        "id": "cb845d24-467b-48e6-a2f3-4c1cf84cde0d"
       },
       "target": {
         "id": "d7cec1ec-c4e9-435e-9cef-9c08838c88f4",
         "anchor": {
           "name": "topLeft",
           "args": {
-            "dx": "73.333%",
-            "dy": "43.333%",
+            "dx": "51.667%",
+            "dy": "28.333%",
             "rotate": true
           }
         },
@@ -530,138 +530,8 @@
       },
       "labels": [
         {
-          "attrs": {
-            "text": {
-              "text": "hm.recovery"
-            }
-          },
-          "position": {
-            "distance": 0.21989833894281105,
-            "offset": 35,
-            "angle": 0
-          }
-        },
-        {
-          "attrs": {
-            "label": {
-              "text": "2"
-            }
-          }
-        },
-        {
-          "attrs": {}
-        },
-        {
-          "attrs": {}
-        }
-      ],
-      "id": "ab68f1ae-6eb0-40b4-8237-0e332d59e5e4",
-      "z": 613,
-      "router": {
-        "name": "orthogonal"
-      },
-      "vertices": [
-        {
-          "x": 842,
-          "y": 167
-        }
-      ],
-      "parent": "54ec5ffe-3699-43d9-851d-40ed32b1e2d8"
-    },
-    {
-      "type": "Transition",
-      "attrs": {},
-      "source": {
-        "id": "bced1833-4cda-4456-89ef-d0879eb4bca3"
-      },
-      "target": {
-        "id": "d7cec1ec-c4e9-435e-9cef-9c08838c88f4",
-        "anchor": {
-          "name": "topLeft",
-          "args": {
-            "dx": "81.667%",
-            "dy": "41.667%",
-            "rotate": true
-          }
-        },
-        "priority": true
-      },
-      "connector": {
-        "name": "rounded"
-      },
-      "labels": [
-        {
-          "attrs": {
-            "text": {
-              "text": "hm.recovery"
-            }
-          },
-          "position": {
-            "distance": 0.112173528473951,
-            "offset": 39.000000000000114,
-            "angle": 0
-          }
-        },
-        {
-          "attrs": {
-            "label": {
-              "text": "2"
-            }
-          }
-        },
-        {
-          "attrs": {}
-        },
-        {
-          "attrs": {}
-        }
-      ],
-      "id": "934d66a3-b78d-411f-9e88-8569f7a888e4",
-      "z": 613,
-      "router": {
-        "name": "orthogonal"
-      },
-      "vertices": [
-        {
-          "x": 841,
-          "y": 498
-        }
-      ],
-      "parent": "54ec5ffe-3699-43d9-851d-40ed32b1e2d8"
-    },
-    {
-      "type": "Transition",
-      "attrs": {},
-      "source": {
-        "id": "3275faa1-d7c9-49b0-8f5b-faea819c6117"
-      },
-      "target": {
-        "id": "d7cec1ec-c4e9-435e-9cef-9c08838c88f4",
-        "anchor": {
-          "name": "topLeft",
-          "args": {
-            "dx": "80%",
-            "dy": "43.333%",
-            "rotate": true
-          }
-        },
-        "priority": true
-      },
-      "connector": {
-        "name": "rounded"
-      },
-      "labels": [
-        {
-          "attrs": {
-            "text": {
-              "text": "hm.recovery"
-            }
-          },
-          "position": {
-            "distance": 0.08656259961408552,
-            "offset": 33,
-            "angle": 0
-          }
+          "attrs": {},
+          "position": {}
         },
         {
           "attrs": {
@@ -677,17 +547,12 @@
           "attrs": {}
         }
       ],
-      "id": "7bd69f8f-71b6-4295-a818-07c29043f594",
+      "id": "03395e68-3c1e-4da9-ac2a-80b40d5ac154",
       "z": 613,
       "router": {
         "name": "orthogonal"
       },
-      "vertices": [
-        {
-          "x": 840,
-          "y": 585
-        }
-      ],
+      "vertices": [],
       "parent": "54ec5ffe-3699-43d9-851d-40ed32b1e2d8"
     },
     {
@@ -764,15 +629,15 @@
       "type": "Transition",
       "attrs": {},
       "source": {
-        "id": "cb845d24-467b-48e6-a2f3-4c1cf84cde0d"
+        "id": "3275faa1-d7c9-49b0-8f5b-faea819c6117"
       },
       "target": {
         "id": "d7cec1ec-c4e9-435e-9cef-9c08838c88f4",
         "anchor": {
           "name": "topLeft",
           "args": {
-            "dx": "51.667%",
-            "dy": "28.333%",
+            "dx": "80%",
+            "dy": "43.333%",
             "rotate": true
           }
         },
@@ -783,8 +648,16 @@
       },
       "labels": [
         {
-          "attrs": {},
-          "position": {}
+          "attrs": {
+            "text": {
+              "text": "hm.recovery"
+            }
+          },
+          "position": {
+            "distance": 0.08656259961408552,
+            "offset": 33,
+            "angle": 0
+          }
         },
         {
           "attrs": {
@@ -800,12 +673,139 @@
           "attrs": {}
         }
       ],
-      "id": "03395e68-3c1e-4da9-ac2a-80b40d5ac154",
+      "id": "7bd69f8f-71b6-4295-a818-07c29043f594",
       "z": 613,
       "router": {
         "name": "orthogonal"
       },
-      "vertices": [],
+      "vertices": [
+        {
+          "x": 840,
+          "y": 585
+        }
+      ],
+      "parent": "54ec5ffe-3699-43d9-851d-40ed32b1e2d8"
+    },
+    {
+      "type": "Transition",
+      "attrs": {},
+      "source": {
+        "id": "bced1833-4cda-4456-89ef-d0879eb4bca3"
+      },
+      "target": {
+        "id": "d7cec1ec-c4e9-435e-9cef-9c08838c88f4",
+        "anchor": {
+          "name": "topLeft",
+          "args": {
+            "dx": "81.667%",
+            "dy": "41.667%",
+            "rotate": true
+          }
+        },
+        "priority": true
+      },
+      "connector": {
+        "name": "rounded"
+      },
+      "labels": [
+        {
+          "attrs": {
+            "text": {
+              "text": "hm.recovery"
+            }
+          },
+          "position": {
+            "distance": 0.112173528473951,
+            "offset": 39.000000000000114,
+            "angle": 0
+          }
+        },
+        {
+          "attrs": {
+            "label": {
+              "text": "2"
+            }
+          }
+        },
+        {
+          "attrs": {}
+        },
+        {
+          "attrs": {}
+        }
+      ],
+      "id": "934d66a3-b78d-411f-9e88-8569f7a888e4",
+      "z": 613,
+      "router": {
+        "name": "orthogonal"
+      },
+      "vertices": [
+        {
+          "x": 841,
+          "y": 498
+        }
+      ],
+      "parent": "54ec5ffe-3699-43d9-851d-40ed32b1e2d8"
+    },
+    {
+      "type": "Transition",
+      "attrs": {},
+      "source": {
+        "id": "9b3acbe5-c224-495c-98eb-835345fb5f9b"
+      },
+      "target": {
+        "id": "d7cec1ec-c4e9-435e-9cef-9c08838c88f4",
+        "anchor": {
+          "name": "topLeft",
+          "args": {
+            "dx": "73.333%",
+            "dy": "43.333%",
+            "rotate": true
+          }
+        },
+        "priority": true
+      },
+      "connector": {
+        "name": "rounded"
+      },
+      "labels": [
+        {
+          "attrs": {
+            "text": {
+              "text": "hm.recovery"
+            }
+          },
+          "position": {
+            "distance": 0.21989833894281105,
+            "offset": 35,
+            "angle": 0
+          }
+        },
+        {
+          "attrs": {
+            "label": {
+              "text": "2"
+            }
+          }
+        },
+        {
+          "attrs": {}
+        },
+        {
+          "attrs": {}
+        }
+      ],
+      "id": "ab68f1ae-6eb0-40b4-8237-0e332d59e5e4",
+      "z": 613,
+      "router": {
+        "name": "orthogonal"
+      },
+      "vertices": [
+        {
+          "x": 842,
+          "y": 167
+        }
+      ],
       "parent": "54ec5ffe-3699-43d9-851d-40ed32b1e2d8"
     },
     {
@@ -833,11 +833,12 @@
         {
           "attrs": {
             "text": {
-              "text": "hm.component_deviation\n/ raise bm.leave_constellation"
+              "text": "hm.component_deviation"
             }
           },
           "position": {
-            "offset": 90,
+            "distance": 0.4090909090909091,
+            "offset": 3,
             "angle": 0
           }
         },
@@ -1217,7 +1218,7 @@
         {
           "attrs": {
             "text": {
-              "text": "bm.join_SoS\n/ bm.announce"
+              "text": "bm.leave_SoS\n/ bm.announce"
             }
           },
           "position": {
@@ -1273,7 +1274,7 @@
         {
           "attrs": {
             "text": {
-              "text": "bm.leave_constellation\n/ bm.announce"
+              "text": "bm.join_SoS\n/ bm.announce"
             }
           },
           "position": {
@@ -1310,13 +1311,13 @@
         "y": 231
       },
       "size": {
-        "width": 69,
-        "height": 60
+        "height": 60,
+        "width": 69
       },
       "type": "State",
       "attrs": {
         "name": {
-          "text": "Desingaged",
+          "text": "Disengaged",
           "fontSize": 11
         }
       },

@@ -1,0 +1,330 @@
+testclass reactive for statechart reactive {
+
+@Test
+operation initialStates () {
+    enter
+
+    assert active (reactive.Health.Ideal)
+    assert active (reactive.Belonging.Disengaged)
+}
+
+@Test
+operation healthIdealToDefective () {
+    enter
+
+    raise hm.component_deviation
+    proceed 1 cycle
+
+    assert active (reactive.Health.Defective)
+}
+
+@Test
+operation healthDefectiveToFaulty () {
+    enter
+
+    raise hm.component_deviation
+    proceed 1 cycle
+
+    raise hm.defect_activated
+    proceed 1 cycle
+
+    assert active (reactive.Health.Faulty)
+}
+
+@Test
+operation healthFaultyToErroneous () {
+    enter
+
+    raise hm.component_deviation
+    proceed 1 cycle
+
+    raise hm.defect_activated
+    proceed 1 cycle
+
+    raise hm.fault_exercised
+    proceed 1 cycle
+
+    assert active (reactive.Health.Erroneous)
+}
+
+@Test
+operation healthErroneousToMalfunctioning () {
+    enter
+
+    raise hm.component_deviation
+    proceed 1 cycle
+
+    raise hm.defect_activated
+    proceed 1 cycle
+
+    raise hm.fault_exercised
+    proceed 1 cycle
+
+    raise hm.error_propagated
+    proceed 1 cycle
+
+    assert active (reactive.Health.Malfunctioning)
+}
+
+@Test
+operation healthMalfunctioningToDegraded () {
+    enter
+
+    raise hm.component_deviation
+    proceed 1 cycle
+
+    raise hm.defect_activated
+    proceed 1 cycle
+
+    raise hm.fault_exercised
+    proceed 1 cycle
+
+    raise hm.error_propagated
+    proceed 1 cycle
+
+    raise hm.impact_observed
+    proceed 1 cycle
+
+    assert active (reactive.Health.Degraded)
+}
+
+@Test
+operation healthDegradedToFailed () {
+    enter
+
+    raise hm.component_deviation
+    proceed 1 cycle
+
+    raise hm.defect_activated
+    proceed 1 cycle
+
+    raise hm.fault_exercised
+    proceed 1 cycle
+
+    raise hm.error_propagated
+    proceed 1 cycle
+
+    raise hm.impact_observed
+    proceed 1 cycle
+
+    raise hm.threshold_violated
+    proceed 1 cycle
+
+    assert active (reactive.Health.Failed)
+}
+
+@Test
+operation healthRecoveryFromDefective () {
+    enter
+
+    raise hm.component_deviation
+    proceed 1 cycle
+
+    raise hm.recovery
+    proceed 1 cycle
+
+    assert active (reactive.Health.Ideal)
+}
+
+@Test
+operation healthRecoveryFromFaulty () {
+    enter
+
+    raise hm.component_deviation
+    proceed 1 cycle
+
+    raise hm.defect_activated
+    proceed 1 cycle
+
+    raise hm.recovery
+    proceed 1 cycle
+
+    assert active (reactive.Health.Ideal)
+}
+
+@Test
+operation healthRecoveryFromErroneous () {
+    enter
+
+    raise hm.component_deviation
+    proceed 1 cycle
+
+    raise hm.defect_activated
+    proceed 1 cycle
+
+    raise hm.fault_exercised
+    proceed 1 cycle
+
+    raise hm.recovery
+    proceed 1 cycle
+
+    assert active (reactive.Health.Ideal)
+}
+
+@Test
+operation healthRecoveryFromMalfunctioning () {
+    enter
+
+    raise hm.component_deviation
+    proceed 1 cycle
+
+    raise hm.defect_activated
+    proceed 1 cycle
+
+    raise hm.fault_exercised
+    proceed 1 cycle
+
+    raise hm.error_propagated
+    proceed 1 cycle
+
+    raise hm.recovery
+    proceed 1 cycle
+
+    assert active (reactive.Health.Ideal)
+}
+
+@Test
+operation healthRecoveryFromDegraded () {
+    enter
+
+    raise hm.component_deviation
+    proceed 1 cycle
+
+    raise hm.defect_activated
+    proceed 1 cycle
+
+    raise hm.fault_exercised
+    proceed 1 cycle
+
+    raise hm.error_propagated
+    proceed 1 cycle
+
+    raise hm.impact_observed
+    proceed 1 cycle
+
+    raise hm.recovery
+    proceed 1 cycle
+
+    assert active (reactive.Health.Ideal)
+}
+
+@Test
+operation healthRecoveryFromFailed () {
+    enter
+
+    raise hm.component_deviation
+    proceed 1 cycle
+
+    raise hm.defect_activated
+    proceed 1 cycle
+
+    raise hm.fault_exercised
+    proceed 1 cycle
+
+    raise hm.error_propagated
+    proceed 1 cycle
+
+    raise hm.impact_observed
+    proceed 1 cycle
+
+    raise hm.threshold_violated
+    proceed 1 cycle
+
+    raise hm.recovery
+    proceed 1 cycle
+
+    assert active (reactive.Health.Ideal)
+}
+
+@Test
+operation belongingDisengagedToPrepared () {
+    enter
+
+    raise bm.prepare_for_sos
+    proceed 1 cycle
+
+    assert active (reactive.Belonging.Prepared)
+}
+
+@Test
+operation belongingPreparedToPassive () {
+    enter
+
+    raise bm.prepare_for_sos
+    proceed 1 cycle
+
+    raise bm.join_SoS
+    proceed 1 cycle
+
+    assert active (reactive.Belonging.Passive)
+}
+
+@Test
+operation belongingPassiveToActive () {
+    enter
+
+    raise bm.prepare_for_sos
+    proceed 1 cycle
+
+    raise bm.join_SoS
+    proceed 1 cycle
+
+    raise bm.join_constellation
+    proceed 1 cycle
+
+    assert active (reactive.Belonging.Active)
+}
+
+@Test
+operation belongingActiveToPassive () {
+    enter
+
+    raise bm.prepare_for_sos
+    proceed 1 cycle
+
+    raise bm.join_SoS
+    proceed 1 cycle
+
+    raise bm.join_constellation
+    proceed 1 cycle
+
+    raise bm.leave_constellation
+    proceed 1 cycle
+
+    assert active (reactive.Belonging.Passive)
+}
+
+@Test
+operation belongingPassiveToPrepared () {
+    enter
+
+    raise bm.prepare_for_sos
+    proceed 1 cycle
+
+    raise bm.join_SoS
+    proceed 1 cycle
+
+    raise bm.leave_SoS
+    proceed 1 cycle
+
+    assert active (reactive.Belonging.Prepared)
+}
+
+@Test
+operation belongingPreparedToDisengaged () {
+    enter
+
+    raise bm.prepare_for_sos
+    proceed 1 cycle
+
+    raise bm.disengage_from_SoS
+    proceed 1 cycle
+
+    assert active (reactive.Belonging.Disengaged)
+}
+
+@Test
+operation belongingCompleteCycle () {
+    enter
+
+    assert
