@@ -1053,8 +1053,8 @@
         "y": 379
       },
       "size": {
-        "width": 242,
-        "height": 380
+        "height": 380,
+        "width": 242
       },
       "type": "State",
       "attrs": {
@@ -1204,8 +1204,8 @@
         "y": 386
       },
       "size": {
-        "width": 216,
-        "height": 338
+        "height": 338,
+        "width": 216
       },
       "type": "State",
       "attrs": {
@@ -1443,8 +1443,8 @@
             }
           },
           "position": {
-            "distance": 0.7630021528764205,
-            "offset": 4,
+            "distance": 0.7902748801491477,
+            "offset": 7,
             "angle": 0
           }
         },
