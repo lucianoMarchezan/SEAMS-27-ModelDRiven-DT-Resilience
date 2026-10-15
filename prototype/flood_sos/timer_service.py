@@ -1,0 +1,28 @@
+import simpy
+
+
+class TimerService:
+    def __init__(self, env):
+        self.env = env
+        self.timers = {}
+
+    def set_timer(self, state_machine, event_id, duration_ms, is_periodic):
+        self.unset_timer(state_machine, event_id)
+        key = (id(state_machine), event_id)
+
+        def wait():
+            yield self.env.timeout(duration_ms / 1000)
+            if self.timers.get(key) is process:
+                del self.timers[key]
+                state_machine.time_elapsed(event_id)
+                if is_periodic:
+                    self.set_timer(state_machine, event_id, duration_ms, is_periodic)
+
+        process = self.env.process(wait())
+        self.timers[key] = process
+
+    def unset_timer(self, state_machine, event_id):
+        key = (id(state_machine), event_id)
+        process = self.timers.pop(key, None)
+        if process is not None and process.is_alive:
+            process.interrupt()

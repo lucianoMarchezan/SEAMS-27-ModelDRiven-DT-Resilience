@@ -1054,8 +1054,8 @@
         "y": 395
       },
       "size": {
-        "width": 513,
-        "height": 550
+        "height": 550,
+        "width": 513
       },
       "type": "State",
       "attrs": {
@@ -1444,8 +1444,8 @@
         "y": 588
       },
       "size": {
-        "width": 270,
-        "height": 239
+        "height": 239,
+        "width": 270
       },
       "type": "State",
       "attrs": {
@@ -1838,8 +1838,8 @@
         "y": 756
       },
       "size": {
-        "width": 96,
-        "height": 60
+        "height": 60,
+        "width": 96
       },
       "type": "State",
       "attrs": {
@@ -2142,8 +2142,8 @@
         "y": 481
       },
       "size": {
-        "width": 289,
-        "height": 358
+        "height": 358,
+        "width": 289
       },
       "type": "State",
       "attrs": {

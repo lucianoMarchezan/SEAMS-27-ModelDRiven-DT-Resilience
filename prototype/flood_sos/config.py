@@ -1,0 +1,4 @@
+PROFILE_LEVELS = {"Reactive": 0, "Proactive": 1, "Controlled": 2, "Adaptive": 3}
+UNIT_CONFIG = {"UAV": {"role": "aerial_monitoring", "target_profile": "Proactive", "battery": 100.0, "speed": 12.0}, "RescueBoat": {"role": "victim_rescue", "target_profile": "Adaptive", "battery": 100.0, "speed": 5.0}, "MonitoringBoat": {"role": "water_monitoring", "target_profile": "Controlled", "battery": 100.0, "speed": 4.0}, "PumpingStation": {"role": "water_removal", "target_profile": "Reactive", "battery": 100.0, "speed": 0.0}}
+FLOOD_THRESHOLDS = {"Proactive": 2, "Controlled": 3, "Adaptive": 4}
+SIMULATION = {"duration": 30, "step": 1, "initial_water_level": 1.0, "water_rise_per_step": 0.25, "pump_reduction_per_step": 0.12, "initial_victims": 8, "victims_per_flood_level": 2, "telemetry_interval": 1, "message_latency": 0.2, "message_loss_probability": 0.05, "boat_disconnect_step": 8, "boat_disconnect_duration": 3, "rescue_boat_water_ingress_step": 12}

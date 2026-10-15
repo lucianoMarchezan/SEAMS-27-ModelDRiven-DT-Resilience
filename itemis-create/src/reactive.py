@@ -22,7 +22,7 @@ class Reactive:
 			belonging_prepared,
 			belonging_passive,
 			belonging_active,
-			belonging_desingaged,
+			belonging_disengaged,
 			null_state
 		) = range(12)
 	
@@ -255,8 +255,8 @@ class Reactive:
 			return self.__state_vector[1] == self.__State.belonging_passive
 		if s == self.__State.belonging_active:
 			return self.__state_vector[1] == self.__State.belonging_active
-		if s == self.__State.belonging_desingaged:
-			return self.__state_vector[1] == self.__State.belonging_desingaged
+		if s == self.__State.belonging_disengaged:
+			return self.__state_vector[1] == self.__State.belonging_disengaged
 		return False
 		
 	def __execute_queued_event(self, func):
@@ -347,11 +347,11 @@ class Reactive:
 		self.__state_conf_vector_position = 1
 		self.__state_conf_vector_changed = True
 		
-	def __enter_sequence_belonging_desingaged_default(self):
-		"""'default' enter sequence for state Desingaged.
+	def __enter_sequence_belonging_disengaged_default(self):
+		"""'default' enter sequence for state Disengaged.
 		"""
-		#'default' enter sequence for state Desingaged
-		self.__state_vector[1] = self.State.belonging_desingaged
+		#'default' enter sequence for state Disengaged
+		self.__state_vector[1] = self.State.belonging_disengaged
 		self.__state_conf_vector_position = 1
 		self.__state_conf_vector_changed = True
 		
@@ -437,10 +437,10 @@ class Reactive:
 		self.__state_vector[1] = self.State.null_state
 		self.__state_conf_vector_position = 1
 		
-	def __exit_sequence_belonging_desingaged(self):
-		"""Default exit sequence for state Desingaged.
+	def __exit_sequence_belonging_disengaged(self):
+		"""Default exit sequence for state Disengaged.
 		"""
-		#Default exit sequence for state Desingaged
+		#Default exit sequence for state Disengaged
 		self.__state_vector[1] = self.State.null_state
 		self.__state_conf_vector_position = 1
 		
@@ -475,8 +475,8 @@ class Reactive:
 			self.__exit_sequence_belonging_passive()
 		elif state == self.State.belonging_active:
 			self.__exit_sequence_belonging_active()
-		elif state == self.State.belonging_desingaged:
-			self.__exit_sequence_belonging_desingaged()
+		elif state == self.State.belonging_disengaged:
+			self.__exit_sequence_belonging_disengaged()
 		
 	def __react_health__entry_default(self):
 		"""Default react sequence for initial entry .
@@ -488,7 +488,7 @@ class Reactive:
 		"""Default react sequence for initial entry .
 		"""
 		#Default react sequence for initial entry 
-		self.__enter_sequence_belonging_desingaged_default()
+		self.__enter_sequence_belonging_disengaged_default()
 		
 	def __health_ideal_react(self, transitioned_before):
 		"""Implementation of __health_ideal_react function.
@@ -498,7 +498,6 @@ class Reactive:
 		if transitioned_after < 0:
 			if self.hm.component_deviation:
 				self.__exit_sequence_health_ideal()
-				self.bm.raise_leave_constellation()
 				self.__enter_sequence_health_defective_default()
 				transitioned_after = 0
 		return transitioned_after
@@ -610,9 +609,9 @@ class Reactive:
 		if transitioned_after < 1:
 			if self.bm.disengage_from_so_s:
 				self.__exit_sequence_belonging_prepared()
-				self.__enter_sequence_belonging_desingaged_default()
+				self.__enter_sequence_belonging_disengaged_default()
 				transitioned_after = 1
-			elif self.bm.leave_constellation:
+			elif self.bm.join_so_s:
 				self.__exit_sequence_belonging_prepared()
 				self.bm.operation_callback.announce()
 				self.__enter_sequence_belonging_passive_default()
@@ -635,7 +634,7 @@ class Reactive:
 				self.bm.operation_callback.announce()
 				self.__enter_sequence_belonging_active_default()
 				transitioned_after = 1
-			elif self.bm.join_so_s:
+			elif self.bm.leave_so_s:
 				self.__exit_sequence_belonging_passive()
 				self.bm.operation_callback.announce()
 				self.__enter_sequence_belonging_prepared_default()
@@ -665,14 +664,14 @@ class Reactive:
 		return transitioned_after
 	
 	
-	def __belonging_desingaged_react(self, transitioned_before):
-		"""Implementation of __belonging_desingaged_react function.
+	def __belonging_disengaged_react(self, transitioned_before):
+		"""Implementation of __belonging_disengaged_react function.
 		"""
-		#The reactions of state Desingaged.
+		#The reactions of state Disengaged.
 		transitioned_after = transitioned_before
 		if transitioned_after < 1:
 			if self.bm.prepare_for_sos:
-				self.__exit_sequence_belonging_desingaged()
+				self.__exit_sequence_belonging_disengaged()
 				self.__enter_sequence_belonging_prepared_default()
 				transitioned_after = 1
 		#If no transition was taken
@@ -728,8 +727,8 @@ class Reactive:
 				self.__belonging_passive_react(transitioned)
 			elif state == self.State.belonging_active:
 				self.__belonging_active_react(transitioned)
-			elif state == self.State.belonging_desingaged:
-				self.__belonging_desingaged_react(transitioned)
+			elif state == self.State.belonging_disengaged:
+				self.__belonging_disengaged_react(transitioned)
 	
 	
 	def run_cycle(self):
