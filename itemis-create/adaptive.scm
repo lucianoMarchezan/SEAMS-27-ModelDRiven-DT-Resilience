@@ -13,10 +13,10 @@
       "id": "78749915-0da0-40a2-862f-9e8d94c7c68e",
       "attrs": {
         "name": {
-          "text": "controlled"
+          "text": "adaptive"
         },
         "specification": {
-          "text": "@EventDriven\r\ninterface hm: \r\n    in event component_deviation\r\n    in event defect_activated\r\n    in event fault_exercised\r\n    in event error_propagated\r\n    in event impact_observed\r\n    in event threshold_violated\r\n    in event recovery\r\n    in event health_failed\r\n    \r\n    \r\n\r\ninterface bm:\r\n    in event prepare_for_sos\r\n    in event disengage_from_SoS\r\n    in event join_SoS\r\n    in event leave_SoS\r\n    in event join_constellation\r\n    in event leave_constellation\r\n    in event join_request\r\n    in event join_invitation\r\n    in event admission_rejected\r\n    in event exit_denied\r\n    \r\n    operation announce(): void\r\n    "
+          "text": "@EventDriven\r\ninterface hm: \r\n    in event component_deviation\r\n    in event defect_activated\r\n    in event fault_exercised\r\n    in event error_propagated\r\n    in event impact_observed\r\n    in event threshold_violated\r\n    in event recovery\r\n    in event health_degraded\r\n    in event health_failed\r\n    in event ideal\r\n    in event erroneous\r\n    \r\n    \r\n\r\ninterface bm:\r\n    in event prepare_for_sos\r\n    in event disengage_from_SoS\r\n    in event join_SoS\r\n    in event leave_SoS\r\n    in event join_constellation\r\n    in event leave_constellation\r\n    in event join_request\r\n    in event join_invitation\r\n    in event admission_rejected\r\n    in event exit_denied\r\n    in event restricted_role\r\n    in event full_role\r\n    in event uncertainty_exceeded\r\n    \r\n    operation announce(): void\r\n    "
         }
       },
       "z": 1
@@ -272,7 +272,7 @@
         {
           "attrs": {
             "text": {
-              "text": "hm.impact_observed"
+              "text": "hm.impact_observed \n/ raise hm.health_degraded"
             }
           },
           "position": {}
@@ -376,7 +376,7 @@
         {
           "attrs": {
             "text": {
-              "text": "hm.fault_exercised"
+              "text": "hm.fault_exercised\n/ raise hm.erroneous"
             }
           },
           "position": {}
@@ -532,7 +532,7 @@
         {
           "attrs": {
             "text": {
-              "text": "hm.recovery"
+              "text": "hm.recovery\n/ raise hm.ideal"
             }
           },
           "position": {
@@ -593,7 +593,7 @@
         {
           "attrs": {
             "text": {
-              "text": "hm.recovery"
+              "text": "hm.recovery\n/ raise hm.ideal"
             }
           },
           "position": {
@@ -715,7 +715,7 @@
         {
           "attrs": {
             "text": {
-              "text": "hm.recovery"
+              "text": "hm.recovery\n/ raise hm.ideal"
             }
           },
           "position": {
@@ -776,7 +776,7 @@
         {
           "attrs": {
             "text": {
-              "text": "hm.recovery"
+              "text": "hm.recovery\n/ raise hm.ideal"
             }
           },
           "position": {
@@ -837,7 +837,7 @@
         {
           "attrs": {
             "text": {
-              "text": "hm.recovery"
+              "text": "hm.recovery\n/ raise hm.ideal"
             }
           },
           "position": {
@@ -898,7 +898,7 @@
         {
           "attrs": {
             "text": {
-              "text": "hm.recovery"
+              "text": "hm.recovery\n/ raise hm.ideal"
             }
           },
           "position": {
@@ -1054,8 +1054,8 @@
         "y": 395
       },
       "size": {
-        "height": 550,
-        "width": 513
+        "width": 513,
+        "height": 550
       },
       "type": "State",
       "attrs": {
@@ -1112,6 +1112,7 @@
       "id": "6a961907-2f8a-415b-aff0-38da579dd9f0",
       "z": 1131,
       "embeds": [
+        "f60283c2-3bdf-4fb0-b62e-1ea76ca5f248",
         "839e7f01-aa64-471f-8031-a6cdeb7276f3",
         "1cd163dd-8fda-4627-a25c-88d46367620d",
         "1a7e9eff-03d7-4795-a84a-49408b263274",
@@ -1149,6 +1150,146 @@
       "type": "Transition",
       "attrs": {},
       "source": {
+        "id": "070579d7-38d0-49e0-b07b-c9f7e836c1ca",
+        "anchor": {
+          "name": "topLeft",
+          "args": {
+            "dx": "88.148%",
+            "dy": "99.163%",
+            "rotate": true
+          }
+        },
+        "priority": true
+      },
+      "target": {
+        "id": "6d205a79-a2fe-46a7-854d-45e63d9c9fbc",
+        "anchor": {
+          "name": "topLeft",
+          "args": {
+            "dx": "96.842%",
+            "dy": "16.129%",
+            "rotate": true
+          }
+        },
+        "priority": true
+      },
+      "connector": {
+        "name": "rounded"
+      },
+      "labels": [
+        {
+          "attrs": {
+            "text": {
+              "text": "bm.leave_constellation\n/ bm.announce"
+            }
+          },
+          "position": {
+            "distance": 0.3144199187123448,
+            "offset": -27.7431640625,
+            "angle": 0
+          }
+        },
+        {
+          "attrs": {
+            "label": {
+              "text": "2"
+            }
+          }
+        },
+        {
+          "attrs": {}
+        },
+        {
+          "attrs": {}
+        }
+      ],
+      "id": "839e7f01-aa64-471f-8031-a6cdeb7276f3",
+      "z": 1132,
+      "router": {
+        "name": "orthogonal"
+      },
+      "vertices": [
+        {
+          "x": 2049,
+          "y": 872
+        }
+      ],
+      "parent": "6a961907-2f8a-415b-aff0-38da579dd9f0"
+    },
+    {
+      "type": "Transition",
+      "attrs": {},
+      "source": {
+        "id": "6d205a79-a2fe-46a7-854d-45e63d9c9fbc",
+        "anchor": {
+          "name": "topLeft",
+          "args": {
+            "dx": "1.053%",
+            "dy": "24.194%",
+            "rotate": true
+          }
+        },
+        "priority": true
+      },
+      "target": {
+        "id": "070579d7-38d0-49e0-b07b-c9f7e836c1ca",
+        "anchor": {
+          "name": "topLeft",
+          "args": {
+            "dx": "12.963%",
+            "dy": "99.163%",
+            "rotate": true
+          }
+        },
+        "priority": true
+      },
+      "connector": {
+        "name": "rounded"
+      },
+      "labels": [
+        {
+          "attrs": {
+            "text": {
+              "text": "bm.exit_denied"
+            }
+          },
+          "position": {
+            "distance": 0.16911064443079327,
+            "offset": 26.2498779296875,
+            "angle": 0
+          }
+        },
+        {
+          "attrs": {
+            "label": {
+              "text": "2"
+            }
+          }
+        },
+        {
+          "attrs": {}
+        },
+        {
+          "attrs": {}
+        }
+      ],
+      "id": "1cd163dd-8fda-4627-a25c-88d46367620d",
+      "z": 1133,
+      "router": {
+        "name": "orthogonal"
+      },
+      "vertices": [
+        {
+          "x": 1867,
+          "y": 877
+        }
+      ],
+      "parent": "6a961907-2f8a-415b-aff0-38da579dd9f0"
+    },
+    {
+      "type": "Transition",
+      "attrs": {},
+      "source": {
         "id": "0b1205f9-bac5-4173-8267-b891da3e54a9"
       },
       "target": {
@@ -1168,7 +1309,11 @@
       },
       "labels": [
         {
-          "attrs": {},
+          "attrs": {
+            "text": {
+              "text": "bm.uncertainty_exceeded"
+            }
+          },
           "position": {}
         },
         {
@@ -1186,7 +1331,7 @@
         }
       ],
       "id": "1a7e9eff-03d7-4795-a84a-49408b263274",
-      "z": 1133,
+      "z": 1134,
       "router": {
         "name": "orthogonal"
       },
@@ -1241,7 +1386,7 @@
         }
       ],
       "id": "dfc4d6cf-ac79-45c1-b9c8-2a7b249f01d6",
-      "z": 1134,
+      "z": 1135,
       "router": {
         "name": "orthogonal"
       },
@@ -1273,12 +1418,12 @@
         {
           "attrs": {
             "text": {
-              "text": "bm.leave_constellation\n/ bm.announce"
+              "text": "hm.health_degraded"
             }
           },
           "position": {
-            "distance": 0.2501264430031781,
-            "offset": 57,
+            "distance": 0.24207689803186747,
+            "offset": 47,
             "angle": 0
           }
         },
@@ -1297,7 +1442,7 @@
         }
       ],
       "id": "b37d720f-11c3-4973-9eaa-6ca2569f636c",
-      "z": 1135,
+      "z": 1136,
       "router": {
         "name": "orthogonal"
       },
@@ -1354,7 +1499,7 @@
         }
       ],
       "id": "963f0b59-6aae-4862-9c33-1b4e158e13b2",
-      "z": 1136,
+      "z": 1137,
       "router": {
         "name": "orthogonal"
       },
@@ -1411,7 +1556,7 @@
         }
       ],
       "id": "83825638-1d05-496c-a71c-6f88e830501b",
-      "z": 1137,
+      "z": 1138,
       "router": {
         "name": "orthogonal"
       },
@@ -1435,7 +1580,7 @@
         }
       },
       "id": "2e4b25b6-392d-4fef-93a7-514643a6be9b",
-      "z": 1138,
+      "z": 1139,
       "parent": "6a961907-2f8a-415b-aff0-38da579dd9f0"
     },
     {
@@ -1444,8 +1589,8 @@
         "y": 588
       },
       "size": {
-        "height": 239,
-        "width": 270
+        "width": 270,
+        "height": 239
       },
       "type": "State",
       "attrs": {
@@ -1455,7 +1600,7 @@
         }
       },
       "id": "070579d7-38d0-49e0-b07b-c9f7e836c1ca",
-      "z": 1139,
+      "z": 1140,
       "embeds": [
         "00c2a341-3390-473a-88f5-df39262afeac"
       ],
@@ -1514,8 +1659,16 @@
       },
       "labels": [
         {
-          "attrs": {},
-          "position": {}
+          "attrs": {
+            "text": {
+              "text": "hm.erroneous"
+            }
+          },
+          "position": {
+            "distance": 0.5116279069767442,
+            "offset": 47,
+            "angle": 0
+          }
         },
         {
           "attrs": {
@@ -1562,8 +1715,16 @@
       },
       "labels": [
         {
-          "attrs": {},
-          "position": {}
+          "attrs": {
+            "text": {
+              "text": "[active(Health.Erroneous) \n|| active(Health.Malfunctioning)]"
+            }
+          },
+          "position": {
+            "distance": 0.49445879481907096,
+            "offset": -94.91429506742611,
+            "angle": 0
+          }
         },
         {
           "attrs": {
@@ -1638,8 +1799,16 @@
       },
       "labels": [
         {
-          "attrs": {},
-          "position": {}
+          "attrs": {
+            "text": {
+              "text": "hm.ideal"
+            }
+          },
+          "position": {
+            "distance": 0.1342703262451422,
+            "offset": 23.000000000000227,
+            "angle": 0
+          }
         },
         {
           "attrs": {
@@ -1730,8 +1899,16 @@
       },
       "labels": [
         {
-          "attrs": {},
-          "position": {}
+          "attrs": {
+            "text": {
+              "text": "else"
+            }
+          },
+          "position": {
+            "distance": 0.31155778894472363,
+            "offset": 16,
+            "angle": 0
+          }
         },
         {
           "attrs": {
@@ -2544,7 +2721,7 @@
         {
           "attrs": {
             "text": {
-              "text": "bm.join_invitation \n[active(Health.Defective) \n|| active(Health.Faulty)\n|| active(Health.Ideal)]"
+              "text": "bm.join_invitation \n[!active(Health.Ideal)]"
             }
           },
           "position": {
@@ -2804,24 +2981,15 @@
       "type": "Transition",
       "attrs": {},
       "source": {
+        "id": "bd31f463-3baf-4873-81c5-5b118dfb88f7"
+      },
+      "target": {
         "id": "6d205a79-a2fe-46a7-854d-45e63d9c9fbc",
         "anchor": {
           "name": "topLeft",
           "args": {
-            "dx": "1.053%",
-            "dy": "24.194%",
-            "rotate": true
-          }
-        },
-        "priority": true
-      },
-      "target": {
-        "id": "070579d7-38d0-49e0-b07b-c9f7e836c1ca",
-        "anchor": {
-          "name": "topLeft",
-          "args": {
-            "dx": "12.963%",
-            "dy": "99.163%",
+            "dx": "91.579%",
+            "dy": "6.452%",
             "rotate": true
           }
         },
@@ -2834,19 +3002,19 @@
         {
           "attrs": {
             "text": {
-              "text": "bm.exit_denied"
+              "text": "[active(Health.Degraded) \n|| active(Health.Faulty)]"
             }
           },
           "position": {
-            "distance": 0.16911064443079327,
-            "offset": 26.2498779296875,
+            "distance": 0.7674990486896734,
+            "offset": -36,
             "angle": 0
           }
         },
         {
           "attrs": {
             "label": {
-              "text": "2"
+              "text": "3"
             }
           }
         },
@@ -2857,79 +3025,12 @@
           "attrs": {}
         }
       ],
-      "id": "1cd163dd-8fda-4627-a25c-88d46367620d",
+      "id": "f60283c2-3bdf-4fb0-b62e-1ea76ca5f248",
       "z": 1220,
       "router": {
         "name": "orthogonal"
       },
-      "vertices": [
-        {
-          "x": 1867,
-          "y": 877
-        }
-      ],
-      "parent": "6a961907-2f8a-415b-aff0-38da579dd9f0"
-    },
-    {
-      "type": "Transition",
-      "attrs": {},
-      "source": {
-        "id": "070579d7-38d0-49e0-b07b-c9f7e836c1ca",
-        "anchor": {
-          "name": "topLeft",
-          "args": {
-            "dx": "88.148%",
-            "dy": "99.163%",
-            "rotate": true
-          }
-        },
-        "priority": true
-      },
-      "target": {
-        "id": "6d205a79-a2fe-46a7-854d-45e63d9c9fbc",
-        "anchor": {
-          "name": "topLeft",
-          "args": {
-            "dx": "96.842%",
-            "dy": "16.129%",
-            "rotate": true
-          }
-        },
-        "priority": true
-      },
-      "connector": {
-        "name": "rounded"
-      },
-      "labels": [
-        {
-          "attrs": {},
-          "position": {}
-        },
-        {
-          "attrs": {
-            "label": {
-              "text": "2"
-            }
-          }
-        },
-        {
-          "attrs": {}
-        },
-        {
-          "attrs": {}
-        }
-      ],
-      "id": "839e7f01-aa64-471f-8031-a6cdeb7276f3",
-      "z": 1221,
-      "router": {
-        "name": "orthogonal"
-      },
-      "vertices": [
-        {
-          "x": 2049,
-          "y": 872
-        }
-      ],
+      "vertices": [],
       "parent": "6a961907-2f8a-415b-aff0-38da579dd9f0"
     }
   ]

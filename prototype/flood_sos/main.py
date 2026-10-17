@@ -22,9 +22,9 @@ def main():
     env.process(coordinator.run())
     env.process(monitor_simulation(env, flood, twins))
     env.run(until=SIMULATION["duration"])
-    with open("simulation_summary.json", "w", encoding="utf-8") as file:
+    with open("output/simulation_summary.json", "w", encoding="utf-8") as file:
         json.dump({"final_water_level": flood.water_level, "flooded_area": flood.flooded_area, "victims_waiting": flood.victims_waiting, "victims_rescued": flood.victims_rescued, "pumped_water": flood.pumped_water, "profiles": {t.name: t.profile for t in twins}, "health": {t.name: t.health_state() for t in twins}, "belonging": {t.name: t.belonging_state() for t in twins}, "coordinator_events": coordinator.events, "communication_events": broker.log, "twin_events": {t.name: t.log for t in twins}}, file, indent=2)
-    with open("flood_history.csv", "w", newline="", encoding="utf-8") as file:
+    with open("output/flood_history.csv", "w", newline="", encoding="utf-8") as file:
         writer = csv.DictWriter(file, fieldnames=["time", "water_level", "flooded_area", "victims_waiting", "victims_rescued"])
         writer.writeheader()
         writer.writerows(flood.history)

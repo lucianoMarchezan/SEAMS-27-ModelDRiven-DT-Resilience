@@ -22,4 +22,4 @@ Each generated machine is expected to expose `enter()`, `State`, `is_state_activ
 
 Profile promotion thresholds and physical dynamics are illustrative scenario parameters in `config.py` and should be calibrated to the experiment you intend to report.
 
-Outputs are written to `simulation_summary.json` and `flood_history.csv`.
+Outputs are written to `output/simulation_summary.json` and `output/flood_history.csv`.
