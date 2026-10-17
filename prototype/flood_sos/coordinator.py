@@ -3,7 +3,6 @@ import random
 
 from config import (
     MIXED_PROFILE_THRESHOLDS,
-    HEALTH_IMPAIRED_STATES,
     PROFILE_CONFIGS,
     PROFILE_MEMBERSHIP_POLICY,
     SIMULATION,
@@ -29,18 +28,28 @@ class SoSCoordinator:
         self.assignments = {}
         self.random = random.Random(SIMULATION["seed"] if seed is None else seed)
         self.pending_departures = set()
-        self.pending_health_departures = set()
-        self.health_rejoin_eligible = set()
-        self.health_rejoin_ready = set()
-        self.last_health_rejoin_attempt = {}
-        self.health_rejoin_counts = {
+        self.pending_health_replacements = []
+        self.pending_health_exits = {}
+        self.health_return_eligible = set()
+        self.health_return_ready = set()
+        self.last_health_return_attempt = {}
+        self.backup_return_pending = set()
+        self.recovered_standby_roles = {}
+        self.last_standby_activation_attempt = {}
+        self.backup_unit_names = {
+            twin.name for twin in self.twins.values() if twin.unit.config.get("role") == "reserve"
+        }
+        self.backup_shortfall_logged = set()
+        self.health_lifecycle_counts = {
             "eligible_departures": 0,
             "repairs_ready": 0,
-            "generated": 0,
-            "profile_denied": 0,
-            "submitted_to_bm": 0,
-            "machine_rejected": 0,
-            "completed": 0,
+            "replacement_requests": 0,
+            "replacement_activations": 0,
+            "replacement_shortfalls": 0,
+            "return_requests": 0,
+            "return_retries": 0,
+            "returned_to_disengaged": 0,
+            "return_delayed": 0,
         }
         self._seen_twin_logs = {name: 0 for name in self.twins}
         self.dt_time = 0.0
@@ -53,6 +62,7 @@ class SoSCoordinator:
         self.backup_requests = 0
         self.backup_activations = 0
         self.backup_rescue_time = 0.0
+        self.backup_standby_time = 0.0
         self.processing_work = 0.0
         self.sos_request_counts = {
             "generated": 0,
@@ -82,7 +92,6 @@ class SoSCoordinator:
                 "event": "telemetry_received",
                 "unit": source,
                 "health": payload.get("health"),
-                "belonging": payload.get("belonging"),
                 "connected": payload.get("connected"),
             }
         )
@@ -128,9 +137,8 @@ class SoSCoordinator:
         water = self.flood.max_water_level
         asset_type = twin.unit.asset_type
         role = twin.unit.role
-        # Reserve boats keep the low-cost Reactive profile until activated.
-        # Once assigned an operational role, the normal mixed progression is
-        # applied; when returned to reserve, this rule restores Reactive.
+        # Unused reserve boats keep Reactive in Mixed. After activation or
+        # return to the reserve role, profile assignment follows that role.
         if asset_type == "boat" and role == "reserve":
             return "Reactive"
 
@@ -210,7 +218,11 @@ class SoSCoordinator:
             and self._task_success_probability(twin) > 0.0
             and twin.connected
             and (
-                twin.unit.role == "reserve"
+                (
+                    twin.unit.role == "reserve"
+                    and twin.belonging_state() == "Disengaged"
+                    and twin.health_state() == "Ideal"
+                )
                 or (twin.unit.role in {"monitoring", "rescue"} and twin.can_operate)
             )
         ]
@@ -218,9 +230,30 @@ class SoSCoordinator:
     def ensure_rescue_capacity(self):
         required = self.minimum_rescue_boats()
         available_boats = self._available_boats()
-        target_capacity = min(
-            float(required),
-            sum(self._task_success_probability(twin) for twin in available_boats),
+        # Use occupied rescue roles, not health-weighted task probabilities,
+        # to detect demand-driven vacancies. A Reactive boat that remains
+        # Active in poor health still occupies its role and must fail through
+        # its task outcomes rather than silently causing health replacement.
+        active_rescue_slots = sum(
+            1
+            for twin in self.twins.values()
+            if twin.unit.asset_type == "boat"
+            and twin.unit.role == "rescue"
+            and twin.is_in_constellation
+            and twin.connected
+        )
+        active_monitoring_slots = sum(
+            1
+            for twin in self.twins.values()
+            if twin.unit.asset_type == "boat"
+            and twin.unit.role == "monitoring"
+            and twin.is_in_constellation
+            and twin.connected
+        )
+        reserve_slots = sum(twin.unit.role == "reserve" for twin in available_boats)
+        target_rescue_slots = min(
+            required,
+            active_rescue_slots + active_monitoring_slots + reserve_slots,
         )
         attached_rescue = [
             twin
@@ -233,7 +266,22 @@ class SoSCoordinator:
         ]
         attached_capacity = sum(self._task_success_probability(twin) for twin in attached_rescue)
         attempted_candidates = set()
-        while attached_capacity + 1e-9 < target_capacity:
+        replacements_remaining = len(self.pending_health_replacements)
+        while (
+            active_rescue_slots < target_rescue_slots
+            or replacements_remaining > 0
+        ):
+            replacing_health_departure = replacements_remaining > 0
+            replacement_request = (
+                self.pending_health_replacements[0]
+                if replacing_health_departure
+                else None
+            )
+            departed_name = (
+                replacement_request["departed_unit"]
+                if replacement_request is not None
+                else None
+            )
             candidates = sorted(
                 (
                     twin
@@ -241,18 +289,44 @@ class SoSCoordinator:
                     if twin not in attached_rescue
                     and twin.name not in attempted_candidates
                     and (
-                        (twin.unit.role == "monitoring" and twin.can_operate)
-                        or twin.unit.role == "reserve"
+                        (
+                            twin.name != departed_name
+                            and twin.unit.role == "reserve"
+                            and twin.belonging_state() == "Disengaged"
+                            and twin.health_state() == "Ideal"
+                            and twin.unit.operational
+                            and twin.connected
+                        )
+                        if replacing_health_departure
+                        else (
+                            (twin.unit.role == "monitoring" and twin.can_operate)
+                            or twin.unit.role == "reserve"
+                        )
                     )
                 ),
                 key=lambda twin: (
+                    twin.unit.role != "reserve",
                     -self._task_success_probability(twin),
-                    twin.unit.role != "monitoring",
                     not twin.is_attached_to_sos,
                     twin.name,
                 ),
             )
             if not candidates:
+                if replacing_health_departure:
+                    if departed_name not in self.backup_shortfall_logged:
+                        self.backup_shortfall_logged.add(departed_name)
+                        self.events.append(
+                            {
+                                "time": self.env.now,
+                                "event": "health_replacement_unavailable",
+                                "departed_unit": departed_name,
+                                "departed_role": replacement_request["role_at_departure"],
+                                "departure_time": replacement_request["departure_time"],
+                                "reason": "no_eligible_disengaged_ideal_backup",
+                            }
+                        )
+                        self.health_lifecycle_counts["replacement_shortfalls"] += 1
+                        replacement_request["shortfall_recorded"] = True
                 break
             twin = candidates[0]
             last_attempt = self.last_join_attempt.get(twin.name, -math.inf)
@@ -261,6 +335,7 @@ class SoSCoordinator:
                 continue
             attempted_candidates.add(twin.name)
             self.last_join_attempt[twin.name] = self.env.now
+            reason = "health_departure" if replacing_health_departure else "rescue_capacity"
             if twin.unit.role == "reserve":
                 self.backup_requests += 1
                 self.events.append(
@@ -268,7 +343,18 @@ class SoSCoordinator:
                         "time": self.env.now,
                         "event": "backup_requested",
                         "unit": twin.name,
-                        "reason": "rescue_capacity",
+                        "reason": reason,
+                        "replaced_unit": departed_name,
+                        "replaced_role": (
+                            replacement_request["role_at_departure"]
+                            if replacement_request is not None
+                            else None
+                        ),
+                        "departure_time": (
+                            replacement_request["departure_time"]
+                            if replacement_request is not None
+                            else None
+                        ),
                         "effective_rescue_boat_capacity": round(attached_capacity, 4),
                         "required_rescue_boat_capacity": required,
                     }
@@ -278,48 +364,117 @@ class SoSCoordinator:
                 "time": self.env.now,
                 "unit": twin.name,
                 "profile": twin.profile,
-                "reason": "rescue_capacity",
+                "reason": reason,
+                "replaced_unit": departed_name,
+                "replacement_role": (
+                    replacement_request["role_at_departure"]
+                    if replacement_request is not None
+                    else None
+                ),
             }
             self.events.append({"event": "sos_join_request", **join_request})
             policy = PROFILE_MEMBERSHIP_POLICY[twin.profile]
-            if self.random.random() >= policy["join_acceptance"]:
+            if (
+                not replacing_health_departure
+                and self.random.random() >= policy["join_acceptance"]
+            ):
                 self.join_request_counts["profile_denied"] += 1
                 self.events.append({"event": "sos_join_denied_by_profile", **join_request})
                 continue
 
             previous_role = twin.unit.role
-            twin.unit.set_role("rescue")
+            replacement_role = "rescue"
+            if replacing_health_departure:
+                replacement_role = replacement_request["role_at_departure"]
+            twin.unit.set_role(replacement_role)
+            # Apply the activated role's profile before entering the generated
+            # belonging machine so admission uses the intended resilience.
+            self.update_profiles_for(twin)
             self.join_request_counts["submitted_to_bm"] += 1
             joined = twin.join_sos(join_constellation=True)
             if not joined:
                 twin.unit.set_role(previous_role)
+                self.update_profiles_for(twin)
+                twin.request_disengaged("backup_activation_rejected")
                 self.join_request_counts["machine_rejected"] += 1
                 self.events.append({"event": "sos_join_rejected_by_machine", **join_request})
                 continue
             self.join_request_counts["completed"] += 1
-            self.update_profiles_for(twin)
-            self.assignments[twin.name] = "rescue"
+            self.assignments[twin.name] = replacement_role
+            operational_activation = (
+                twin.is_in_constellation
+                and twin.can_operate
+                and twin.connected
+                and twin.unit.role == replacement_role
+                and self._task_success_probability(twin) > 0.0
+            )
+            if not operational_activation:
+                self.events.append(
+                    {
+                        "time": self.env.now,
+                        "event": "health_replacement_activation_unusable"
+                        if replacing_health_departure
+                        else "backup_activation_unusable",
+                        "unit": twin.name,
+                        "role": twin.unit.role,
+                        "required_role": replacement_role,
+                        "belonging": twin.belonging_state(),
+                        "health": twin.health_state(),
+                        "operational": twin.unit.operational,
+                        "connected": twin.connected,
+                        "replaced_unit": departed_name,
+                    }
+                )
+                if twin.is_in_constellation:
+                    self.backup_unit_names.add(twin.name)
+                    self.backup_return_pending.add(twin.name)
+                    twin.leave_constellation("replacement_activation_unusable")
+                else:
+                    twin.unit.set_role(previous_role)
+                    self.update_profiles_for(twin)
+                    twin.request_disengaged("replacement_activation_unusable")
+                continue
+
             self.events.append(
                 {
                     "time": self.env.now,
-                    "event": "boat_activated_for_rescue",
+                    "event": "backup_activated_for_role",
                     "unit": twin.name,
+                    "role": replacement_role,
+                    "reason": reason,
                     "previous_role": previous_role,
+                    "replaced_unit": departed_name,
+                    "departure_time": (
+                        replacement_request["departure_time"]
+                        if replacement_request is not None
+                        else None
+                    ),
                 }
             )
-            if twin.can_operate and twin.connected and self._task_success_probability(twin) > 0.0:
+            if replacement_role == "rescue":
                 attached_rescue.append(twin)
                 attached_capacity += self._task_success_probability(twin)
-                if previous_role == "reserve":
-                    self.backup_activations += 1
-                    self.events.append(
-                        {
-                            "time": self.env.now,
-                            "event": "backup_activated",
-                            "unit": twin.name,
-                            "role": "rescue",
-                        }
-                    )
+                active_rescue_slots += 1
+            if previous_role == "reserve":
+                self.backup_unit_names.add(twin.name)
+                self.recovered_standby_roles.pop(twin.name, None)
+                self.backup_activations += 1
+                if replacing_health_departure:
+                    self.pending_health_replacements.remove(replacement_request)
+                    replacements_remaining -= 1
+                    self.health_lifecycle_counts["replacement_activations"] += 1
+                    self.backup_shortfall_logged.discard(departed_name)
+                self.events.append(
+                    {
+                        "time": self.env.now,
+                        "event": "backup_activated",
+                        "unit": twin.name,
+                        "role": replacement_role,
+                        "reason": reason,
+                        "replaced_unit": departed_name,
+                    }
+                )
+
 
         if attached_capacity + 1e-9 < required:
             self.events.append(
@@ -334,19 +489,24 @@ class SoSCoordinator:
             )
 
         # Release spare capacity to its configured monitoring/reserve role.
-        kept_capacity = 0.0
+        kept_rescue_slots = 0
         for twin in sorted(
             attached_rescue,
             key=lambda item: (-self._task_success_probability(item), item.name),
         ):
-            if kept_capacity + 1e-9 < target_capacity:
-                kept_capacity += self._task_success_probability(twin)
+            if kept_rescue_slots < target_rescue_slots:
+                kept_rescue_slots += 1
                 continue
             original_role = twin.unit.config["role"]
-            if original_role in {"monitoring", "reserve"}:
+            if twin.name in self.backup_unit_names:
+                twin.leave_constellation("backup_surplus")
+                self.backup_return_pending.add(twin.name)
+            elif original_role == "monitoring":
                 twin.unit.set_role(original_role)
                 self.assignments[twin.name] = original_role
                 self.update_profiles_for(twin)
+
+        self.process_backup_returns()
 
     def update_profiles_for(self, twin):
         target = self.profile_for(twin)
@@ -435,23 +595,71 @@ class SoSCoordinator:
                     before = entry.get("from", {})
                     after = entry.get("to", {})
                     cause = str(entry.get("cause", ""))
-                    health_event = cause.startswith(("health:", "environmental_fault:")) or (
-                        cause.startswith("profile_reconfiguration:")
-                        and before.get("health") in HEALTH_IMPAIRED_STATES
+                    announced = bool(entry.get("announced", False))
+                    belonging_changed = before.get("belonging") != after.get("belonging")
+                    if announced and belonging_changed:
+                        self.events.append(
+                            {
+                                "time": entry.get("time", self.env.now),
+                                "event": "sos_membership_notification",
+                                "unit": name,
+                                "from_belonging": before.get("belonging"),
+                                "to_belonging": after.get("belonging"),
+                                "health": after.get("health"),
+                                "cause": cause,
+                            }
+                        )
+                    # Some generated health responses defer the actual
+                    # membership departure (Adaptive PendingExit). Preserve
+                    # that generated cause until its announced Active exit.
+                    health_event = (
+                        cause.startswith(("health:", "environmental_fault:"))
+                        and before.get("health") != after.get("health")
                     )
-                    if health_event and before.get("belonging") == "Active":
-                        self.pending_health_departures.add(name)
+                    pending_health_exit = self.pending_health_exits.get(name)
                     left_active_membership = (
                         before.get("belonging") == "Active"
                         and after.get("belonging") != "Active"
                     )
-                    if left_active_membership:
-                        if name in self.pending_health_departures or health_event:
+                    if left_active_membership and announced:
+                        if health_event or pending_health_exit is not None:
+                            self.pending_health_exits.pop(name, None)
                             health = after.get("health", "Unknown")
-                            self.pending_health_departures.discard(name)
-                            if name not in self.health_rejoin_eligible:
-                                self.health_rejoin_counts["eligible_departures"] += 1
-                            self.health_rejoin_eligible.add(name)
+                            if name not in self.health_return_eligible:
+                                self.health_lifecycle_counts["eligible_departures"] += 1
+                            self.health_return_eligible.add(name)
+                            if twin.unit.asset_type == "boat" and twin.unit.role in {"rescue", "monitoring"}:
+                                if not any(
+                                    request["departed_unit"] == name
+                                    for request in self.pending_health_replacements
+                                ):
+                                    replacement_request = {
+                                        "departed_unit": name,
+                                        "role_at_departure": twin.unit.role,
+                                        "departure_time": entry.get("time", self.env.now),
+                                        "health_at_departure": health,
+                                        "shortfall_recorded": False,
+                                    }
+                                    self.pending_health_replacements.append(replacement_request)
+                                    self.health_lifecycle_counts["replacement_requests"] += 1
+                                    self.events.append(
+                                        {
+                                            "time": entry.get("time", self.env.now),
+                                            "event": "health_replacement_requested",
+                                            **replacement_request,
+                                        }
+                                    )
+                            else:
+                                self.events.append(
+                                    {
+                                        "time": entry.get("time", self.env.now),
+                                        "event": "health_replacement_unavailable",
+                                        "departed_unit": name,
+                                        "reason": "no_matching_reserve_pool",
+                                        "asset_type": twin.unit.asset_type,
+                                        "role": twin.unit.role,
+                                    }
+                                )
                             self.events.append(
                                 {
                                     "time": entry.get("time", self.env.now),
@@ -459,10 +667,28 @@ class SoSCoordinator:
                                     "unit": name,
                                     "health": health,
                                     "profile": twin.profile,
+                                    "role_at_departure": twin.unit.role,
                                     "from_belonging": before.get("belonging"),
                                     "to_belonging": after.get("belonging"),
                                 }
                             )
+                elif entry.get("event") == "health_exit_pending":
+                    self.pending_health_exits[name] = {
+                        "time": entry.get("time", self.env.now),
+                        "health": entry.get("health", twin.health_state()),
+                        "profile": entry.get("profile", twin.profile),
+                        "cause": entry.get("cause", ""),
+                    }
+                    self.events.append({"unit": name, **entry})
+                elif entry.get("event") == "health_exit_cancelled":
+                    pending = self.pending_health_exits.pop(name, None)
+                    self.events.append(
+                        {
+                            "unit": name,
+                            **entry,
+                            "pending_exit_was_tracked": pending is not None,
+                        }
+                    )
                 elif entry.get("event") == "task_attempt_result":
                     self._record_task_outcome(entry.get("result") or {})
                     self.events.append(
@@ -481,14 +707,40 @@ class SoSCoordinator:
                     self.events.append({"unit": name, **entry})
                 elif entry.get("event") == "repair_requested":
                     self.events.append({"unit": name, **entry})
-                elif entry.get("event") == "repair_completed" and name in self.health_rejoin_eligible:
-                    if name not in self.health_rejoin_ready:
-                        self.health_rejoin_counts["repairs_ready"] += 1
-                    self.health_rejoin_ready.add(name)
+                elif entry.get("event") == "repair_completed" and name in self.health_return_eligible:
+                    if name not in self.health_return_ready:
+                        self.health_lifecycle_counts["repairs_ready"] += 1
+                    self.health_return_ready.add(name)
+                    unresolved = [
+                        request
+                        for request in self.pending_health_replacements
+                        if request["departed_unit"] == name
+                    ]
+                    for request in unresolved:
+                        self.pending_health_replacements.remove(request)
+                        if not request["shortfall_recorded"]:
+                            self.health_lifecycle_counts["replacement_shortfalls"] += 1
+                        self.events.append(
+                            {
+                                "time": entry.get("time", self.env.now),
+                                "event": "health_replacement_shortfall_repair_completed",
+                                "departed_unit": name,
+                                "departed_role": request["role_at_departure"],
+                                "departure_time": request["departure_time"],
+                                "repair_completed_at": entry.get("time", self.env.now),
+                                "unreplaced_duration": max(
+                                    0.0,
+                                    entry.get("time", self.env.now) - request["departure_time"],
+                                ),
+                            }
+                        )
+                        self.backup_shortfall_logged.discard(name)
             if name in self.pending_departures and not twin.is_in_constellation:
                 # Some generated machines complete their exit in a later timer cycle.
                 self.pending_departures.remove(name)
                 self.sos_request_counts["completed"] += 1
+                if name in self.backup_unit_names:
+                    self.backup_return_pending.add(name)
                 self.events.append(
                     {
                         "time": self.env.now,
@@ -499,58 +751,140 @@ class SoSCoordinator:
                     }
                 )
 
-    def process_health_rejoins(self):
-        """Re-admit repaired health-withdrawn twins through their generated bm."""
-        if SIMULATION["profile_strategy"] not in {"high_only", "mixed"}:
-            return
-        for name in list(self.health_rejoin_ready):
+    def process_backup_returns(self):
+        """Move a no-longer-needed or repaired unit to generated Disengaged backup status."""
+        names = self.backup_return_pending | self.health_return_ready
+        for name in list(names):
             twin = self.twins[name]
+            if name in self.health_return_ready and (
+                twin.health_state() != "Ideal" or not twin.unit.operational
+            ):
+                continue
             if twin.is_in_constellation:
-                self.health_rejoin_ready.discard(name)
-                self.health_rejoin_eligible.discard(name)
-                self.health_rejoin_counts["completed"] += 1
+                continue
+
+            last_attempt = self.last_health_return_attempt.get(name, -math.inf)
+            retry_interval = SIMULATION["health_return_retry_interval"]
+            if self.env.now - last_attempt < retry_interval:
+                continue
+            self.last_health_return_attempt[name] = self.env.now
+            self.health_lifecycle_counts["return_requests"] += 1
+            if twin.belonging_state() == "Disengaged":
+                disengaged = True
+            else:
+                disengaged = twin.request_disengaged("health_repair_return")
+            if disengaged:
+                prior_role = twin.unit.config.get("role", twin.unit.role)
+                twin.unit.set_role("reserve")
+                if twin.unit.asset_type == "boat":
+                    self.backup_unit_names.add(name)
+                self.recovered_standby_roles[name] = prior_role
+                self.update_profiles_for(twin)
+                self.backup_return_pending.discard(name)
+                self.health_return_ready.discard(name)
+                self.health_return_eligible.discard(name)
+                self.health_lifecycle_counts["returned_to_disengaged"] += 1
                 self.events.append(
                     {
                         "time": self.env.now,
-                        "event": "health_rejoin_completed",
+                        "event": "health_repaired_unit_returned_to_backup",
                         "unit": name,
                         "profile": twin.profile,
-                        "path": "generated_recovery",
+                        "health": twin.health_state(),
+                        "belonging": twin.belonging_state(),
                     }
                 )
-                continue
-            if twin.health_state() != "Ideal" or not twin.unit.operational:
-                continue
-
-            last_attempt = self.last_health_rejoin_attempt.get(name, -math.inf)
-            retry_interval = SIMULATION["health_rejoin_retry_interval"]
-            if self.env.now - last_attempt < retry_interval:
-                continue
-            self.last_health_rejoin_attempt[name] = self.env.now
-            request = {
-                "time": self.env.now,
-                "unit": name,
-                "profile": twin.profile,
-                "reason": "health_recovery",
-            }
-            self.health_rejoin_counts["generated"] += 1
-            self.events.append({"event": "health_rejoin_request", **request})
-            policy = PROFILE_MEMBERSHIP_POLICY[twin.profile]
-            if self.random.random() >= policy["join_acceptance"]:
-                self.health_rejoin_counts["profile_denied"] += 1
-                self.events.append({"event": "health_rejoin_denied_by_profile", **request})
-                continue
-
-            self.health_rejoin_counts["submitted_to_bm"] += 1
-            joined = twin.join_sos(join_constellation=True)
-            if joined:
-                self.health_rejoin_counts["completed"] += 1
-                self.health_rejoin_ready.discard(name)
-                self.health_rejoin_eligible.discard(name)
-                self.events.append({"event": "health_rejoin_completed", **request, "path": "bm_request"})
             else:
-                self.health_rejoin_counts["machine_rejected"] += 1
-                self.events.append({"event": "health_rejoin_rejected_by_machine", **request})
+                self.health_lifecycle_counts["return_retries"] += 1
+                self.health_lifecycle_counts["return_delayed"] += 1
+                self.events.append(
+                    {
+                        "time": self.env.now,
+                        "event": "health_repaired_unit_return_delayed",
+                        "unit": name,
+                        "health": twin.health_state(),
+                        "belonging": twin.belonging_state(),
+                    }
+                )
+
+    def _recovered_unit_is_needed(self, twin, prior_role):
+        if twin.unit.asset_type == "drone":
+            return not any(
+                other is not twin
+                and other.unit.asset_type == "drone"
+                and other.can_operate
+                and other.connected
+                for other in self.twins.values()
+            )
+        if twin.unit.asset_type == "pump":
+            return self.flood.water_level > SIMULATION["initial_water_level"]
+        if twin.unit.asset_type == "boat" and prior_role == "monitoring":
+            return not any(
+                other is not twin
+                and other.unit.asset_type == "boat"
+                and other.unit.role == "monitoring"
+                and other.can_operate
+                and other.connected
+                for other in self.twins.values()
+            )
+        # Recovered rescue boats are activated by ensure_rescue_capacity when
+        # their expected capacity is needed.
+        return False
+
+    def activate_recovered_units_if_needed(self):
+        """Reactivate repaired non-rescue DTs only when their service is needed."""
+        for name, prior_role in list(self.recovered_standby_roles.items()):
+            twin = self.twins[name]
+            if (
+                twin.belonging_state() != "Disengaged"
+                or twin.health_state() != "Ideal"
+                or not twin.unit.operational
+                or not self._recovered_unit_is_needed(twin, prior_role)
+            ):
+                continue
+            last_attempt = self.last_standby_activation_attempt.get(name, -math.inf)
+            if self.env.now - last_attempt < SIMULATION["health_return_retry_interval"]:
+                continue
+            self.last_standby_activation_attempt[name] = self.env.now
+            original_current_role = twin.unit.role
+            if twin.unit.asset_type == "boat" and prior_role == "monitoring":
+                twin.unit.set_role("monitoring")
+                self.update_profiles_for(twin)
+            self.join_request_counts["generated"] += 1
+            self.events.append(
+                {
+                    "time": self.env.now,
+                    "event": "recovered_dt_activation_requested",
+                    "unit": name,
+                    "role": prior_role,
+                    "reason": "service_needed",
+                }
+            )
+            self.join_request_counts["submitted_to_bm"] += 1
+            if twin.join_sos(join_constellation=True):
+                self.join_request_counts["completed"] += 1
+                self.recovered_standby_roles.pop(name, None)
+                self.backup_unit_names.discard(name)
+                self.events.append(
+                    {
+                        "time": self.env.now,
+                        "event": "recovered_dt_activated_for_service",
+                        "unit": name,
+                        "role": twin.unit.role,
+                    }
+                )
+            else:
+                twin.unit.set_role(original_current_role)
+                twin.request_disengaged("standby_activation_rejected")
+                self.join_request_counts["machine_rejected"] += 1
+                self.events.append(
+                    {
+                        "time": self.env.now,
+                        "event": "recovered_dt_activation_rejected",
+                        "unit": name,
+                        "role": prior_role,
+                    }
+                )
 
     def dispatch_tasks(self):
         for twin in self.twins.values():
@@ -558,7 +892,12 @@ class SoSCoordinator:
             # Active but degraded/faulty DTs still receive their assigned task:
             # the physical twin reports the failed outcome, preserving the
             # mission impact rather than silently omitting the DT.
-            if not twin.is_in_constellation or not twin.connected or twin.role_restricted:
+            if (
+                not twin.is_in_constellation
+                or not twin.connected
+                or twin.role_restricted
+                or twin.health_exit_pending
+            ):
                 continue
             asset_type = twin.unit.asset_type
             role = twin.unit.role
@@ -605,11 +944,20 @@ class SoSCoordinator:
             self.pumping_station_health_communication_unavailable_time += SIMULATION["step"]
         for twin in self.twins.values():
             if (
-                twin.unit.config.get("role") == "reserve"
+                twin.name in self.backup_unit_names
                 and twin.unit.role == "rescue"
                 and twin.is_in_constellation
             ):
                 self.backup_rescue_time += SIMULATION["step"]
+            if (
+                twin.name in self.backup_unit_names
+                and twin.unit.role == "reserve"
+                and twin.belonging_state() == "Disengaged"
+                and twin.health_state() == "Ideal"
+                and twin.unit.operational
+                and twin.connected
+            ):
+                self.backup_standby_time += SIMULATION["step"]
 
     def _record_processing_work(self):
         for twin in self.twins.values():
@@ -619,12 +967,16 @@ class SoSCoordinator:
 
     def run(self):
         while True:
+            # Consume generated-machine announcements before making capacity,
+            # repair, or replacement decisions for this simulation step.
+            self.observe_state_changes()
             self.update_profiles()
             self.ensure_rescue_capacity()
             self.process_voluntary_departures()
             self.dispatch_tasks()
             self.observe_state_changes()
-            self.process_health_rejoins()
+            self.process_backup_returns()
+            self.activate_recovered_units_if_needed()
             self.observe_state_changes()
             self._record_processing_work()
             self._record_resource_time()
@@ -647,10 +999,11 @@ class SoSCoordinator:
             "backup_activations": self.backup_activations,
             "backup_requests": self.backup_requests,
             "backup_rescue_time": self.backup_rescue_time,
+            "backup_standby_time": self.backup_standby_time,
             "processing_work": self.processing_work,
             "sos_request_counts": dict(self.sos_request_counts),
             "join_request_counts": dict(self.join_request_counts),
-            "health_rejoin_counts": dict(self.health_rejoin_counts),
+            "health_lifecycle_counts": dict(self.health_lifecycle_counts),
             "task_outcome_counts": dict(self.task_outcome_counts),
             "repair_time": sum(twin.repair_time for twin in self.twins.values()),
             "repair_requests": sum(twin.repair_requests for twin in self.twins.values()),

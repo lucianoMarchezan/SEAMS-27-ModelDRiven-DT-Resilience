@@ -856,6 +856,7 @@ class Adaptive:
 			self.__enter_sequence_belonging_active_active_region_participating__region0_restricted_role_default()
 		elif (self.__state_vector[0] == self.State.health_degraded) or (self.__state_vector[0] == self.State.health_faulty):
 			self.__exit_sequence_belonging_active_active_region_participating()
+			self.bm.operation_callback.announce()
 			self.__enter_sequence_belonging_active_active_region_pending_exit_default()
 			self.__belonging_active_react(1)
 		else:
@@ -1041,6 +1042,7 @@ class Adaptive:
 		if transitioned_after < 1:
 			if self.hm.health_failed:
 				self.__exit_sequence_belonging_active()
+				self.bm.operation_callback.announce()
 				self.__enter_sequence_belonging_prepared_default()
 				transitioned_after = 1
 		#If no transition was taken
@@ -1083,6 +1085,7 @@ class Adaptive:
 		if transitioned_after < 1:
 			if self.hm.health_degraded:
 				self.__exit_sequence_belonging_active_active_region_participating()
+				self.bm.operation_callback.announce()
 				self.__enter_sequence_belonging_active_active_region_pending_exit_default()
 				self.__belonging_active_react(1)
 				transitioned_after = 1
@@ -1130,6 +1133,7 @@ class Adaptive:
 				transitioned_after = 1
 			elif self.bm.uncertainty_exceeded:
 				self.__exit_sequence_belonging_active_active_region_participating()
+				self.bm.operation_callback.announce()
 				self.__enter_sequence_belonging_active_active_region_pending_exit_default()
 				self.__belonging_active_react(1)
 				transitioned_after = 1
@@ -1148,6 +1152,7 @@ class Adaptive:
 		if transitioned_after < 1:
 			if self.__time_events[1]:
 				self.__exit_sequence_belonging_active()
+				self.bm.operation_callback.announce()
 				self.__time_events[1] = False
 				self.__enter_sequence_belonging_passive_default()
 				transitioned_after = 1
@@ -1193,6 +1198,7 @@ class Adaptive:
 				transitioned_after = 1
 			elif self.hm.health_failed:
 				self.__exit_sequence_belonging_passive()
+				self.bm.operation_callback.announce()
 				self.__enter_sequence_belonging_prepared_default()
 				transitioned_after = 1
 		#If no transition was taken

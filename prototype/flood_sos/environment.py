@@ -1,5 +1,3 @@
-import math
-
 from config import SIMULATION
 
 
@@ -18,9 +16,10 @@ class FloodEnvironment:
         self.history = []
         self._next_victim_id = 1
         self._spawn_victims(SIMULATION["initial_victims"])
-        self._last_generation_level = math.floor(
-            self.max_water_level / SIMULATION["victim_generation_level_interval"]
+        self._victim_arrival_waves = sorted(
+            SIMULATION.get("victim_arrival_waves", []), key=lambda wave: wave["time"]
         )
+        self._next_victim_wave = 0
 
     @property
     def victims_waiting(self):
@@ -53,13 +52,13 @@ class FloodEnvironment:
             self.max_water_level = max(self.max_water_level, self.water_level)
             self.flooded_area = max(1.0, self.water_level * 2.5)
 
-            generation_level = math.floor(
-                self.max_water_level / SIMULATION["victim_generation_level_interval"]
-            )
-            new_levels = generation_level - self._last_generation_level
-            if new_levels > 0:
-                self._spawn_victims(new_levels * SIMULATION["victims_per_flood_level"])
-                self._last_generation_level = generation_level
+            while (
+                self._next_victim_wave < len(self._victim_arrival_waves)
+                and self._victim_arrival_waves[self._next_victim_wave]["time"] <= self.env.now
+            ):
+                wave = self._victim_arrival_waves[self._next_victim_wave]
+                self._spawn_victims(wave["count"])
+                self._next_victim_wave += 1
 
             self.expire_victims()
             self.history.append(

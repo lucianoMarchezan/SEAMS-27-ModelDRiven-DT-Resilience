@@ -75,6 +75,8 @@ class DigitalTwin:
         self.repair_requests = 0
         self.repair_request_pending = False
         self.last_join_result = False
+        self._unmatched_belonging_announcements = 0
+        self._health_exit_pending = False
         self._configure_machine(self.machine)
         self.machine.enter()
         if joined_at_start:
@@ -93,11 +95,73 @@ class DigitalTwin:
     def _state_snapshot(self):
         return {"health": self.health_state(), "belonging": self.belonging_state()}
 
-    def _record_transition(self, cause, before):
+    def _adaptive_exit_is_pending(self):
+        """Return whether Adaptive's generated belonging region is deferring exit."""
+        if self.profile != "Adaptive":
+            return False
+        return self.state_active("belonging_active_active_region_pending_exit")
+
+    def _track_adaptive_health_exit(self, cause, before, after, announced):
+        pending_now = self._adaptive_exit_is_pending()
+        health_trigger = cause.startswith(("health:", "environmental_fault:"))
+
+        if (
+            not self._health_exit_pending
+            and pending_now
+            and health_trigger
+            and before.get("belonging") == "Active"
+            and after.get("belonging") == "Active"
+            and announced
+        ):
+            self._health_exit_pending = True
+            self.log.append(
+                {
+                    "time": self._time(),
+                    "event": "health_exit_pending",
+                    "unit": self.name,
+                    "profile": self.profile,
+                    "health": after.get("health"),
+                    "belonging": after.get("belonging"),
+                    "cause": cause,
+                }
+            )
+        elif self._health_exit_pending and not pending_now:
+            self._health_exit_pending = False
+            # PendingExit -> Participating means the generated machine
+            # cancelled the deferred exit. A completed Active departure is
+            # consumed by the coordinator instead.
+            if before.get("belonging") == "Active" and after.get("belonging") == "Active":
+                self.log.append(
+                    {
+                        "time": self._time(),
+                        "event": "health_exit_cancelled",
+                        "unit": self.name,
+                        "profile": self.profile,
+                        "health": after.get("health"),
+                        "belonging": after.get("belonging"),
+                        "cause": cause,
+                    }
+                )
+
+    def _record_transition(self, cause, before, announced=None):
         after = self._state_snapshot()
         if after != before:
-            self.log.append({"time": self._time(), "event": "state_transition", "cause": cause, "from": before, "to": after})
+            if announced is None:
+                announced = self._unmatched_belonging_announcements > 0
+                if announced:
+                    self._unmatched_belonging_announcements -= 1
+            self.log.append(
+                {
+                    "time": self._time(),
+                    "event": "state_transition",
+                    "cause": cause,
+                    "from": before,
+                    "to": after,
+                    "announced": announced,
+                }
+            )
         self._observed_state = after
+        self._track_adaptive_health_exit(cause, before, after, bool(announced))
 
     @property
     def health_communication_available(self):
@@ -131,9 +195,15 @@ class DigitalTwin:
             method = getattr(region, event_name, None)
             if callable(method):
                 before = self._state_snapshot() if hasattr(self, "machine") else {}
+                announcements_before = self._unmatched_belonging_announcements
                 method()
+                announced = self._unmatched_belonging_announcements > announcements_before
+                # Associate callbacks raised synchronously by this generated
+                # event with this state snapshot; do not let them mark a later
+                # unrelated state change as an announcement.
+                self._unmatched_belonging_announcements = announcements_before
                 if cause:
-                    self._record_transition(cause, before)
+                    self._record_transition(cause, before, announced=announced)
                 return True
         return False
 
@@ -173,8 +243,27 @@ class DigitalTwin:
         )
 
     @property
+    def health_exit_pending(self):
+        return self._health_exit_pending
+
+    @property
     def can_operate(self):
-        return self.unit.operational and self.is_in_constellation and not self.role_restricted
+        return (
+            self.unit.operational
+            and self.is_in_constellation
+            and not self.role_restricted
+            and not self.health_exit_pending
+        )
+
+    def _request_adaptive_health_exit(self):
+        """Resolve Adaptive's generated RestrictedRole state through its BM API."""
+        if self.profile != "Adaptive" or not self.is_in_constellation or not self.role_restricted:
+            return False
+        return self._raise_first_available(
+            self.machine.bm,
+            ["raise_uncertainty_exceeded"],
+            "health:adaptive_role_restricted",
+        )
 
     def _join_constellation_events(self):
         if self.belonging_state() == "Disengaged":
@@ -203,12 +292,32 @@ class DigitalTwin:
         self.log.append({"time": self._time(), "event": "joined", "constellation": self.last_join_result})
         return self.last_join_result
 
+    def request_disengaged(self, reason="return_to_backup"):
+        """Request a generated belonging path back to Disengaged.
+
+        Active membership is left to health-driven generated transitions. Once
+        the twin is no longer Active, these requests only advance the generated
+        belonging machine one step at a time: Passive -> Prepared -> Disengaged.
+        """
+        state = self.belonging_state()
+        if state == "Passive":
+            self._raise_first_available(
+                self.machine.bm, ["raise_leave_so_s"], reason + ":leave_sos"
+            )
+        elif state == "Prepared":
+            self._raise_first_available(
+                self.machine.bm, ["raise_disengage_from_so_s"], reason + ":disengage"
+            )
+        elif state == "Active":
+            return False
+        return self.belonging_state() == "Disengaged"
+
     def leave_constellation(self, reason):
         if not self.is_in_constellation:
             return False
-        before = self._state_snapshot()
-        raised = self._raise_first_available(self.machine.bm, ["raise_leave_constellation"])
-        self._record_transition(reason, before)
+        raised = self._raise_first_available(
+            self.machine.bm, ["raise_leave_constellation"], reason
+        )
         self.log.append({"time": self._time(), "event": "departure_requested", "reason": reason, "accepted": raised})
         return raised
 
@@ -240,6 +349,7 @@ class DigitalTwin:
                     "cause": f"profile_reconfiguration:{old_profile}->{profile}",
                     "from": previous_state,
                     "to": restored_state,
+                    "announced": False,
                 }
             )
         self._observed_state = restored_state
@@ -287,6 +397,12 @@ class DigitalTwin:
             self.repair_started_at = None
             self.repair_last_accounted_at = None
             self.repair_request_pending = False
+            return
+        # Reactive is the announcement-only profile: health events change HM,
+        # but do not initiate repair or cause a belonging transition.
+        if self.profile == "Reactive":
+            self.repair_started_at = None
+            self.repair_last_accounted_at = None
             return
         if self.unit.asset_type == "pump" and self.belonging_state() == "Passive":
             requested = self._raise_first_available(
@@ -342,10 +458,17 @@ class DigitalTwin:
 
     def update_physical_state(self, now):
         reading = self.unit.update(now)
-        if self.is_in_constellation and self.unit.record_flood_exposure(self.unit.environment.water_level):
+        if self.is_in_constellation and self.unit.role != "reserve" and self.unit.record_flood_exposure(
+            self.unit.environment.water_level
+        ):
             self.advance_health_one_step()
         if not self.unit.operational and self.health_state() != "Failed":
             self.advance_health_to("Failed")
+        # Adaptive's generated chart explicitly waits for uncertainty_exceeded
+        # in RestrictedRole before beginning its announced deferred exit.
+        # Raise that generated BM event once the chart reports the restricted
+        # state; do not assign belonging state in the simulator.
+        self._request_adaptive_health_exit()
         self._update_repair(now)
         self.sync_state_changes()
         return reading
@@ -357,7 +480,6 @@ class DigitalTwin:
             "role": self.unit.role,
             "reading": reading,
             "health": self.health_state(),
-            "belonging": self.belonging_state(),
             "profile": self.profile,
             "connected": self.connected,
             "operational": self.unit.operational,
@@ -434,5 +556,8 @@ class DigitalTwin:
         self.publish_telemetry(self.last_telemetry.get("reading", {}), self._time())
 
     def announce(self):
-        # Generated machines invoke this callback during belonging transitions.
+        # Generated machines invoke this callback to notify the SoS of a
+        # belonging transition. The machine's API wrapper records the resulting
+        # state snapshot after the generated reaction cycle completes.
+        self._unmatched_belonging_announcements += 1
         self.log.append({"time": self._time(), "event": "state_machine_announce"})

@@ -25,6 +25,7 @@ def derive_activity_quantities(broker_log, coordinator_metrics, duration):
         "data_servitization": float(coordinator_metrics.get("dt_time", 0.0)),
         "data_maintenance": float(coordinator_metrics.get("repair_time", 0.0)),
         "backup_deployment": float(coordinator_metrics.get("backup_rescue_time", 0.0)),
+        "backup_standby": float(coordinator_metrics.get("backup_standby_time", 0.0)),
     }
 
 

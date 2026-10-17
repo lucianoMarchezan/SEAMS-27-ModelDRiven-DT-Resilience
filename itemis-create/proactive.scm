@@ -1053,8 +1053,8 @@
         "y": 379
       },
       "size": {
-        "width": 242,
-        "height": 380
+        "height": 380,
+        "width": 242
       },
       "type": "State",
       "attrs": {
@@ -1359,7 +1359,7 @@
         {
           "attrs": {
             "text": {
-              "text": "after 3s"
+              "text": "after 3s\n/ bm.announce"
             }
           },
           "position": {
@@ -1813,7 +1813,7 @@
         {
           "attrs": {
             "text": {
-              "text": "hm.health_failed"
+              "text": "hm.health_failed\n/ bm.announce"
             }
           },
           "position": {
@@ -1874,7 +1874,7 @@
         {
           "attrs": {
             "text": {
-              "text": "hm.health_failed"
+              "text": "hm.health_failed\n/ bm.announce"
             }
           },
           "position": {

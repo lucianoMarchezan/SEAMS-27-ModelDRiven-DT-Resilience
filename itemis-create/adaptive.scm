@@ -1054,8 +1054,8 @@
         "y": 395
       },
       "size": {
-        "width": 513,
-        "height": 550
+        "height": 550,
+        "width": 513
       },
       "type": "State",
       "attrs": {
@@ -1311,7 +1311,7 @@
         {
           "attrs": {
             "text": {
-              "text": "bm.uncertainty_exceeded"
+              "text": "bm.uncertainty_exceeded\n/bm.announce"
             }
           },
           "position": {}
@@ -1418,7 +1418,7 @@
         {
           "attrs": {
             "text": {
-              "text": "hm.health_degraded"
+              "text": "hm.health_degraded\n/ bm.announce"
             }
           },
           "position": {
@@ -1589,8 +1589,8 @@
         "y": 588
       },
       "size": {
-        "width": 270,
-        "height": 239
+        "height": 239,
+        "width": 270
       },
       "type": "State",
       "attrs": {
@@ -2173,7 +2173,7 @@
         {
           "attrs": {
             "text": {
-              "text": "hm.health_failed"
+              "text": "hm.health_failed\n/bm.announce"
             }
           },
           "position": {
@@ -2777,7 +2777,7 @@
         {
           "attrs": {
             "text": {
-              "text": "after 3s"
+              "text": "after 3s\n/bm.announce"
             }
           },
           "position": {}
@@ -2885,7 +2885,7 @@
         {
           "attrs": {
             "text": {
-              "text": "hm.health_failed"
+              "text": "hm.health_failed\n/bm.announce"
             }
           },
           "position": {
@@ -3002,7 +3002,7 @@
         {
           "attrs": {
             "text": {
-              "text": "[active(Health.Degraded) \n|| active(Health.Faulty)]"
+              "text": "[active(Health.Degraded) \n|| active(Health.Faulty)]\n/ bm.announce"
             }
           },
           "position": {

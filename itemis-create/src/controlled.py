@@ -882,6 +882,7 @@ class Controlled:
 		if transitioned_after < 1:
 			if self.hm.health_failed:
 				self.__exit_sequence_belonging_active()
+				self.bm.operation_callback.announce()
 				self.__enter_sequence_belonging_prepared_default()
 				transitioned_after = 1
 		#If no transition was taken
@@ -943,6 +944,7 @@ class Controlled:
 		if transitioned_after < 1:
 			if self.__time_events[1]:
 				self.__exit_sequence_belonging_active()
+				self.bm.operation_callback.announce()
 				self.__time_events[1] = False
 				self.__enter_sequence_belonging_passive_default()
 				transitioned_after = 1
@@ -988,6 +990,7 @@ class Controlled:
 				transitioned_after = 1
 			elif self.hm.health_failed:
 				self.__exit_sequence_belonging_passive()
+				self.bm.operation_callback.announce()
 				self.__enter_sequence_belonging_prepared_default()
 				transitioned_after = 1
 		#If no transition was taken

@@ -2,6 +2,20 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Generate Reactive Statechart",
+            "type": "codegenerator",
+            "generator": {
+                "statechart": "itemis-create\\reactive.scm",
+                "features": {
+                    "Outlet": {
+                        "targetProject": ".",
+                        "targetFolder": "itemis-create\\src"
+                    }
+                },
+                "type": "create::python"
+            }
+        },
+         {
             "label": "Generate Proactive Statechart",
             "type": "codegenerator",
             "generator": {
@@ -17,10 +31,10 @@
             "group": "build"
         },
         {
-            "label": "Generate Reactive Statechart",
+            "label": "Generate Controlled Statechart",
             "type": "codegenerator",
             "generator": {
-                "statechart": "itemis-create\\reactive.scm",
+                "statechart": "itemis-create\\controlled.scm",
                 "features": {
                     "Outlet": {
                         "targetProject": ".",

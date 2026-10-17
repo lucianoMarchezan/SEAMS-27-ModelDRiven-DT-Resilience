@@ -48,7 +48,11 @@ def run_simulation(strategy, profile_configuration, seed, rescue_sensitivity="bo
             broker,
             create_machine("Reactive"),
             "Reactive",
-            joined_at_start=True,
+            # Unused reserve boats start in the generated Disengaged state.
+            joined_at_start=(
+                UNIT_CONFIG[name].get("role") != "reserve"
+                and bool(UNIT_CONFIG[name].get("active_at_start", True))
+            ),
             seed=seed,
         )
         for name in UNIT_CONFIG
@@ -153,6 +157,8 @@ def aggregate_runs(results):
         / run_count,
         "mean_backup_rescue_time": sum(result["backup_rescue_time"] for result in results)
         / run_count,
+        "mean_backup_standby_time": sum(result["backup_standby_time"] for result in results)
+        / run_count,
         "mean_repair_requests": sum(result["repair_requests"] for result in results)
         / run_count,
         "mean_repair_time": sum(result["repair_time"] for result in results) / run_count,
@@ -184,10 +190,10 @@ def aggregate_runs(results):
                 {event for result in results for event in result["join_request_counts"]}
             )
         },
-        "mean_health_rejoin_counts": {
-            event: sum(result["health_rejoin_counts"].get(event, 0) for result in results) / run_count
+        "mean_health_lifecycle_counts": {
+            event: sum(result["health_lifecycle_counts"].get(event, 0) for result in results) / run_count
             for event in sorted(
-                {event for result in results for event in result["health_rejoin_counts"]}
+                {event for result in results for event in result["health_lifecycle_counts"]}
             )
         },
         "mean_task_outcome_counts": {
@@ -278,6 +284,7 @@ def write_outputs(results, output_dir):
         "backup_requests",
         "backup_activations",
         "backup_rescue_time",
+        "backup_standby_time",
         "cost_total_low",
         "cost_total_base",
         "cost_total_high",
@@ -295,13 +302,15 @@ def write_outputs(results, output_dir):
         "join_requests_submitted_to_bm",
         "join_requests_machine_rejected",
         "join_requests_completed",
-        "health_rejoin_eligible_departures",
-        "health_rejoin_repairs_ready",
-        "health_rejoin_generated",
-        "health_rejoin_profile_denied",
-        "health_rejoin_submitted_to_bm",
-        "health_rejoin_machine_rejected",
-        "health_rejoin_completed",
+        "health_lifecycle_eligible_departures",
+        "health_lifecycle_repairs_ready",
+        "health_lifecycle_replacement_requests",
+        "health_lifecycle_replacement_activations",
+        "health_lifecycle_replacement_shortfalls",
+        "health_lifecycle_return_requests",
+        "health_lifecycle_return_retries",
+        "health_lifecycle_returned_to_disengaged",
+        "health_lifecycle_return_delayed",
         "tasks_attempted",
         "tasks_succeeded",
         "tasks_failed_health",
@@ -342,8 +351,8 @@ def write_outputs(results, output_dir):
                         for key, value in result["join_request_counts"].items()
                     },
                     **{
-                        f"health_rejoin_{key}": value
-                        for key, value in result["health_rejoin_counts"].items()
+                        f"health_lifecycle_{key}": value
+                        for key, value in result["health_lifecycle_counts"].items()
                     },
                     **{
                         f"tasks_{key}": value

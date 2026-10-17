@@ -106,6 +106,22 @@ UNIT_CONFIG = {
         "battery": 100.0,
         "speed": 4.5,
     },
+    "ReserveBoat2": {
+        "asset_type": "boat",
+        "role": "reserve",
+        "profile_role": "boat",
+        "active_at_start": False,
+        "battery": 100.0,
+        "speed": 4.5,
+    },
+    "ReserveBoat3": {
+        "asset_type": "boat",
+        "role": "reserve",
+        "profile_role": "boat",
+        "active_at_start": False,
+        "battery": 100.0,
+        "speed": 4.5,
+    },
     "PumpingStation": {
         "asset_type": "pump",
         "role": "water_removal",
@@ -122,7 +138,9 @@ MIXED_PROFILE_THRESHOLDS = {
 }
 
 SIMULATION = {
-    "duration": 30,
+    # The incident produces victims during a fixed arrival window; the final
+    # wave's survival deadline falls at the end of this shared mission horizon.
+    "duration": 31,
     "step": 1,
     "seed": 7,
     "profile_strategy": "mixed",
@@ -131,8 +149,7 @@ SIMULATION = {
     "water_rise_per_step": 0.25,
     "pump_reduction_per_step": 0.12,
     "initial_victims": 8,
-    "victims_per_flood_level": 6,
-    "victim_generation_level_interval": 2.0,
+    "victim_arrival_waves": [{"time": 10.0, "count": 36}],
     "victim_survival_time": 20.0,
     "mission_success_fraction": 1.0,
     "rescue_capacity_per_boat_step": RESCUE_SENSITIVITY_CONFIGS["boat_emphasis"]["rescue_capacity_per_boat_step"],
@@ -151,7 +168,7 @@ SIMULATION = {
     "fault_exposure_per_transition": 3.0,
     "repair_duration": 3.0,
     "join_retry_interval": 3.0,
-    "health_rejoin_retry_interval": 3.0,
+    "health_return_retry_interval": 3.0,
     # Health communication availability affects telemetry/result reporting;
     # task success itself is sampled from TASK_SUCCESS_PROBABILITY_BY_HEALTH.
 }
@@ -193,6 +210,11 @@ COST_MODEL = {
             "category": "Resources", "resource": "Equipment and personnel",
             "driver_unit": "backup rescue time",
             "rates": {"low": 0.25, "base": 0.5, "high": 1.0},
+        },
+        "backup_standby": {
+            "category": "Resources", "resource": "Available reserve equipment",
+            "driver_unit": "available backup DT-time",
+            "rates": {"low": 0.05, "base": 0.1, "high": 0.2},
         },
     },
 }
