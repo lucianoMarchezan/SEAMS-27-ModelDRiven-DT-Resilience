@@ -34,95 +34,131 @@ The simulator, coordinator, and digital-twin adapter shall use the generated sta
 2. **High-only:** all DTs use Adaptive.
 3. **Mixed:** DT profiles change by role as configured water-level thresholds are crossed.
 
+All three strategies shall exercise both physical-health events through `hm` and independent Poisson-driven SoS membership requests through `bm`. Strategies differ in profile assignment, not in whether either transition cause is active. The causes and their outcomes shall be recorded separately.
+
 **REQ-3 — Mixed-profile progression.** The mixed strategy shall support the following progression:
 
-1. All DTs begin in Reactive.
-2. At the first threshold, boats and the drone become Proactive.
-3. At the second threshold, boats become Controlled.
-4. At the final threshold, rescue boats become Adaptive.
-5. The pumping station remains Reactive unless a scenario explicitly specifies otherwise.
+1. DTs begin in Reactive. Boats held in reserve shall remain Reactive while waiting to join the mission.
+2. At the first threshold, the operational drone becomes Proactive and remains Proactive at later thresholds. Operational boats follow the configured boat progression.
+3. At the second threshold, operational boats become Controlled.
+4. At the final threshold, operational rescue boats become Adaptive. Monitoring boats do not become Adaptive unless assigned a rescue role.
+5. The pumping station progresses from Reactive to Proactive at the first threshold and to Controlled at the second threshold. It does not become Adaptive in the Mixed strategy.
+6. When a reserve boat is activated, it shall leave the reserve-only Reactive assignment and adopt the profile specified for its assigned operational role at the current water-level threshold. Its profile, role, activation time, and resulting membership transitions shall be recorded.
 
-Thresholds and role-to-profile mappings shall be configurable and recorded for each run. “High-only” means all DTs use Adaptive throughout the mission.
+Thresholds and role-to-profile mappings shall be configurable and recorded for each run. A reserve boat that returns to reserve status shall return to Reactive. “High-only” means all DTs, including the pumping station and reserve boats, use Adaptive throughout the mission.
 
 ## 4. DT roles and boat fleet
 
 **REQ-4 — Separate roles from physical type.** The simulator shall distinguish logical boat roles (rescue and monitoring) from the physical boat type. Boats may share the same physical model while being assigned different roles and profiles.
 
-**REQ-5 — Model active and reserve boats.** The simulator shall support multiple equivalent boats and configurable active and reserve status. Reserve boats may become available when an active boat leaves or when demand changes.
+**REQ-5 — Model active and reserve boats.** The simulator shall support multiple equivalent boats and configurable active and reserve status. Reserve boats may become available when an active boat leaves or when demand changes. Under the Mixed strategy, reserve boats shall remain Reactive while waiting and adopt the current role-specific Mixed profile when activated, then return to Reactive when placed back in reserve.
 
 **REQ-6 — Record boat assignments.** The simulator shall record each boat's role, availability, profile, departure or replacement time, and rescue or monitoring activity.
 
-## 5. Voluntary departure and minimum rescue capacity
+## 5. Autonomous SoS requests and minimum rescue capacity
 
-**REQ-7 — Stochastic SoS departure.** DTs shall be able to decide autonomously to leave the constellation for SoS-related reasons, independently of health-related departure. Departure rates shall be configurable by profile and/or DT role.
+**REQ-7 — Poisson-driven SoS requests.** In every strategy, each eligible DT shall be able to make an autonomous SoS-related request to change constellation membership, independently of health. Request rates shall be configurable by profile and/or DT role. A request is a membership decision stimulus, not an unconditional command to leave.
 
-**REQ-8 — Poisson-process timing.** The departure configuration shall specify a rate \(\lambda\) and time unit. The simulator shall model departure events as a Poisson process: event counts over interval \(\Delta t\) follow `Poisson(λΔt)`, with time to the next event sampled from the corresponding exponential distribution. The simulator shall not treat a Poisson-distributed count as a direct time-to-departure sample.
+**REQ-8 — Poisson-process timing.** Each request configuration shall specify a rate `lambda` and time unit. Event counts over interval `delta_t` shall follow `Poisson(lambda * delta_t)`, or an equivalent exponential inter-arrival implementation. For a discrete simulation step, the probability of one or more requests may be calculated as `1 - exp(-lambda * delta_t)`. The simulator shall not treat a Poisson-distributed count as a direct time-to-departure sample.
 
-**REQ-9 — Protect mission capacity for voluntary departures.** Before allowing voluntary departure, the simulator shall check whether the remaining available fleet can meet the rescue demand before the victim survival deadline. A departure that violates the minimum shall be denied or deferred according to a configurable policy and logged.
+**REQ-9 — Profile-mediated membership response.** A Poisson request shall not directly mutate belonging state. The assigned profile's membership policy shall determine whether a join/leave request is submitted, accepted, denied, or delayed; any resulting state transition shall be triggered and observed through the generated `bm` API. Higher-resilience profiles shall be configured to handle SoS requests more conservatively, including the ability to deny or delay some voluntary leave requests and to control admission. A health state alone shall not force an external join/leave command: health events go through `hm`, and the generated profile machine determines their belonging consequences. The policy and its parameters shall be explicit and recorded. The coordinator shall not substitute a voluntary-departure rule for generated health-to-belonging behavior.
 
-**REQ-10 — Calculate the minimum required boats.** Minimum rescue capacity shall depend on remaining victims, time until the survival deadline, boat rescue throughput, and flooded area. The calculation and assumptions shall be documented. A starting form is:
+**REQ-10 — Protect mission capacity for voluntary departures.** Before submitting an accepted voluntary leave request, the simulator shall check whether the remaining available fleet can meet rescue demand before the victim survival deadline. Effective boat capacity shall account for the task success probability associated with each boat's current health state; a degraded boat shall contribute less expected capacity than an Ideal boat. Capacity-based deferral/denial shall be recorded separately from profile-based denial and generated-machine rejection. A health-driven withdrawal shall not be blocked by this voluntary-departure capacity check.
+
+**REQ-11 — Calculate the minimum required boats.** Minimum rescue capacity shall depend on remaining victims, time until the survival deadline, boat rescue throughput, flooded area, and each available boat's health-dependent task success probability. The calculation shall use expected throughput, so an impaired boat contributes proportionally less capacity. If active capacity falls below the required level, the coordinator shall request eligible monitoring or reserve boats through the generated belonging interface. The calculation and assumptions shall be documented. A starting form is:
 
 `minimum_boats(t) = ceil(remaining_victims(t) / expected_rescues_per_boat(flooded_area(t), time_until_deadline))`
 
-where \(C_{\text{boat}}\) is the expected number of victims one available boat can rescue before the deadline, given flooded area and remaining time. The victims-per-area ratio may be reported as a demand or difficulty indicator, but alone does not determine the number of boats required.
+where `expected_rescues_per_boat` is the expected number of victims one available boat can rescue before the deadline, given flooded area and remaining time. The victims-per-area ratio may be reported as a demand or difficulty indicator, but alone does not determine the number of boats required.
 
-## 6. Health-related departure
+## 6. Physical health, generated transitions, and repair
 
-**REQ-11 — Profile-dependent health response.** Health-related withdrawal and its effects on constellation membership shall be determined by each assigned profile's generated state machine. The simulator shall trigger relevant events through `hm` and `bm` and observe the resulting states. It shall not implement a parallel health-to-belonging transition policy outside the generated machines.
+**REQ-12 — Profile-dependent health response.** Flood/rain exposure shall affect the physical twin and produce health events through `hm`. The assigned profile's generated machine alone shall determine whether, when, and how those health events change belonging through `bm`. Health shall not be converted directly into a membership command by orchestration code. Every profile strategy shall experience the same configured physical stress model under matched seeds and conditions, so profile differences arise from the profile behavior rather than different fault injection.
 
-**REQ-12 — Distinguish departure causes.** The simulator shall identify voluntary SoS departure and health-related departure as distinct causes. Health-related departure shall not be sampled from the voluntary departure process.
+**REQ-13 — Distinguish transition causes.** Logs and reports shall identify (a) health events and resulting health-driven belonging changes, (b) Poisson SoS requests and their responses, and (c) capacity-based deferrals. Health-related belonging transitions shall never be sampled from the Poisson process.
 
-**REQ-13 — Permit forced health withdrawal.** A health-driven inability to operate safely may make a boat unavailable even if remaining capacity falls below the minimum required for mission success. The simulator shall record the capacity shortfall and its effect on mission outcome. Any profile-dependent transition behavior shall still come from the generated machine.
+**REQ-14 — Permit health-driven operational unavailability.** A physical twin that becomes unsafe or inoperable may become unavailable even if remaining capacity falls below the mission minimum. The simulator shall record the capacity shortfall and its effect on mission outcome. Any belonging transition shall still be determined by its generated machine.
+
+**REQ-15 — Inject progressive environmental faults.** Rainfall and/or rising flood-water exposure shall accumulate against a physical twin according to configurable, asset-relevant damage thresholds. Exposure shall progress the twin through the generated health states by raising the corresponding next-stage event through `hm`; it shall not directly assign a generated health state. Fault rates and thresholds shall be held constant across resilience profiles unless a separately stated experiment explicitly studies profile-dependent physical protection.
+
+**REQ-15A — Health-dependent task outcomes.** Health shall affect mission-task execution independently of generated belonging state. The initial per-attempt success probabilities shall decrease linearly from 100% at `Ideal` to 0% at `Failed`, across the ordered health states:
+
+| Health state | Task success probability |
+|---|---:|
+| Ideal | 100% |
+| Defective | 83.3% (5/6) |
+| Faulty | 66.7% (4/6) |
+| Erroneous | 50.0% (3/6) |
+| Malfunctioning | 33.3% (2/6) |
+| Degraded | 16.7% (1/6) |
+| Failed | 0% |
+
+For states between the endpoints, each task attempt shall be sampled independently using a reproducible DT-specific random stream. These interpolated values are an explicit baseline assumption, not empirical reliability measurements, and shall be configurable and included in experiment output. An independently inoperable physical twin shall fail its task regardless of the health-state probability. Each task result shall identify the DT, task, health state, configured success probability, outcome, and failure reason. Every attempt shall be counted locally so message loss cannot omit it from run-level outcomes. Generated state machines remain authoritative for belonging; this requirement governs task execution, not membership transitions.
+
+**REQ-15B — Health-related communication availability.** The pumping station's health telemetry and task-result reporting channel shall become unavailable at `Degraded` or `Failed` and return after successful physical repair and generated health recovery. This reporting outage shall not override the task-success probability: the simulator shall still execute and record a task attempt locally, and the task may succeed according to REQ-15A. The SoS may therefore hold an Active membership view and lack current pump telemetry/results while the pump continues to have a nonzero probability of completing a task at `Degraded`. Health-related reporting outages shall be measured separately from task outcomes and simulated network outages. Communication loss shall not directly mutate belonging or health states.
+
+**REQ-16 — Passive DT repair requests.** An unhealthy DT that enters `Passive` shall request repair. Repair shall begin only when allowed by its repair policy and belonging state; a pump shall follow REQ-16B. Other eligible unhealthy DTs may be repaired while Passive or Prepared. Repair shall restore the physical twin and raise the generated `hm.recovery` event. Any resulting health or belonging transitions shall be made by the generated machine; repair shall not directly force belonging. Repair requests, repair time, and completed repairs shall be recorded. Repair effort shall increase the estimated mission cost according to the maintenance cost driver.
+
+**REQ-16B — Repair the pumping station in Prepared.** The pumping station shall begin its repair only when its generated belonging state is `Prepared`. If it has left Active but remains Passive, the simulator may request the generated `bm.leave_so_s` event to reach Prepared; it shall start repair only if the generated machine accepts that transition. It shall not force a state change or edit generated code. On repair completion, the simulator shall raise `hm.recovery`; the existing profile-scoped re-admission policy shall then apply. A Reactive pump that remains Active shall not be moved out of Active solely to enable repair. Its task outcomes shall follow REQ-15A, while health-related reporting outages shall follow REQ-15B.
+
+**REQ-16C — Request and deploy backup boats.** When expected rescue capacity falls below the calculated minimum because active boats are absent, impaired, or unable to meet demand, the SoS shall request eligible monitoring or reserve boats through the generated `bm` interface. Reserve boats shall be logged as backups when requested and when activated for rescue. Backup capacity shall be weighted by the backup boat's health-dependent task success probability. Repairs and backup deployment shall improve the available expected mission capacity, but shall affect the reported success rate only through actual task outcomes; they shall not directly force success.
+
+**REQ-16A — Profile-scoped health-based re-admission.** In High-only and Mixed strategies, when a DT leaves Active membership as a consequence of health, the simulator shall record that cause separately from voluntary SoS departure. After repair restores the physical twin to operational and the generated health machine reports recovery, the coordinator shall submit a re-admission request through the profile membership policy and generated `bm` interface unless the generated machine has already restored Active membership. A request shall not directly set belonging. If the generated machine rejects or delays admission, the simulator shall record the outcome and retry at a configurable interval while the mission remains active. This recovery path shall not automatically re-admit a DT that left only for autonomous SoS reasons. Low-only shall not initiate coordinator-driven health-recovery re-admission; any membership transition still follows its generated machine.
 
 ## 7. Mission outcome metrics
 
-**REQ-14 — Victim survival deadline.** Victims shall have a configured deadline after which they cannot count as rescued alive. Initially, a shared deadline from mission start may be used. If victims can arrive at different times, their deadlines shall be based on their arrival times.
+**REQ-17 — Victim survival deadline.** Victims shall have a configured deadline after which they cannot count as rescued alive. Initially, a shared deadline from mission start may be used. If victims can arrive at different times, their deadlines shall be based on their arrival times.
 
-**REQ-15 — Define mission success.** Each run shall count victims rescued before the deadline and determine whether a configurable mission target was met (for example, rescuing all victims or a specified fraction).
+**REQ-18 — Define mission success as an outcome.** Each run shall determine success only from observed mission outcomes: the number or fraction of victims rescued alive before their deadlines compared with a configured target. The success predicate shall not inspect scenario name, resilience profile, or profile strategy. All profiles shall be evaluated using the same target and matched mission conditions.
 
-**REQ-16 — Success rate.** For each experimental condition, success rate shall be calculated as successful runs divided by valid runs. The report shall include the number of successful and valid runs.
+**REQ-19 — Success rate and non-ceiling calibration.** For each experimental condition, success rate shall be successful runs divided by valid runs, with both counts reported. Mission load, physical fault progression, rescue capacity, and victim deadlines shall be calibrated so the experiment can reveal meaningful differences and avoid every condition trivially achieving 100% success. Calibration shall not hard-code success or failure by profile. The hypothesis that higher-resilience or mixed strategies improve success shall be tested from results, not assumed by the success function.
 
-**REQ-17 — DT-count and participation metrics.** Each run shall record both:
+**REQ-19A — Separate boat and pump effects.** Boats shall be the direct mechanism that rescues victims. Pumping may affect flood level/area and thus boat operating conditions, but shall not directly rescue victims; its indirect effect on rescue throughput shall be independently configurable and calibrated so it does not overwhelm boat availability and capacity. The simulator shall support a matched-seed 2-by-2 sensitivity experiment crossing the current and reduced pump-to-rescue-area effects (`0.12` and `0.04`) with the current and increased boat rescue capacities (`2.0` and `3.0` victims per boat-step). Each run shall record both factor values and the factor-condition identifier. The default condition shall use reduced pump influence (`0.04`) and increased boat capacity (`3.0`); the current pair (`0.12`, `2.0`) shall remain available as a reference.
+
+**REQ-20 — DT-count and participation metrics.** Each run shall record both:
 
 - peak number of DTs attached to the SoS; and
 - total DT participation time, summed across DTs.
+
+The simulator shall also record Active membership time by DT and asset type, separately from attached time. It shall record pumping-station Active time and delivered pumping output so that a healthy but Passive pump is not counted as providing service.
 
 If one primary DT-count metric is required, peak attached DT count shall be used; participation time shall be reported separately.
 
 ## 8. Cost and resource-use measure
 
-**REQ-18 — Use DT-time as the primary cost proxy.** The simulator shall calculate total DT participation time:
+**REQ-21 — Estimate cost with activity-based costing.** The simulator shall use an activity-based costing (ABC) structure adapted from Su et al. (2025), rather than treating DT-time as the cost itself. The cost object and estimation scope shall be stated (for example, DT service cost per mission, with shared development/infrastructure cost separately amortized across a declared number of missions). The estimate shall map resource consumption to DT data activities and allocate activity costs to the DTs/scenarios that consume them.
 
-`DT-time = sum of the time each DT is attached to the SoS`
+Activity cost shall be estimated from consumed driver quantity multiplied by an applicable resource rate, with the allocation and aggregation steps recorded. The simulator shall retain the underlying quantities and rates so that a reported total can be audited and recomputed.
 
-```latex
-\[
-\text{DT-time} = \sum_{i=1}^{n} \text{time DT}_i \text{ is attached to the SoS}
-\]
-```
-It shall be reported in DT-minutes or DT-hours and, where useful, broken down by asset type or role. This is a resource-use proxy, not a monetary cost estimate.
+The activity model shall consider data gathering, data interaction, data storage, data processing, data servitization, data maintenance/repair, and backup deployment. Resource inputs shall be recorded where applicable, including personnel, machines, equipment, materials, facilities, and services. Results shall be classifiable across IT infrastructure, resources, data activities, and investment; investment shall distinguish capital expenditure (CapEx) from operational expenditure (OpEx). The cited paper focuses on manufacturing DT development, so its activity-based method shall be adapted to this flood-response SoS and its cost drivers; its manufacturing-specific prices shall not be copied as rescue-system prices.
 
-**REQ-19 — Define participation accounting.** A disconnected DT that remains attached to the SoS continues accruing DT-time. A DT stops accruing DT-time when it leaves. The simulator shall apply this rule consistently and record departures.
+**REQ-22 — Define cost drivers and rates.** Each cost element shall specify its category, resource/activity, cost driver and unit, rate or range, time horizon, and source/assumption. Examples of scenario-sensitive drivers include sensor/data volume and sampling frequency, messages exchanged, storage duration, processing workload, service availability, maintenance/repair effort, backup boat deployment time, and DT mission duration. Repair costs shall scale with repair effort; backup-use costs shall scale with the time a reserve boat is deployed for rescue. Profile-related cost differences shall result from modeled resource or activity consumption, not an unsupported flat surcharge. Uncertain rates shall support low/base/high estimates or sensitivity analysis.
 
-The initial experiment shall not assign monetary rates to profiles or DTs without evidence to calibrate them. Search-and-rescue planning research considers resource use, operating duration, and operating cost as relevant dimensions, but their definitions depend on the model. Digital-twin cost models can include infrastructure, resources, data activities, and investment; DT-time is therefore a deliberately narrower measure. [SAR fleet planning study](https://doi.org/10.1016/j.ijdrr.2020.101680), [digital-twin cost methodology](https://doi.org/10.1016/j.jmsy.2025.04.004)
+**REQ-23 — Separate recurring and shared costs.** Costs that accrue with service duration or repeated data activities shall increase with the corresponding time, data volume, or activity count. One-time development, equipment, and other shared costs shall be reported separately or amortized across an explicit service life/mission count so they are not charged in full to every run. DT-time shall remain a separate utilization metric, reported in DT-minutes/hours and broken down by asset or role where useful; it is not a monetary cost estimate.
+
+**REQ-24 — Compare cost and mission performance.** Reports shall compare estimated cost with success rate, rescued-victim outcomes, and DT-time for each strategy/configuration. They shall support cost-versus-success trade-off and Pareto analysis. Mixed profiles may be identified as preferable only if the observed results support that conclusion under declared assumptions; the simulator shall not encode “mixed is best” as a rule.
 
 ## 9. Repeated runs and reporting
 
-**REQ-20 — Repeat stochastic runs.** Each experimental condition shall be executed with multiple random seeds. The number of runs and seed policy shall be recorded.
+**REQ-25 — Repeat stochastic runs.** Each experimental condition shall be executed with multiple random seeds. The number of runs and seed policy shall be recorded.
 
-**REQ-21 — Record run-level data.** Each run shall record its scenario, profile configuration and parameters, random seed, mission outcome, victims rescued before the deadline, peak DT count, DT-time, departures by cause, boat availability, and relevant state transitions.
+**REQ-26 — Record run-level data.** Each run shall record its scenario, profile configuration and parameters, health-state task success probabilities, rescue-sensitivity condition and parameter values, random seed, mission outcome, victims rescued before the deadline, peak DT count, attached and Active DT-time, pumping-station Active time, successful service time, output, and health-related communication-unavailable time, task attempts and outcomes by failure reason and health state, estimated cost and cost components, health transitions, Poisson request outcomes, capacity deferrals, repair requests/time/completions, backup requests/activations/deployment time, re-admission time/outcomes, boat availability, and relevant state transitions.
 
-**REQ-22 — Report aggregate comparisons.** For each scenario and profile configuration, reports shall include success rate, rescue count before deadline, peak DT count, DT-time, and run count. Run-level results shall be retained to support variability analysis.
+**REQ-27 — Report aggregate comparisons.** For each scenario, profile configuration, and rescue-sensitivity condition, reports shall include success rate, rescued-victim outcomes, peak DT count, DT-time, estimated cost by category, pump output, and run count. Run-level results shall be retained to support variability and sensitivity analysis.
 
 ## 10. Parameters to calibrate
 
 The requirements are defined, but these experiment values remain to be selected and justified:
 
 - water-level thresholds for mixed-profile changes;
-- voluntary departure rates and their profile/role dependence;
+- rain/flood exposure thresholds and progression rates for physical faults by asset;
+- Poisson request rates and profile/role-dependent acceptance, denial, or delay behavior;
 - boat rescue throughput as a function of flooded area;
 - victim survival deadline and mission success target;
 - reserve-boat availability and replacement policy;
-- number of repetitions per experimental condition.
+- number of repetitions per experimental condition;
+- activity/resource cost drivers, cost rates or ranges, the mission service horizon, and allocation/amortization assumptions.
 
 These parameters shall be recorded with experimental results. Calibration must not involve manual changes to files in `generated/`.
+
+The cost framework is adapted from Su, Nassehi, McClenaghan, Langridge, and Hicks (2025), “A methodology for estimating the cost of a digital twin,” *Journal of Manufacturing Systems*, 80, 841–858. The paper applies activity-based costing to DT data activities and allocates resource costs across activities and cost categories. Its manufacturing-specific cost values are not directly transferable to flood-response operations. [Publisher article and DOI](https://doi.org/10.1016/j.jmsy.2025.04.004).

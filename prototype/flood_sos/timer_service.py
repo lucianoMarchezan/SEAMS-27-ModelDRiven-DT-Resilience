@@ -11,11 +11,18 @@ class TimerService:
         key = (id(state_machine), event_id)
 
         def wait():
-            yield self.env.timeout(duration_ms / 1000)
+            try:
+                yield self.env.timeout(duration_ms / 1000)
+            except simpy.Interrupt:
+                # State-machine transitions cancel timers by interrupting the
+                # SimPy process. That is normal cancellation, not a simulation
+                # failure.
+                return
+
             if self.timers.get(key) is process:
                 del self.timers[key]
                 state_machine.time_elapsed(event_id)
-                if is_periodic:
+                if is_periodic and key not in self.timers:
                     self.set_timer(state_machine, event_id, duration_ms, is_periodic)
 
         process = self.env.process(wait())
