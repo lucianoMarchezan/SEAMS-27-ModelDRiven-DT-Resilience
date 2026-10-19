@@ -561,7 +561,7 @@ def parse_args():
     parser.add_argument(
         "--output-dir",
         type=Path,
-        default=Path(__file__).resolve().parent / "output",
+        default=Path(__file__).resolve().parent.parent / "output",
         help="Directory for experiment outputs.",
     )
     return parser.parse_args()

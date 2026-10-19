@@ -1,0 +1,71 @@
+@startuml
+
+title Flood-response SoS architecture
+left to right direction
+skinparam componentStyle rectangle
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam linetype ortho
+skinparam component {
+  BackgroundColor #FFF2CC
+  BorderColor #A87916
+}
+
+package "Experiment" {
+  component "Experiment Runner" as Runner
+  component "Configuration" as Config
+  component "Cost Model" as Cost
+  component "Output Writer" as Writer
+}
+
+package "Simulation" {
+  component "SoS Coordinator" as Coordinator
+  component "Digital Twin" as DT
+  component "Physical Twin" as PT
+  component "Flood Environment" as Flood
+  component "Message Broker" as Broker
+  component "Scenario Process" as Scenario
+}
+
+package "Profiles" as ProfileSet {
+  component "Reactive" as Reactive #DCEBFF
+  component "Proactive" as Proactive #DCEBFF
+  component "Controlled" as Controlled #DCEBFF
+  component "Adaptive" as Adaptive #DCEBFF
+}
+
+package "Runtime" {
+  component "SimPy" as SimPy #EEEEEE
+}
+
+database "Output Files" as Results #E8F5E9
+component "Analysis Notebook" as Notebook
+
+Config --> Runner
+Runner --> SimPy : runs
+SimPy --> Coordinator
+SimPy --> Scenario
+SimPy --> Flood
+Runner --> Coordinator : orchestrates
+Coordinator --> DT : commands
+DT --> ProfileSet : selects
+DT --> PT : tasks
+PT <--> Flood
+Coordinator --> Flood
+Scenario --> DT
+DT --> Broker : telemetry
+Broker --> Coordinator : results
+Runner --> Cost : metrics
+Runner --> Writer
+Cost --> Writer : estimates
+Writer --> Results : saves
+Results --> Notebook : plots
+
+legend bottom
+|<#FFF2CC> Simulation / experiment |
+|<#DCEBFF> Profile variants |
+|<#EEEEEE> Runtime |
+|<#E8F5E9> Results |
+endlegend
+
+@enduml
