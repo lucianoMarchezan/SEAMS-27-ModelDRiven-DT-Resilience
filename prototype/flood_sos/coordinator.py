@@ -25,6 +25,9 @@ class SoSCoordinator:
             "failed_physical": 0,
             "failed_other": 0,
         }
+        # Keep task evidence split by task, role, and health so rescue failures
+        # can be compared across profile strategies without changing behavior.
+        self.task_outcomes_by_task_role_health = {}
         self.assignments = {}
         self.random = random.Random(SIMULATION["seed"] if seed is None else seed)
         self.pending_departures = set()
@@ -111,7 +114,7 @@ class SoSCoordinator:
             }
         )
 
-    def _record_task_outcome(self, result):
+    def _record_task_outcome(self, result, task, role, health):
         self.task_outcome_counts["attempted"] += 1
         if result.get("executed") is False:
             reason = result.get("failure_reason")
@@ -123,7 +126,26 @@ class SoSCoordinator:
             }.get(reason, "failed_other")
             self.task_outcome_counts[outcome] += 1
         else:
+            outcome = "succeeded"
             self.task_outcome_counts["succeeded"] += 1
+
+        task = task or result.get("task", "unknown")
+        role = role or "unknown"
+        health = health or result.get("health", "Unknown")
+        counts = (
+            self.task_outcomes_by_task_role_health
+            .setdefault(task, {})
+            .setdefault(role, {})
+            .setdefault(health, {
+                "attempted": 0,
+                "succeeded": 0,
+                "failed_health": 0,
+                "failed_physical": 0,
+                "failed_other": 0,
+            })
+        )
+        counts["attempted"] += 1
+        counts[outcome] += 1
 
     def profile_for(self, twin):
         strategy = SIMULATION["profile_strategy"]
@@ -183,11 +205,11 @@ class SoSCoordinator:
                 )
 
     def _expected_rescues_per_boat(self, time_available, success_probability=1.0):
-        time_steps = max(0.0, time_available / SIMULATION["step"])
+        time_minutes = max(0.0, time_available / 60.0)
         area_factor = 1.0 + self.flood.flooded_area * SIMULATION["rescue_area_penalty"]
         return (
-            SIMULATION["rescue_capacity_per_boat_step"]
-            * time_steps
+            SIMULATION["rescue_capacity_per_boat_minute"]
+            * time_minutes
             * success_probability
             / area_factor
         )
@@ -542,7 +564,8 @@ class SoSCoordinator:
                 continue
             configuration = PROFILE_CONFIGS[SIMULATION["profile_configuration"]]
             rate = configuration[twin.profile]["departure_rate"]
-            probability = 1.0 - math.exp(-rate * step)
+            rate_interval_minutes = step / 60.0
+            probability = 1.0 - math.exp(-rate * rate_interval_minutes)
             if self.random.random() >= probability:
                 continue
 
@@ -553,6 +576,7 @@ class SoSCoordinator:
                 "unit": twin.name,
                 "profile": twin.profile,
                 "rate": rate,
+                "rate_unit": "per_minute",
                 "reason": "sos_autonomy",
             }
             self.events.append({"event": "sos_departure_request", **request})
@@ -690,14 +714,21 @@ class SoSCoordinator:
                         }
                     )
                 elif entry.get("event") == "task_attempt_result":
-                    self._record_task_outcome(entry.get("result") or {})
+                    self._record_task_outcome(
+                        entry.get("result") or {},
+                        entry.get("task"),
+                        entry.get("role"),
+                        entry.get("health"),
+                    )
                     self.events.append(
                         {
                             "time": entry.get("time", self.env.now),
                             "event": "task_attempt_result",
                             "unit": name,
                             "task": entry.get("task"),
+                            "role": entry.get("role"),
                             "health": entry.get("health"),
+                            "profile": entry.get("profile"),
                             "result": entry.get("result"),
                         }
                     )
@@ -904,12 +935,22 @@ class SoSCoordinator:
             if asset_type == "drone":
                 twin.receive_command({"action": "monitor"})
             elif asset_type == "pump":
-                twin.receive_command({"action": "pump", "amount": SIMULATION["pump_reduction_per_step"]})
+                interval_minutes = SIMULATION["step"] / 60.0
+                twin.receive_command(
+                    {
+                        "action": "pump",
+                        "amount_m3": SIMULATION["pump_discharge_m3_per_minute"] * interval_minutes,
+                    }
+                )
             elif asset_type == "boat" and role == "rescue":
                 twin.receive_command(
                     {
                         "action": "rescue",
-                        "capacity": SIMULATION["rescue_capacity_per_boat_step"],
+                        "capacity": (
+                            SIMULATION["rescue_capacity_per_boat_minute"]
+                            * SIMULATION["step"]
+                            / 60.0
+                        ),
                     }
                 )
             elif asset_type == "boat" and role == "monitoring":
@@ -962,11 +1003,11 @@ class SoSCoordinator:
     def _record_processing_work(self):
         for twin in self.twins.values():
             if twin.connected and twin.is_attached_to_sos:
-                multiplier = PROFILE_MEMBERSHIP_POLICY[twin.profile]["processing_work_per_step"]
-                self.processing_work += multiplier * SIMULATION["step"]
+                multiplier = PROFILE_MEMBERSHIP_POLICY[twin.profile]["processing_work_per_minute"]
+                self.processing_work += multiplier * SIMULATION["step"] / 60.0
 
     def run(self):
-        while True:
+        while self.env.now < SIMULATION["duration"]:
             # Consume generated-machine announcements before making capacity,
             # repair, or replacement decisions for this simulation step.
             self.observe_state_changes()
@@ -987,25 +1028,28 @@ class SoSCoordinator:
         return {
             "peak_attached_dts": self.peak_attached_dts,
             "peak_constellation_dts": self.peak_constellation_dts,
-            "dt_time": self.dt_time,
-            "dt_time_by_asset": dict(self.dt_time_by_asset),
-            "active_dt_time": self.active_dt_time,
-            "active_dt_time_by_asset": dict(self.active_dt_time_by_asset),
-            "pumping_station_active_time": self.pumping_station_active_time,
-            "pumping_station_service_time": self.pumping_station_service_time,
+            "dt_time": self.dt_time / 60.0,
+            "dt_time_by_asset": {key: value / 60.0 for key, value in self.dt_time_by_asset.items()},
+            "active_dt_time": self.active_dt_time / 60.0,
+            "active_dt_time_by_asset": {
+                key: value / 60.0 for key, value in self.active_dt_time_by_asset.items()
+            },
+            "pumping_station_active_time": self.pumping_station_active_time / 60.0,
+            "pumping_station_service_time": self.pumping_station_service_time / 60.0,
             "pumping_station_health_communication_unavailable_time": (
-                self.pumping_station_health_communication_unavailable_time
+                self.pumping_station_health_communication_unavailable_time / 60.0
             ),
             "backup_activations": self.backup_activations,
             "backup_requests": self.backup_requests,
-            "backup_rescue_time": self.backup_rescue_time,
-            "backup_standby_time": self.backup_standby_time,
+            "backup_rescue_time": self.backup_rescue_time / 60.0,
+            "backup_standby_time": self.backup_standby_time / 60.0,
             "processing_work": self.processing_work,
             "sos_request_counts": dict(self.sos_request_counts),
             "join_request_counts": dict(self.join_request_counts),
             "health_lifecycle_counts": dict(self.health_lifecycle_counts),
             "task_outcome_counts": dict(self.task_outcome_counts),
-            "repair_time": sum(twin.repair_time for twin in self.twins.values()),
+            "task_outcomes_by_task_role_health": self.task_outcomes_by_task_role_health,
+            "repair_time": sum(twin.repair_time for twin in self.twins.values()) / 60.0,
             "repair_requests": sum(twin.repair_requests for twin in self.twins.values()),
             "repairs_completed": sum(twin.repairs_completed for twin in self.twins.values()),
         }

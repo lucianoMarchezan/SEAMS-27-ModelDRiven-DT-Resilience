@@ -12,6 +12,8 @@ class TimerService:
 
         def wait():
             try:
+                # Generated statecharts use milliseconds; SimPy's base unit
+                # for this simulation is seconds.
                 yield self.env.timeout(duration_ms / 1000)
             except simpy.Interrupt:
                 # State-machine transitions cancel timers by interrupting the

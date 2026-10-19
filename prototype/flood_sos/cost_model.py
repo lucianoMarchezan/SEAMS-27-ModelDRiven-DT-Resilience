@@ -7,6 +7,7 @@ COST_LEVELS = ("low", "base", "high")
 
 def derive_activity_quantities(broker_log, coordinator_metrics, duration):
     """Build auditable activity drivers from simulated events and time metrics."""
+    duration_minutes = float(duration) / 60.0
     published = [event for event in broker_log if event.get("type") == "published"]
     telemetry = [event for event in published if event.get("topic") == "telemetry"]
     stored_mb_time = 0.0
@@ -14,7 +15,9 @@ def derive_activity_quantities(broker_log, coordinator_metrics, duration):
         payload_bytes = len(
             json.dumps(event.get("payload", {}), separators=(",", ":"), default=str).encode("utf-8")
         )
-        retention_time = max(0.0, float(duration) - float(event.get("time", 0.0)))
+        retention_time = max(
+            0.0, duration_minutes - float(event.get("time", 0.0)) / 60.0
+        )
         stored_mb_time += payload_bytes / 1_000_000 * retention_time
 
     return {
@@ -57,10 +60,10 @@ def estimate_cost(activity_quantities, mission_duration, cost_model):
 
     allocation_missions = max(1, cost_model["capex_allocation_missions"])
     capex_per_mission = cost_model["shared_capex_total"] / allocation_missions
-    opex_rates = cost_model["investment_opex_per_mission_time"]
+    opex_rates = cost_model["investment_opex_per_mission_minute"]
     investment_cost = {}
     for level in COST_LEVELS:
-        opex = float(mission_duration) * opex_rates[level]
+        opex = (float(mission_duration) / 60.0) * opex_rates[level]
         investment_cost[level] = {
             "capex_allocated": capex_per_mission,
             "opex": opex,
@@ -88,6 +91,6 @@ def estimate_cost(activity_quantities, mission_duration, cost_model):
             "rate_basis": cost_model.get("rate_basis", "Unspecified; calibrate before interpreting as monetary cost."),
             "shared_capex_total": cost_model["shared_capex_total"],
             "capex_allocation_missions": allocation_missions,
-            "investment_opex_per_mission_time": opex_rates,
+            "investment_opex_per_mission_minute": opex_rates,
         },
     }

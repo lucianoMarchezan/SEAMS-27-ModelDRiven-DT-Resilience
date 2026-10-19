@@ -30,8 +30,8 @@ def run_simulation(strategy, profile_configuration, seed, rescue_sensitivity="bo
     SIMULATION["profile_configuration"] = profile_configuration
     rescue_parameters = RESCUE_SENSITIVITY_CONFIGS[rescue_sensitivity]
     SIMULATION["rescue_area_penalty"] = rescue_parameters["rescue_area_penalty"]
-    SIMULATION["rescue_capacity_per_boat_step"] = rescue_parameters[
-        "rescue_capacity_per_boat_step"
+    SIMULATION["rescue_capacity_per_boat_minute"] = rescue_parameters[
+        "rescue_capacity_per_boat_minute"
     ]
     env = simpy.Environment()
     flood = FloodEnvironment(env)
@@ -62,7 +62,9 @@ def run_simulation(strategy, profile_configuration, seed, rescue_sensitivity="bo
     env.process(run_twins(env, twins))
     env.process(apply_connectivity_scenario(env, twins))
     env.process(coordinator.run())
-    env.run(until=SIMULATION["duration"])
+    # SimPy's until event is urgent and would otherwise stop before processing
+    # events scheduled exactly at the mission deadline (including victim expiry).
+    env.run(until=SIMULATION["duration"] + 1e-6)
     # Collect local twin logs through the final simulation timestamp, including
     # task outcomes that were produced on the last step but not yet observed.
     coordinator.observe_state_changes()
@@ -73,15 +75,58 @@ def run_simulation(strategy, profile_configuration, seed, rescue_sensitivity="bo
     activity_quantities = derive_activity_quantities(broker.log, metrics, SIMULATION["duration"])
     costs = estimate_cost(activity_quantities, SIMULATION["duration"], COST_MODEL)
     return {
+        # Keep the historical scenario key for output compatibility; the name is the paper-facing policy strategy.
         "scenario": strategy,
         "scenario_name": PROFILE_STRATEGIES[strategy],
         "profile_configuration": profile_configuration,
         "profile_configuration_parameters": PROFILE_CONFIGS[profile_configuration],
+        "departure_rate_unit": "per_minute",
         "rescue_sensitivity": rescue_sensitivity,
         "rescue_area_penalty": SIMULATION["rescue_area_penalty"],
-        "rescue_capacity_per_boat_step": SIMULATION["rescue_capacity_per_boat_step"],
+        "rescue_capacity_per_boat_minute": SIMULATION["rescue_capacity_per_boat_minute"],
         "seed": seed,
+        "time_unit": SIMULATION["time_unit"],
+        "metric_time_unit": SIMULATION["metric_time_unit"],
         "duration": SIMULATION["duration"],
+        "step": SIMULATION["step"],
+        "victim_survival_time_seconds": SIMULATION["victim_survival_time"],
+        "flood_inflow_m3_per_minute": SIMULATION["flood_inflow_m3_per_minute"],
+        "pump_discharge_m3_per_minute": SIMULATION[
+            "pump_discharge_m3_per_minute"
+        ],
+        "fault_water_level_threshold_m": SIMULATION[
+            "fault_water_level_threshold"
+        ],
+        "fault_exposure_per_minute": SIMULATION["fault_exposure_per_minute"],
+        "fault_exposure_per_transition": SIMULATION[
+            "fault_exposure_per_transition"
+        ],
+        "victim_arrival_schedule": {
+            "initial_count": SIMULATION["initial_victims"],
+            "waves": SIMULATION["victim_arrival_waves"],
+            "survival_time_seconds": SIMULATION["victim_survival_time"],
+        },
+        "flood_model": {
+            "model_type": "synthetic_storage_balance",
+            "initial_water_level_m": SIMULATION["initial_water_level"],
+            "storage_area_base_m2": SIMULATION["storage_area_base_m2"],
+            "storage_area_expansion_m2_per_m": SIMULATION[
+                "storage_area_expansion_m2_per_m"
+            ],
+            "inflow_m3_per_minute": SIMULATION["flood_inflow_m3_per_minute"],
+            "pump_discharge_m3_per_minute": SIMULATION[
+                "pump_discharge_m3_per_minute"
+            ],
+            "fault_water_level_threshold_m": SIMULATION[
+                "fault_water_level_threshold"
+            ],
+            "fault_exposure_per_minute": SIMULATION[
+                "fault_exposure_per_minute"
+            ],
+            "fault_exposure_per_transition": SIMULATION[
+                "fault_exposure_per_transition"
+            ],
+        },
         "mission_success": success,
         "mission_success_target": target,
         "mission_success_fraction": SIMULATION["mission_success_fraction"],
@@ -90,10 +135,12 @@ def run_simulation(strategy, profile_configuration, seed, rescue_sensitivity="bo
         "victims_rescued_before_deadline": flood.victims_rescued_before_deadline,
         "victims_waiting": flood.victims_waiting,
         "victims_expired": flood.victims_expired,
-        "final_victims_per_area": flood.victims_per_area,
-        "final_water_level": flood.water_level,
-        "final_flooded_area": flood.flooded_area,
-        "pumped_water": flood.pumped_water,
+        "final_victims_per_hectare": flood.victims_per_area,
+        "final_water_level_m": flood.water_level,
+        "final_flooded_area_hectares": flood.flooded_area,
+        "final_storage_volume_m3": flood.storage_volume_m3,
+        "flood_inflow_m3": flood.flood_inflow_m3,
+        "pumped_water_m3": flood.pumped_water,
         "profiles": {t.name: t.profile for t in twins},
         "health": {t.name: t.health_state() for t in twins},
         "belonging": {t.name: t.belonging_state() for t in twins},
@@ -117,6 +164,29 @@ def run_simulation(strategy, profile_configuration, seed, rescue_sensitivity="bo
 
 def aggregate_runs(results):
     run_count = len(results)
+    task_detail_totals = {}
+    for result in results:
+        for task, roles in result.get("task_outcomes_by_task_role_health", {}).items():
+            for role, health_states in roles.items():
+                for health, outcomes in health_states.items():
+                    target = (
+                        task_detail_totals
+                        .setdefault(task, {})
+                        .setdefault(role, {})
+                        .setdefault(health, {})
+                    )
+                    for outcome, count in outcomes.items():
+                        target[outcome] = target.get(outcome, 0) + count
+    mean_task_details = {
+        task: {
+            role: {
+                health: {outcome: count / run_count for outcome, count in outcomes.items()}
+                for health, outcomes in health_states.items()
+            }
+            for role, health_states in roles.items()
+        }
+        for task, roles in task_detail_totals.items()
+    }
     return {
         "runs": run_count,
         "successes": sum(result["mission_success"] for result in results),
@@ -146,7 +216,7 @@ def aggregate_runs(results):
         "mean_pumping_station_service_time": sum(
             result["pumping_station_service_time"] for result in results
         ) / run_count,
-        "mean_pumped_water": sum(result["pumped_water"] for result in results) / run_count,
+        "mean_pumped_water_m3": sum(result["pumped_water_m3"] for result in results) / run_count,
         "mean_pumping_station_health_communication_unavailable_time": sum(
             result["pumping_station_health_communication_unavailable_time"]
             for result in results
@@ -203,6 +273,7 @@ def aggregate_runs(results):
                 {outcome for result in results for outcome in result["task_outcome_counts"]}
             )
         },
+        "mean_task_outcomes_by_task_role_health": mean_task_details,
         "mean_dt_time_by_asset": {
             asset: sum(result["dt_time_by_asset"].get(asset, 0.0) for result in results)
             / run_count
@@ -234,7 +305,7 @@ def write_outputs(results, output_dir):
                 "profile_configuration": "per-run",
                 "rescue_sensitivity": "per-run",
                 "rescue_area_penalty": "per-run",
-                "rescue_capacity_per_boat_step": "per-run",
+                "rescue_capacity_per_boat_minute": "per-run",
             },
             "rescue_sensitivity_configurations": RESCUE_SENSITIVITY_CONFIGS,
             "conditions": [
@@ -264,8 +335,19 @@ def write_outputs(results, output_dir):
         "profile_configuration",
         "rescue_sensitivity",
         "rescue_area_penalty",
-        "rescue_capacity_per_boat_step",
+        "rescue_capacity_per_boat_minute",
         "seed",
+        "departure_rate_unit",
+        "time_unit",
+        "metric_time_unit",
+        "duration",
+        "step",
+        "victim_survival_time_seconds",
+        "flood_inflow_m3_per_minute",
+        "pump_discharge_m3_per_minute",
+        "fault_water_level_threshold_m",
+        "fault_exposure_per_minute",
+        "fault_exposure_per_transition",
         "mission_success",
         "mission_success_target",
         "victims_created",
@@ -316,13 +398,24 @@ def write_outputs(results, output_dir):
         "tasks_failed_health",
         "tasks_failed_physical",
         "tasks_failed_other",
+        "rescue_tasks_attempted",
+        "rescue_tasks_succeeded",
+        "rescue_tasks_failed_health",
+        "rescue_tasks_failed_physical",
+        "rescue_tasks_failed_other",
+        *[
+            f"rescue_tasks_failed_at_{health.lower()}"
+            for health in TASK_SUCCESS_PROBABILITY_BY_HEALTH
+        ],
         "repair_time",
         "repair_requests",
         "repairs_completed",
-        "final_water_level",
-        "final_flooded_area",
-        "final_victims_per_area",
-        "pumped_water",
+        "final_water_level_m",
+        "final_flooded_area_hectares",
+        "final_storage_volume_m3",
+        "flood_inflow_m3",
+        "final_victims_per_hectare",
+        "pumped_water_m3",
     ]
     with (output_dir / "simulation_runs.csv").open("w", newline="", encoding="utf-8") as file:
         writer = csv.DictWriter(file, fieldnames=run_fields)
@@ -358,6 +451,39 @@ def write_outputs(results, output_dir):
                         f"tasks_{key}": value
                         for key, value in result["task_outcome_counts"].items()
                     },
+                    **{
+                        f"rescue_tasks_{outcome}": sum(
+                            outcomes.get(outcome, 0)
+                            for outcomes in result.get(
+                                "task_outcomes_by_task_role_health", {}
+                            )
+                            .get("rescue", {})
+                            .get("rescue", {})
+                            .values()
+                        )
+                        for outcome in (
+                            "attempted",
+                            "succeeded",
+                            "failed_health",
+                            "failed_physical",
+                            "failed_other",
+                        )
+                    },
+                    **{
+                        f"rescue_tasks_failed_at_{health.lower()}": sum(
+                            result.get("task_outcomes_by_task_role_health", {})
+                            .get("rescue", {})
+                            .get("rescue", {})
+                            .get(health, {})
+                            .get(outcome, 0)
+                            for outcome in (
+                                "failed_health",
+                                "failed_physical",
+                                "failed_other",
+                            )
+                        )
+                        for health in TASK_SUCCESS_PROBABILITY_BY_HEALTH
+                    },
                 }
             )
             writer.writerow(row)
@@ -366,18 +492,24 @@ def write_outputs(results, output_dir):
         "scenario",
         "profile_configuration",
         "seed",
+        "time_unit",
+        "metric_time_unit",
         "time",
+        "time_minutes",
         "rescue_sensitivity",
         "rescue_area_penalty",
-        "rescue_capacity_per_boat_step",
-        "water_level",
-        "flooded_area",
+        "rescue_capacity_per_boat_minute",
+        "water_level_m",
+        "storage_volume_m3",
+        "flood_inflow_m3",
+        "pumped_water_m3",
+        "flooded_area_hectares",
         "victims_waiting",
         "victims_rescued",
         "victims_rescued_before_deadline",
         "victims_expired",
         "total_victims",
-        "victims_per_area",
+        "victims_per_hectare",
     ]
     with (output_dir / "flood_history.csv").open("w", newline="", encoding="utf-8") as file:
         writer = csv.DictWriter(file, fieldnames=history_fields)
@@ -390,10 +522,12 @@ def write_outputs(results, output_dir):
                         "profile_configuration": result["profile_configuration"],
                         "rescue_sensitivity": result["rescue_sensitivity"],
                         "rescue_area_penalty": result["rescue_area_penalty"],
-                        "rescue_capacity_per_boat_step": result[
-                            "rescue_capacity_per_boat_step"
+                        "rescue_capacity_per_boat_minute": result[
+                            "rescue_capacity_per_boat_minute"
                         ],
                         "seed": result["seed"],
+                        "time_unit": result["time_unit"],
+                        "metric_time_unit": result["metric_time_unit"],
                         **row,
                     }
                 )
@@ -405,13 +539,13 @@ def parse_args():
         "--scenario",
         choices=["all", *PROFILE_STRATEGIES],
         default="all",
-        help="Profile assignment strategy to run (default: all three).",
+        help="Policy strategy to run: static permissive, static restrictive, or dynamic (default: all).",
     )
     parser.add_argument(
         "--profile-config",
         choices=["all", *PROFILE_CONFIGS],
         default="all",
-        help="Profile departure-rate configuration to run (default: all configurations).",
+        help="Autonomous departure-request-rate condition to run (default: all conditions).",
     )
     parser.add_argument(
         "--rescue-sensitivity",

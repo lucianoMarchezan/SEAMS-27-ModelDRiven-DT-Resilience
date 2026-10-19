@@ -458,10 +458,14 @@ class DigitalTwin:
 
     def update_physical_state(self, now):
         reading = self.unit.update(now)
-        if self.is_in_constellation and self.unit.role != "reserve" and self.unit.record_flood_exposure(
-            self.unit.environment.water_level
-        ):
-            self.advance_health_one_step()
+        transition_count = self.unit.record_flood_exposure(
+            self.unit.environment.water_level,
+            now,
+            exposed=self.is_in_constellation and self.unit.role != "reserve",
+        )
+        for _ in range(transition_count):
+            if not self.advance_health_one_step() or self.health_state() == "Failed":
+                break
         if not self.unit.operational and self.health_state() != "Failed":
             self.advance_health_to("Failed")
         # Adaptive's generated chart explicitly waits for uncertainty_exceeded
@@ -533,6 +537,8 @@ class DigitalTwin:
                     "time": self._time(),
                     "event": "task_attempt_result",
                     "task": action,
+                    "role": self.unit.role,
+                    "profile": self.profile,
                     "health": health,
                     "result": result,
                 }

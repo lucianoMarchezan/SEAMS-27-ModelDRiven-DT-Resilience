@@ -17,18 +17,25 @@ class PhysicalUnit:
         self.rescue_progress = 0.0
         self.task = None
         self.last_reading = {}
+        self.last_update_time = 0.0
+        self.last_exposure_update_time = 0.0
 
-    def record_flood_exposure(self, water_level):
-        """Accumulate environmental exposure that can damage this physical unit."""
-        if water_level >= SIMULATION["fault_water_level_threshold"] and self.operational:
-            self.fault_exposure += SIMULATION["fault_exposure_per_step"]
+    def record_flood_exposure(self, water_level, now, exposed):
+        """Integrate environmental exposure over elapsed simulated minutes."""
+        elapsed_minutes = max(0.0, now - self.last_exposure_update_time) / 60.0
+        self.last_exposure_update_time = now
+        if (
+            exposed
+            and water_level >= SIMULATION["fault_water_level_threshold"]
+            and self.operational
+        ):
+            self.fault_exposure += SIMULATION["fault_exposure_per_minute"] * elapsed_minutes
         interval = SIMULATION["fault_exposure_per_transition"]
         if interval <= 0:
-            return False
-        if self.fault_exposure >= interval:
-            self.fault_exposure -= interval
-            return True
-        return False
+            return 0
+        transitions = int(self.fault_exposure // interval)
+        self.fault_exposure -= transitions * interval
+        return transitions
 
     def repair(self):
         self.operational = True
@@ -42,13 +49,14 @@ class PhysicalUnit:
             self.role = role
 
     def update(self, now):
+        elapsed_minutes = max(0.0, now - self.last_update_time) / 60.0
         active = self.role != "reserve"
         if self.asset_type != "pump" and active:
-            battery_use = 0.35 if self.asset_type == "drone" else 0.15
-            self.battery = max(0.0, self.battery - battery_use)
+            battery_use_per_minute = 1.5 if self.asset_type == "drone" else 0.75
+            self.battery = max(0.0, self.battery - battery_use_per_minute * elapsed_minutes)
 
         if self.asset_type == "drone":
-            self.position[0] += self.config["speed"] * 0.01
+            self.position[0] += self.config["speed"] * elapsed_minutes
             self.last_reading = {
                 "water_level": self.environment.water_level,
                 "flooded_area": self.environment.flooded_area,
@@ -58,9 +66,18 @@ class PhysicalUnit:
             }
         elif self.asset_type == "boat":
             if active:
-                self.position[1] += self.config["speed"] * 0.01
-                if now >= SIMULATION["boat_water_ingress_step"]:
-                    self.hull_water_level += SIMULATION["boat_water_ingress_per_step"]
+                self.position[1] += self.config["speed"] * elapsed_minutes
+                ingress_minutes = max(
+                    0.0,
+                    now
+                    - max(
+                        self.last_update_time,
+                        SIMULATION["boat_water_ingress_start_time"],
+                    ),
+                ) / 60.0
+                self.hull_water_level += (
+                    SIMULATION["boat_water_ingress_m_per_minute"] * ingress_minutes
+                )
             self.last_reading = {
                 "water_level": self.environment.water_level,
                 "flooded_area": self.environment.flooded_area,
@@ -78,6 +95,7 @@ class PhysicalUnit:
 
         if self.battery <= 0 and self.asset_type != "pump":
             self.operational = False
+        self.last_update_time = now
         return dict(self.last_reading)
 
     def execute(self, command):
@@ -95,7 +113,7 @@ class PhysicalUnit:
             self.rescue_progress = self.rescue_progress - rescued if rescued == rescuable else 0.0
             return {"rescued": rescued}
         if action == "pump" and self.asset_type == "pump" and self.operational:
-            return {"water_reduced": self.environment.apply_pumping(command.get("amount", 0.12))}
+            return {"water_removed_m3": self.environment.apply_pumping(command.get("amount_m3", 0.0))}
         if action == "monitor" and self.asset_type in {"drone", "boat"} and self.operational:
             return {"observation": dict(self.last_reading)}
         return {"executed": False}
