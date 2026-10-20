@@ -21,7 +21,7 @@ PROFILE_STRATEGIES = {
     "mixed": "Dynamic",
 }
 
-# Rescue capacity is measured in victims per boat per simulated minute.
+# Target-completion throughput is measured per boat per simulated minute.
 # Pump-effect coefficients multiply flooded area measured in hectares.
 RESCUE_SENSITIVITY_CONFIGS = {
     "reference": {
@@ -178,16 +178,16 @@ SIMULATION = {
     "storage_area_expansion_m2_per_m": 15000.0,
     "flood_inflow_m3_per_minute": 3500.0,
     "pump_discharge_m3_per_minute": 300.0,
-    # Common cohort of 240 victims, distributed across the 60-minute incident.
-    "initial_victims": 10,
-    "victim_arrival_waves": [
+    # Common cohort of 240 mission targets, distributed across the 60-minute incident.
+    "initial_mission_targets": 10,
+    "mission_target_arrival_schedule": [
         {"time": 600.0, "count": 46},
         {"time": 1200.0, "count": 46},
         {"time": 1800.0, "count": 46},
         {"time": 2400.0, "count": 46},
         {"time": 3000.0, "count": 46},
     ],
-    "victim_survival_time": 600.0,
+    "mission_target_deadline_interval": 600.0,
     "mission_success_fraction": 1.0,
     "rescue_capacity_per_boat_minute": RESCUE_SENSITIVITY_CONFIGS["boat_emphasis"]["rescue_capacity_per_boat_minute"],
     "rescue_area_penalty": RESCUE_SENSITIVITY_CONFIGS["boat_emphasis"]["rescue_area_penalty"],

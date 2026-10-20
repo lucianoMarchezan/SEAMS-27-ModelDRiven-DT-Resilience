@@ -10,17 +10,17 @@ class FloodEnvironment:
         self.pumped_water = 0.0
         self.flood_inflow_m3 = 0.0
         self.flooded_area = self._area_hectares_for_level(self.water_level)
-        self.victims = []
-        self.victims_rescued = 0
-        self.victims_rescued_before_deadline = 0
-        self.victims_expired = 0
+        self.mission_targets = []
+        self.mission_targets_completed = 0
+        self.mission_targets_completed_before_deadline = 0
+        self.mission_targets_expired = 0
         self.history = []
-        self._next_victim_id = 1
-        self._spawn_victims(SIMULATION["initial_victims"])
-        self._victim_arrival_waves = sorted(
-            SIMULATION.get("victim_arrival_waves", []), key=lambda wave: wave["time"]
+        self._next_mission_target_id = 1
+        self._spawn_mission_targets(SIMULATION["initial_mission_targets"])
+        self._mission_target_arrival_schedule = sorted(
+            SIMULATION.get("mission_target_arrival_schedule", []), key=lambda wave: wave["time"]
         )
-        self._next_victim_wave = 0
+        self._next_mission_target_wave = 0
 
     @staticmethod
     def _area_m2_for_level(level_m):
@@ -49,28 +49,28 @@ class FloodEnvironment:
         return max(0.0, (-base + (base * base + 2 * expansion * max(0.0, volume_m3)) ** 0.5) / expansion)
 
     @property
-    def victims_waiting(self):
-        return sum(victim["status"] == "waiting" for victim in self.victims)
+    def mission_targets_waiting(self):
+        return sum(mission_target["status"] == "waiting" for mission_target in self.mission_targets)
 
     @property
-    def total_victims(self):
-        return len(self.victims)
+    def total_mission_targets(self):
+        return len(self.mission_targets)
 
     @property
-    def victims_per_area(self):
-        return self.victims_waiting / max(self.flooded_area, 1.0)
+    def mission_targets_per_area(self):
+        return self.mission_targets_waiting / max(self.flooded_area, 1.0)
 
-    def _spawn_victims(self, count):
+    def _spawn_mission_targets(self, count):
         for _ in range(max(0, count)):
-            self.victims.append(
+            self.mission_targets.append(
                 {
-                    "id": self._next_victim_id,
+                    "id": self._next_mission_target_id,
                     "arrived_at": self.env.now,
-                    "deadline": self.env.now + SIMULATION["victim_survival_time"],
+                    "deadline": self.env.now + SIMULATION["mission_target_deadline_interval"],
                     "status": "waiting",
                 }
             )
-            self._next_victim_id += 1
+            self._next_mission_target_id += 1
 
     def run(self):
         while self.env.now < SIMULATION["duration"]:
@@ -86,14 +86,14 @@ class FloodEnvironment:
             self.flooded_area = self._area_hectares_for_level(self.water_level)
 
             while (
-                self._next_victim_wave < len(self._victim_arrival_waves)
-                and self._victim_arrival_waves[self._next_victim_wave]["time"] <= self.env.now
+                self._next_mission_target_wave < len(self._mission_target_arrival_schedule)
+                and self._mission_target_arrival_schedule[self._next_mission_target_wave]["time"] <= self.env.now
             ):
-                wave = self._victim_arrival_waves[self._next_victim_wave]
-                self._spawn_victims(wave["count"])
-                self._next_victim_wave += 1
+                wave = self._mission_target_arrival_schedule[self._next_mission_target_wave]
+                self._spawn_mission_targets(wave["count"])
+                self._next_mission_target_wave += 1
 
-            self.expire_victims()
+            self.expire_mission_targets()
             self.history.append(
                 {
                     "time": self.env.now,
@@ -103,22 +103,23 @@ class FloodEnvironment:
                     "flood_inflow_m3": round(self.flood_inflow_m3, 3),
                     "pumped_water_m3": round(self.pumped_water, 3),
                     "flooded_area_hectares": round(self.flooded_area, 3),
-                    "victims_waiting": self.victims_waiting,
-                    "victims_rescued": self.victims_rescued,
-                    "victims_rescued_before_deadline": self.victims_rescued_before_deadline,
-                    "victims_expired": self.victims_expired,
-                    "total_victims": self.total_victims,
-                    "victims_per_hectare": round(self.victims_per_area, 4),
+                    "mission_targets_waiting": self.mission_targets_waiting,
+                    "mission_targets_completed": self.mission_targets_completed,
+                    "mission_targets_completed_before_deadline": self.mission_targets_completed_before_deadline,
+                    "mission_objective_achievement": self.mission_targets_completed_before_deadline,
+                    "mission_targets_expired": self.mission_targets_expired,
+                    "total_mission_targets": self.total_mission_targets,
+                    "mission_targets_per_hectare": round(self.mission_targets_per_area, 4),
                 }
             )
             if self.env.now >= SIMULATION["duration"]:
                 return
 
-    def expire_victims(self):
-        for victim in self.victims:
-            if victim["status"] == "waiting" and self.env.now >= victim["deadline"]:
-                victim["status"] = "expired"
-                self.victims_expired += 1
+    def expire_mission_targets(self):
+        for mission_target in self.mission_targets:
+            if mission_target["status"] == "waiting" and self.env.now >= mission_target["deadline"]:
+                mission_target["status"] = "expired"
+                self.mission_targets_expired += 1
 
     def apply_pumping(self, volume_m3):
         removed = min(max(0.0, volume_m3), self.storage_volume_m3)
@@ -129,14 +130,14 @@ class FloodEnvironment:
         return removed
 
     def rescue(self, capacity):
-        self.expire_victims()
+        self.expire_mission_targets()
         waiting = sorted(
-            (victim for victim in self.victims if victim["status"] == "waiting"),
-            key=lambda victim: victim["deadline"],
+            (mission_target for mission_target in self.mission_targets if mission_target["status"] == "waiting"),
+            key=lambda mission_target: mission_target["deadline"],
         )
-        rescued = waiting[: max(0, int(capacity))]
-        for victim in rescued:
-            victim["status"] = "rescued"
-            self.victims_rescued += 1
-            self.victims_rescued_before_deadline += 1
-        return len(rescued)
+        completed = waiting[: max(0, int(capacity))]
+        for mission_target in completed:
+            mission_target["status"] = "completed"
+            self.mission_targets_completed += 1
+            self.mission_targets_completed_before_deadline += 1
+        return len(completed)

@@ -59,7 +59,7 @@ class PhysicalUnit:
             self.last_reading = {
                 "water_level": self.environment.water_level,
                 "flooded_area": self.environment.flooded_area,
-                "victims_detected": self.environment.victims_waiting,
+                "mission_targets_detected": self.environment.mission_targets_waiting,
                 "battery": self.battery,
                 "position": tuple(self.position),
             }
@@ -100,17 +100,17 @@ class PhysicalUnit:
     def execute(self, command):
         action = command["action"]
         if action == "rescue" and self.asset_type == "boat" and self.role == "rescue" and self.operational:
-            if self.environment.victims_waiting == 0:
+            if self.environment.mission_targets_waiting == 0:
                 self.rescue_progress = 0.0
-                return {"rescued": 0}
+                return {"completed": 0}
             area_factor = 1.0 + self.environment.flooded_area * SIMULATION["rescue_area_penalty"]
             self.rescue_progress += command.get("capacity", 2) / area_factor
             rescuable = int(self.rescue_progress)
             if rescuable <= 0:
-                return {"rescued": 0}
-            rescued = self.environment.rescue(rescuable)
-            self.rescue_progress = self.rescue_progress - rescued if rescued == rescuable else 0.0
-            return {"rescued": rescued}
+                return {"completed": 0}
+            completed = self.environment.rescue(rescuable)
+            self.rescue_progress = self.rescue_progress - completed if completed == rescuable else 0.0
+            return {"completed": completed}
         if action == "pump" and self.asset_type == "pump" and self.operational:
             return {"water_removed_m3": self.environment.apply_pumping(command.get("amount_m3", 0.0))}
         if action == "monitor" and self.asset_type in {"drone", "boat"} and self.operational:

@@ -219,13 +219,13 @@ class SoSCoordinator:
         return TASK_SUCCESS_PROBABILITY_BY_HEALTH.get(twin.health_state(), 0.0)
 
     def minimum_rescue_boats(self):
-        waiting = [v for v in self.flood.victims if v["status"] == "waiting"]
+        waiting = [v for v in self.flood.mission_targets if v["status"] == "waiting"]
         if not waiting:
             return 0
-        deadlines = sorted({victim["deadline"] for victim in waiting})
+        deadlines = sorted({mission_target["deadline"] for mission_target in waiting})
         minimum = 0
         for deadline in deadlines:
-            due = sum(victim["deadline"] <= deadline for victim in waiting)
+            due = sum(mission_target["deadline"] <= deadline for mission_target in waiting)
             capacity = self._expected_rescues_per_boat(deadline - self.env.now)
             required = math.ceil(due / capacity) if capacity > 0 else len(self.twins) + 1
             minimum = max(minimum, required)

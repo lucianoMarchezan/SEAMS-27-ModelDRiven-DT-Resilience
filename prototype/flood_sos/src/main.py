@@ -63,14 +63,20 @@ def run_simulation(strategy, profile_configuration, seed, rescue_sensitivity="bo
     env.process(apply_connectivity_scenario(env, twins))
     env.process(coordinator.run())
     # SimPy's until event is urgent and would otherwise stop before processing
-    # events scheduled exactly at the mission deadline (including victim expiry).
+    # events scheduled exactly at the mission deadline (including mission_target expiry).
     env.run(until=SIMULATION["duration"] + 1e-6)
     # Collect local twin logs through the final simulation timestamp, including
     # task outcomes that were produced on the last step but not yet observed.
     coordinator.observe_state_changes()
 
-    target = math.ceil(flood.total_victims * SIMULATION["mission_success_fraction"])
-    success = flood.victims_rescued_before_deadline >= target
+    # Keep the mission-level decision expressed in terms of a generic objective.
+    # In this flood scenario, objective achievement is operationalized as
+    # mission_targets completed before their individual deadlines.
+    mission_objective_target = math.ceil(
+        flood.total_mission_targets * SIMULATION["mission_success_fraction"]
+    )
+    mission_objective_achievement = flood.mission_targets_completed_before_deadline
+    success = mission_objective_achievement >= mission_objective_target
     metrics = coordinator.metrics()
     activity_quantities = derive_activity_quantities(broker.log, metrics, SIMULATION["duration"])
     costs = estimate_cost(activity_quantities, SIMULATION["duration"], COST_MODEL)
@@ -89,7 +95,7 @@ def run_simulation(strategy, profile_configuration, seed, rescue_sensitivity="bo
         "metric_time_unit": SIMULATION["metric_time_unit"],
         "duration": SIMULATION["duration"],
         "step": SIMULATION["step"],
-        "victim_survival_time_seconds": SIMULATION["victim_survival_time"],
+        "mission_target_deadline_interval_seconds": SIMULATION["mission_target_deadline_interval"],
         "flood_inflow_m3_per_minute": SIMULATION["flood_inflow_m3_per_minute"],
         "pump_discharge_m3_per_minute": SIMULATION[
             "pump_discharge_m3_per_minute"
@@ -101,10 +107,10 @@ def run_simulation(strategy, profile_configuration, seed, rescue_sensitivity="bo
         "fault_exposure_per_transition": SIMULATION[
             "fault_exposure_per_transition"
         ],
-        "victim_arrival_schedule": {
-            "initial_count": SIMULATION["initial_victims"],
-            "waves": SIMULATION["victim_arrival_waves"],
-            "survival_time_seconds": SIMULATION["victim_survival_time"],
+        "mission_target_arrival_schedule": {
+            "initial_count": SIMULATION["initial_mission_targets"],
+            "waves": SIMULATION["mission_target_arrival_schedule"],
+            "completion_interval_seconds": SIMULATION["mission_target_deadline_interval"],
         },
         "flood_model": {
             "model_type": "synthetic_storage_balance",
@@ -128,14 +134,15 @@ def run_simulation(strategy, profile_configuration, seed, rescue_sensitivity="bo
             ],
         },
         "mission_success": success,
-        "mission_success_target": target,
+        "mission_objective_achievement": mission_objective_achievement,
+        "mission_objective_target": mission_objective_target,
         "mission_success_fraction": SIMULATION["mission_success_fraction"],
-        "victims_created": flood.total_victims,
-        "victims_rescued": flood.victims_rescued,
-        "victims_rescued_before_deadline": flood.victims_rescued_before_deadline,
-        "victims_waiting": flood.victims_waiting,
-        "victims_expired": flood.victims_expired,
-        "final_victims_per_hectare": flood.victims_per_area,
+        "mission_targets_created": flood.total_mission_targets,
+        "mission_targets_completed": flood.mission_targets_completed,
+        "mission_targets_completed_before_deadline": flood.mission_targets_completed_before_deadline,
+        "mission_targets_waiting": flood.mission_targets_waiting,
+        "mission_targets_expired": flood.mission_targets_expired,
+        "final_mission_targets_per_hectare": flood.mission_targets_per_area,
         "final_water_level_m": flood.water_level,
         "final_flooded_area_hectares": flood.flooded_area,
         "final_storage_volume_m3": flood.storage_volume_m3,
@@ -191,10 +198,17 @@ def aggregate_runs(results):
         "runs": run_count,
         "successes": sum(result["mission_success"] for result in results),
         "success_rate": sum(result["mission_success"] for result in results) / run_count,
-        "mean_victims_rescued_before_deadline": sum(
-            result["victims_rescued_before_deadline"] for result in results
+        "mean_mission_targets_completed_before_deadline": sum(
+            result["mission_targets_completed_before_deadline"] for result in results
         )
         / run_count,
+        "mean_mission_objective_achievement": sum(
+            result.get(
+                "mission_objective_achievement",
+                result["mission_targets_completed_before_deadline"],
+            )
+            for result in results
+        ) / run_count,
         "mean_peak_attached_dts": sum(result["peak_attached_dts"] for result in results)
         / run_count,
         "mean_peak_constellation_dts": sum(
@@ -342,17 +356,18 @@ def write_outputs(results, output_dir):
         "metric_time_unit",
         "duration",
         "step",
-        "victim_survival_time_seconds",
+        "mission_target_deadline_interval_seconds",
         "flood_inflow_m3_per_minute",
         "pump_discharge_m3_per_minute",
         "fault_water_level_threshold_m",
         "fault_exposure_per_minute",
         "fault_exposure_per_transition",
         "mission_success",
-        "mission_success_target",
-        "victims_created",
-        "victims_rescued_before_deadline",
-        "victims_expired",
+        "mission_objective_achievement",
+        "mission_objective_target",
+        "mission_targets_created",
+        "mission_targets_completed_before_deadline",
+        "mission_targets_expired",
         "peak_attached_dts",
         "peak_constellation_dts",
         "dt_time",
@@ -414,7 +429,7 @@ def write_outputs(results, output_dir):
         "final_flooded_area_hectares",
         "final_storage_volume_m3",
         "flood_inflow_m3",
-        "final_victims_per_hectare",
+        "final_mission_targets_per_hectare",
         "pumped_water_m3",
     ]
     with (output_dir / "simulation_runs.csv").open("w", newline="", encoding="utf-8") as file:
@@ -504,12 +519,13 @@ def write_outputs(results, output_dir):
         "flood_inflow_m3",
         "pumped_water_m3",
         "flooded_area_hectares",
-        "victims_waiting",
-        "victims_rescued",
-        "victims_rescued_before_deadline",
-        "victims_expired",
-        "total_victims",
-        "victims_per_hectare",
+        "mission_targets_waiting",
+        "mission_targets_completed",
+        "mission_targets_completed_before_deadline",
+        "mission_objective_achievement",
+        "mission_targets_expired",
+        "total_mission_targets",
+        "mission_targets_per_hectare",
     ]
     with (output_dir / "flood_history.csv").open("w", newline="", encoding="utf-8") as file:
         writer = csv.DictWriter(file, fieldnames=history_fields)
