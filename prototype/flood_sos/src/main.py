@@ -251,6 +251,45 @@ def aggregate_runs(results):
         "mean_cost_low": sum(result["costs"]["total_low"] for result in results) / run_count,
         "mean_cost_base": sum(result["costs"]["total_base"] for result in results) / run_count,
         "mean_cost_high": sum(result["costs"]["total_high"] for result in results) / run_count,
+        "mean_forced_retention_minutes": sum(
+            result["forced_retention_minutes"] for result in results
+        ) / run_count,
+        "mean_episode_forced_retention_minutes": sum(
+            result["forced_retention_minutes"] for result in results
+        ) / max(1, sum(result["forced_retention_episodes"] for result in results)),
+        "mean_forced_retention_minutes_profile_denied": sum(
+            result["forced_retention_minutes_profile_denied"] for result in results
+        ) / run_count,
+        "mean_forced_retention_minutes_capacity_deferred": sum(
+            result["forced_retention_minutes_capacity_deferred"] for result in results
+        ) / run_count,
+        "mean_forced_retention_episodes": sum(
+            result["forced_retention_episodes"] for result in results
+        ) / run_count,
+        "mean_forced_retention_episodes_profile_denied": sum(
+            result["forced_retention_episodes_profile_denied"] for result in results
+        ) / run_count,
+        "mean_forced_retention_episodes_capacity_deferred": sum(
+            result["forced_retention_episodes_capacity_deferred"] for result in results
+        ) / run_count,
+        "mean_forced_retention_completed_episodes": sum(
+            result["forced_retention_completed_episodes"] for result in results
+        ) / run_count,
+        "mean_forced_retention_censored_episodes": sum(
+            result["forced_retention_censored_episodes"] for result in results
+        ) / run_count,
+        "mean_autonomy_restriction_cost_low": sum(
+            result["costs"]["autonomy_restriction_attribution"]["cost_low"]
+            for result in results
+        ) / run_count,
+        "mean_autonomy_restriction_cost_base": sum(
+            result["costs"]["autonomy_restriction_attribution"]["cost_base"]
+            for result in results
+        ) / run_count,
+        "mean_autonomy_restriction_cost_high": sum(
+            result["costs"]["autonomy_restriction_attribution"]["cost_high"]
+            for result in results
+        ) / run_count,
         "mean_cost_by_category_base": {
             category: sum(result["costs"]["by_category"]["base"].get(category, 0.0) for result in results)
             / run_count
@@ -385,6 +424,18 @@ def write_outputs(results, output_dir):
         "cost_total_low",
         "cost_total_base",
         "cost_total_high",
+        "forced_retention_minutes",
+        "mean_forced_retention_episode_minutes",
+        "forced_retention_episodes",
+        "forced_retention_episodes_profile_denied",
+        "forced_retention_episodes_capacity_deferred",
+        "forced_retention_completed_episodes",
+        "forced_retention_censored_episodes",
+        "forced_retention_minutes_profile_denied",
+        "forced_retention_minutes_capacity_deferred",
+        "autonomy_restriction_cost_low",
+        "autonomy_restriction_cost_base",
+        "autonomy_restriction_cost_high",
         "cost_IT_infrastructure_base",
         "cost_Resources_base",
         "cost_Data_activities_base",
@@ -442,6 +493,9 @@ def write_outputs(results, output_dir):
                     "cost_total_low": result["costs"]["total_low"],
                     "cost_total_base": result["costs"]["total_base"],
                     "cost_total_high": result["costs"]["total_high"],
+                    "autonomy_restriction_cost_low": result["costs"]["autonomy_restriction_attribution"]["cost_low"],
+                    "autonomy_restriction_cost_base": result["costs"]["autonomy_restriction_attribution"]["cost_base"],
+                    "autonomy_restriction_cost_high": result["costs"]["autonomy_restriction_attribution"]["cost_high"],
                     "cost_IT_infrastructure_base": result["costs"]["by_category"]["base"].get("IT infrastructure", 0.0),
                     "cost_Resources_base": result["costs"]["by_category"]["base"].get("Resources", 0.0),
                     "cost_Data_activities_base": result["costs"]["by_category"]["base"].get("Data activities", 0.0),

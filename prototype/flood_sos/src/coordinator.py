@@ -31,6 +31,9 @@ class SoSCoordinator:
         self.assignments = {}
         self.random = random.Random(SIMULATION["seed"] if seed is None else seed)
         self.pending_departures = set()
+        self.departure_request_sequence = 0
+        self.departure_retention_episodes = []
+        self.open_departure_retention = {}
         self.pending_health_replacements = []
         self.pending_health_exits = {}
         self.health_return_eligible = set()
@@ -570,8 +573,10 @@ class SoSCoordinator:
                 continue
 
             self.sos_request_counts["generated"] += 1
+            self.departure_request_sequence += 1
             policy = PROFILE_MEMBERSHIP_POLICY[twin.profile]
             request = {
+                "request_id": self.departure_request_sequence,
                 "time": self.env.now,
                 "unit": twin.name,
                 "profile": twin.profile,
@@ -583,16 +588,19 @@ class SoSCoordinator:
             if self.random.random() >= policy["leave_acceptance"]:
                 self.sos_request_counts["profile_denied"] += 1
                 self.events.append({"event": "sos_departure_denied_by_profile", **request})
+                self._record_blocked_departure(twin, request, "profile_denied")
                 continue
 
             required = self.minimum_rescue_boats()
             remaining_boats = self._active_boat_count(excluding=twin)
             if remaining_boats < required:
                 self.sos_request_counts["capacity_deferred"] += 1
+                self._record_blocked_departure(twin, request, "capacity_deferred")
                 self.events.append(
                     {
                         "time": self.env.now,
                         "event": "sos_departure_deferred_for_capacity",
+                        "request_id": request["request_id"],
                         "unit": twin.name,
                         "reason": "sos",
                         "profile": twin.profile,
@@ -607,6 +615,61 @@ class SoSCoordinator:
                 self.pending_departures.add(twin.name)
                 self.sos_request_counts["submitted_to_bm"] += 1
             self.events.append({"event": "sos_departure_submitted_to_bm", **request, "event_raised": raised})
+
+    def _record_blocked_departure(self, twin, request, blocking_reason):
+        """Track a non-overlapping retention episode after a blocked leave request."""
+        episode = self.open_departure_retention.get(twin.name)
+        if episode is None:
+            episode = {
+                "unit": twin.name,
+                "role": twin.unit.role,
+                "profile": request["profile"],
+                "start_time": request["time"],
+                "initial_block_reason": blocking_reason,
+                "blocked_request_count": 0,
+                "blocked_request_ids": [],
+                "profile_denied_requests": 0,
+                "capacity_deferred_requests": 0,
+                "completed": False,
+            }
+            self.departure_retention_episodes.append(episode)
+            self.open_departure_retention[twin.name] = episode
+        episode["blocked_request_count"] += 1
+        episode["blocked_request_ids"].append(request["request_id"])
+        if blocking_reason == "profile_denied":
+            episode["profile_denied_requests"] += 1
+        elif blocking_reason == "capacity_deferred":
+            episode["capacity_deferred_requests"] += 1
+        self.events.append(
+            {
+                "time": request["time"],
+                "event": "departure_retention_blocked",
+                "request_id": request["request_id"],
+                "unit": twin.name,
+                "blocking_reason": blocking_reason,
+                "retention_episode_start": episode["start_time"],
+            }
+        )
+
+    def _close_departure_retention(self, unit, time, end_reason):
+        episode = self.open_departure_retention.pop(unit, None)
+        if episode is None:
+            return
+        episode["end_time"] = time
+        episode["duration_seconds"] = max(0.0, time - episode["start_time"])
+        episode["end_reason"] = end_reason
+        episode["completed"] = True
+        self.events.append(
+            {
+                "time": time,
+                "event": "departure_retention_ended",
+                "unit": unit,
+                "duration_seconds": episode["duration_seconds"],
+                "end_reason": end_reason,
+                "initial_block_reason": episode["initial_block_reason"],
+                "blocked_request_ids": list(episode["blocked_request_ids"]),
+            }
+        )
 
     def observe_state_changes(self):
         for name, twin in self.twins.items():
@@ -645,6 +708,12 @@ class SoSCoordinator:
                         before.get("belonging") == "Active"
                         and after.get("belonging") != "Active"
                     )
+                    if left_active_membership:
+                        self._close_departure_retention(
+                            name,
+                            entry.get("time", self.env.now),
+                            "left_active_membership",
+                        )
                     if left_active_membership and announced:
                         if health_event or pending_health_exit is not None:
                             self.pending_health_exits.pop(name, None)
@@ -1025,6 +1094,13 @@ class SoSCoordinator:
             yield self.env.timeout(SIMULATION["step"])
 
     def metrics(self):
+        horizon = min(float(self.env.now), float(SIMULATION["duration"]))
+        retention_durations = [
+            episode.get("duration_seconds", max(0.0, horizon - episode["start_time"]))
+            for episode in self.departure_retention_episodes
+        ]
+        retention_seconds = sum(retention_durations)
+        retention_episodes = len(self.departure_retention_episodes)
         return {
             "peak_attached_dts": self.peak_attached_dts,
             "peak_constellation_dts": self.peak_constellation_dts,
@@ -1045,6 +1121,41 @@ class SoSCoordinator:
             "backup_standby_time": self.backup_standby_time / 60.0,
             "processing_work": self.processing_work,
             "sos_request_counts": dict(self.sos_request_counts),
+            "forced_retention_minutes": retention_seconds / 60.0,
+            "mean_forced_retention_episode_minutes": (
+                retention_seconds / 60.0 / retention_episodes if retention_episodes else 0.0
+            ),
+            "forced_retention_episodes": retention_episodes,
+            "forced_retention_episodes_profile_denied": sum(
+                episode["initial_block_reason"] == "profile_denied"
+                for episode in self.departure_retention_episodes
+            ),
+            "forced_retention_episodes_capacity_deferred": sum(
+                episode["initial_block_reason"] == "capacity_deferred"
+                for episode in self.departure_retention_episodes
+            ),
+            "forced_retention_completed_episodes": sum(
+                episode["completed"] for episode in self.departure_retention_episodes
+            ),
+            "forced_retention_censored_episodes": len(self.open_departure_retention),
+            "forced_retention_minutes_profile_denied": sum(
+                duration
+                for episode, duration in zip(self.departure_retention_episodes, retention_durations)
+                if episode["initial_block_reason"] == "profile_denied"
+            ) / 60.0,
+            "forced_retention_minutes_capacity_deferred": sum(
+                duration
+                for episode, duration in zip(self.departure_retention_episodes, retention_durations)
+                if episode["initial_block_reason"] == "capacity_deferred"
+            ) / 60.0,
+            "departure_retention_episodes_detail": [
+                {
+                    **episode,
+                    "duration_minutes": duration / 60.0,
+                    "censored_at_mission_end": not episode["completed"],
+                }
+                for episode, duration in zip(self.departure_retention_episodes, retention_durations)
+            ],
             "join_request_counts": dict(self.join_request_counts),
             "health_lifecycle_counts": dict(self.health_lifecycle_counts),
             "task_outcome_counts": dict(self.task_outcome_counts),
