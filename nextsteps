@@ -23,3 +23,11 @@
 -- a higher level policy for SoS (meta policy)
 -- each DT can have its resilience level (policy)
 -- the SoS can have its meta resilience level (policy)
+
+
+ =======================19-10=================== 
+Threats plus discussion:
+-- discuss the caveats of the reserves vs task success
+-- the higher the K (reserves), the more pronnounce the difference becomes in the results
+-- the task success rates for the physical materials
+-- talk about the parameters being not only domain specific but also scenario specific. To use them in a real setting, we need to talk about phisics, etc (future work) 

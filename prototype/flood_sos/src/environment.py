@@ -14,7 +14,6 @@ class FloodEnvironment:
         self.victims_rescued = 0
         self.victims_rescued_before_deadline = 0
         self.victims_expired = 0
-        self.observed_locations = set()
         self.history = []
         self._next_victim_id = 1
         self._spawn_victims(SIMULATION["initial_victims"])

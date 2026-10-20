@@ -59,9 +59,7 @@ class DigitalTwin:
         self.timer_service = TimerService(broker.env)
         self.connected = True
         self.last_telemetry = {}
-        self.last_seen = 0.0
         self.task = None
-        self.last_task_succeeded = False
         self.last_task_succeeded = False
         # Stable per-twin RNG streams make probabilistic task degradation
         # reproducible and independent of Poisson membership decisions.

@@ -14049,7 +14049,7 @@
         {
           "time": 1020.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -14057,7 +14057,7 @@
         {
           "time": 1020.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -39948,18 +39948,18 @@
         },
         {
           "time": 1140.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat2",
+          "health": "Ideal",
+          "belonging": "Prepared"
+        },
+        {
+          "time": 1140.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat3",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
-        },
-        {
-          "time": 1140.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat2",
-          "health": "Ideal",
-          "belonging": "Prepared"
         },
         {
           "time": 1140.0,
@@ -151845,15 +151845,15 @@
         {
           "time": 3540.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Defective",
+          "unit": "ReserveBoat6",
+          "health": "Ideal",
           "belonging": "Prepared"
         },
         {
           "time": 3540.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat6",
-          "health": "Ideal",
+          "unit": "ReserveBoat3",
+          "health": "Defective",
           "belonging": "Prepared"
         },
         {
@@ -166983,18 +166983,18 @@
         },
         {
           "time": 2340.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat1",
+          "health": "Defective",
+          "belonging": "Prepared"
+        },
+        {
+          "time": 2340.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat3",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
-        },
-        {
-          "time": 2340.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
-          "health": "Defective",
-          "belonging": "Prepared"
         },
         {
           "time": 2340.0,
@@ -194539,14 +194539,14 @@
         {
           "time": 2340.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "health": "Defective",
           "belonging": "Prepared"
         },
         {
           "time": 2340.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "health": "Defective",
           "belonging": "Prepared"
         },
@@ -194758,7 +194758,7 @@
         {
           "time": 2400.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "profile": "Reactive",
           "health": "Defective",
           "belonging": "Disengaged"
@@ -194766,7 +194766,7 @@
         {
           "time": 2400.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "profile": "Reactive",
           "health": "Defective",
           "belonging": "Disengaged"
@@ -205880,18 +205880,18 @@
         },
         {
           "time": 3540.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
-          "health": "Defective",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 3540.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat6",
           "profile": "Reactive",
           "health": "Faulty",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 3540.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat1",
+          "health": "Defective",
+          "belonging": "Prepared"
         },
         {
           "time": 3540.0,
@@ -211797,15 +211797,15 @@
         {
           "time": 2340.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Defective",
+          "unit": "ReserveBoat1",
+          "health": "Ideal",
           "belonging": "Prepared"
         },
         {
           "time": 2340.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
-          "health": "Ideal",
+          "unit": "ReserveBoat3",
+          "health": "Defective",
           "belonging": "Prepared"
         },
         {
@@ -212037,17 +212037,17 @@
         {
           "time": 2400.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "profile": "Reactive",
-          "health": "Defective",
+          "health": "Ideal",
           "belonging": "Disengaged"
         },
         {
           "time": 2400.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "profile": "Reactive",
-          "health": "Ideal",
+          "health": "Defective",
           "belonging": "Disengaged"
         },
         {
@@ -213932,18 +213932,18 @@
         },
         {
           "time": 3480.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat5",
-          "health": "Ideal",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 3480.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat1",
           "profile": "Reactive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 3480.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat5",
+          "health": "Ideal",
+          "belonging": "Prepared"
         },
         {
           "time": 3480.0,
@@ -282767,18 +282767,18 @@
         },
         {
           "time": 3540.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 3540.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat6",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 3540.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
+          "belonging": "Prepared"
         },
         {
           "time": 3540.0,
@@ -299184,18 +299184,18 @@
         },
         {
           "time": 2880.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Defective",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 2880.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat1",
           "profile": "Reactive",
           "health": "Faulty",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 2880.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Defective",
+          "belonging": "Prepared"
         },
         {
           "time": 2880.0,
@@ -308488,15 +308488,15 @@
         {
           "time": 2940.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
+          "unit": "ReserveBoat1",
+          "health": "Defective",
           "belonging": "Prepared"
         },
         {
           "time": 2940.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
-          "health": "Defective",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
           "belonging": "Prepared"
         },
         {
@@ -308761,17 +308761,17 @@
         {
           "time": 3000.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "profile": "Reactive",
-          "health": "Ideal",
+          "health": "Defective",
           "belonging": "Disengaged"
         },
         {
           "time": 3000.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "profile": "Reactive",
-          "health": "Defective",
+          "health": "Ideal",
           "belonging": "Disengaged"
         },
         {
@@ -339252,18 +339252,18 @@
         },
         {
           "time": 2880.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat2",
+          "health": "Ideal",
+          "belonging": "Prepared"
+        },
+        {
+          "time": 2880.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat3",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
-        },
-        {
-          "time": 2880.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat2",
-          "health": "Ideal",
-          "belonging": "Prepared"
         },
         {
           "time": 2880.0,
@@ -412101,18 +412101,18 @@
         },
         {
           "time": 2280.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat1",
+          "health": "Defective",
+          "belonging": "Prepared"
+        },
+        {
+          "time": 2280.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat3",
           "profile": "Reactive",
           "health": "Defective",
           "belonging": "Disengaged"
-        },
-        {
-          "time": 2280.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
-          "health": "Defective",
-          "belonging": "Prepared"
         },
         {
           "time": 2280.0,
@@ -430556,7 +430556,7 @@
         {
           "time": 1560.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat2",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -430564,7 +430564,7 @@
         {
           "time": 1560.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat2",
+          "unit": "ReserveBoat3",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -478576,14 +478576,14 @@
         {
           "time": 2280.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "health": "Ideal",
           "belonging": "Prepared"
         },
         {
           "time": 2280.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "health": "Ideal",
           "belonging": "Prepared"
         },
@@ -478711,7 +478711,7 @@
         {
           "time": 2340.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -478719,7 +478719,7 @@
         {
           "time": 2340.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -509440,7 +509440,7 @@
         {
           "time": 1860.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat5",
+          "unit": "ReserveBoat1",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -509448,7 +509448,7 @@
         {
           "time": 1860.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat5",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -521330,15 +521330,15 @@
         {
           "time": 2340.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Defective",
+          "unit": "ReserveBoat6",
+          "health": "Ideal",
           "belonging": "Prepared"
         },
         {
           "time": 2340.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat6",
-          "health": "Ideal",
+          "unit": "ReserveBoat3",
+          "health": "Defective",
           "belonging": "Prepared"
         },
         {
@@ -521599,17 +521599,17 @@
         {
           "time": 2400.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat6",
           "profile": "Reactive",
-          "health": "Defective",
+          "health": "Ideal",
           "belonging": "Disengaged"
         },
         {
           "time": 2400.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat6",
+          "unit": "ReserveBoat3",
           "profile": "Reactive",
-          "health": "Ideal",
+          "health": "Defective",
           "belonging": "Disengaged"
         },
         {
@@ -533855,7 +533855,7 @@
         {
           "time": 2940.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -533863,7 +533863,7 @@
         {
           "time": 2940.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -535508,18 +535508,18 @@
         },
         {
           "time": 3540.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat6",
+          "health": "Defective",
+          "belonging": "Prepared"
+        },
+        {
+          "time": 3540.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat5",
           "profile": "Reactive",
           "health": "Defective",
           "belonging": "Disengaged"
-        },
-        {
-          "time": 3540.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat6",
-          "health": "Defective",
-          "belonging": "Prepared"
         },
         {
           "time": 3540.0,
@@ -577400,14 +577400,14 @@
         {
           "time": 2940.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat2",
           "health": "Defective",
           "belonging": "Prepared"
         },
         {
           "time": 2940.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat2",
+          "unit": "ReserveBoat3",
           "health": "Defective",
           "belonging": "Prepared"
         },
@@ -577703,7 +577703,7 @@
         {
           "time": 3000.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat2",
           "profile": "Reactive",
           "health": "Defective",
           "belonging": "Disengaged"
@@ -577711,7 +577711,7 @@
         {
           "time": 3000.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat2",
+          "unit": "ReserveBoat3",
           "profile": "Reactive",
           "health": "Defective",
           "belonging": "Disengaged"
@@ -682262,15 +682262,15 @@
         {
           "time": 2940.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Defective",
+          "unit": "ReserveBoat6",
+          "health": "Ideal",
           "belonging": "Prepared"
         },
         {
           "time": 2940.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat6",
-          "health": "Ideal",
+          "unit": "ReserveBoat3",
+          "health": "Defective",
           "belonging": "Prepared"
         },
         {
@@ -682420,17 +682420,17 @@
         {
           "time": 3000.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat6",
           "profile": "Reactive",
-          "health": "Defective",
+          "health": "Ideal",
           "belonging": "Disengaged"
         },
         {
           "time": 3000.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat6",
+          "unit": "ReserveBoat3",
           "profile": "Reactive",
-          "health": "Ideal",
+          "health": "Defective",
           "belonging": "Disengaged"
         },
         {
@@ -705516,15 +705516,15 @@
         {
           "time": 2940.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
-          "health": "Defective",
+          "unit": "ReserveBoat6",
+          "health": "Ideal",
           "belonging": "Prepared"
         },
         {
           "time": 2940.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat6",
-          "health": "Ideal",
+          "unit": "ReserveBoat1",
+          "health": "Defective",
           "belonging": "Prepared"
         },
         {
@@ -705677,17 +705677,17 @@
         {
           "time": 3000.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat6",
           "profile": "Reactive",
-          "health": "Defective",
+          "health": "Ideal",
           "belonging": "Disengaged"
         },
         {
           "time": 3000.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat6",
+          "unit": "ReserveBoat1",
           "profile": "Reactive",
-          "health": "Ideal",
+          "health": "Defective",
           "belonging": "Disengaged"
         },
         {
@@ -714742,18 +714742,18 @@
         },
         {
           "time": 3540.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat1",
+          "health": "Faulty",
+          "belonging": "Prepared"
+        },
+        {
+          "time": 3540.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat3",
           "profile": "Reactive",
           "health": "Faulty",
           "belonging": "Disengaged"
-        },
-        {
-          "time": 3540.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
-          "health": "Faulty",
-          "belonging": "Prepared"
         },
         {
           "unit": "ReserveBoat1",
@@ -752298,14 +752298,14 @@
         {
           "time": 2940.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat2",
           "health": "Defective",
           "belonging": "Prepared"
         },
         {
           "time": 2940.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat2",
+          "unit": "ReserveBoat3",
           "health": "Defective",
           "belonging": "Prepared"
         },
@@ -752546,7 +752546,7 @@
         {
           "time": 3000.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat2",
           "profile": "Reactive",
           "health": "Defective",
           "belonging": "Disengaged"
@@ -752554,7 +752554,7 @@
         {
           "time": 3000.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat2",
+          "unit": "ReserveBoat3",
           "profile": "Reactive",
           "health": "Defective",
           "belonging": "Disengaged"
@@ -777474,18 +777474,18 @@
         },
         {
           "time": 2880.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat2",
+          "health": "Ideal",
+          "belonging": "Prepared"
+        },
+        {
+          "time": 2880.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat3",
           "profile": "Reactive",
           "health": "Defective",
           "belonging": "Disengaged"
-        },
-        {
-          "time": 2880.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat2",
-          "health": "Ideal",
-          "belonging": "Prepared"
         },
         {
           "time": 2880.0,
@@ -791951,18 +791951,18 @@
         },
         {
           "time": 2880.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat1",
+          "health": "Ideal",
+          "belonging": "Prepared"
+        },
+        {
+          "time": 2880.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat3",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
-        },
-        {
-          "time": 2880.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
-          "health": "Ideal",
-          "belonging": "Prepared"
         },
         {
           "time": 2880.0,
@@ -849248,18 +849248,18 @@
         },
         {
           "time": 2940.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 2940.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat1",
           "profile": "Adaptive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 2940.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
+          "belonging": "Prepared"
         },
         {
           "event": "sos_departure_request",
@@ -859535,18 +859535,18 @@
         },
         {
           "time": 1980.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat1",
+          "health": "Ideal",
+          "belonging": "Prepared"
+        },
+        {
+          "time": 1980.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat3",
           "profile": "Adaptive",
           "health": "Ideal",
           "belonging": "Disengaged"
-        },
-        {
-          "time": 1980.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
-          "health": "Ideal",
-          "belonging": "Prepared"
         },
         {
           "time": 1980.0,
@@ -873123,18 +873123,18 @@
         },
         {
           "time": 2940.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 2940.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat1",
           "profile": "Adaptive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 2940.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
+          "belonging": "Prepared"
         },
         {
           "event": "sos_departure_request",
@@ -918715,15 +918715,15 @@
         {
           "time": 2940.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
+          "unit": "ReserveBoat2",
+          "health": "Defective",
           "belonging": "Prepared"
         },
         {
           "time": 2940.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat2",
-          "health": "Defective",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
           "belonging": "Prepared"
         },
         {
@@ -918971,17 +918971,17 @@
         {
           "time": 3000.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat2",
           "profile": "Adaptive",
-          "health": "Ideal",
+          "health": "Defective",
           "belonging": "Disengaged"
         },
         {
           "time": 3000.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat2",
+          "unit": "ReserveBoat3",
           "profile": "Adaptive",
-          "health": "Defective",
+          "health": "Ideal",
           "belonging": "Disengaged"
         },
         {
@@ -952489,18 +952489,18 @@
         },
         {
           "time": 3000.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 3000.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat1",
           "profile": "Adaptive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 3000.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
+          "belonging": "Prepared"
         },
         {
           "event": "sos_departure_request",
@@ -966150,18 +966150,18 @@
         },
         {
           "time": 3000.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 3000.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat1",
           "profile": "Adaptive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 3000.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
+          "belonging": "Prepared"
         },
         {
           "time": 3000.0,
@@ -978522,15 +978522,15 @@
         {
           "time": 2520.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
+          "unit": "ReserveBoat1",
+          "health": "Defective",
           "belonging": "Prepared"
         },
         {
           "time": 2520.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
-          "health": "Defective",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
           "belonging": "Prepared"
         },
         {
@@ -978852,17 +978852,17 @@
         {
           "time": 2580.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "profile": "Adaptive",
-          "health": "Ideal",
+          "health": "Defective",
           "belonging": "Disengaged"
         },
         {
           "time": 2580.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "profile": "Adaptive",
-          "health": "Defective",
+          "health": "Ideal",
           "belonging": "Disengaged"
         },
         {
@@ -990885,18 +990885,18 @@
         },
         {
           "time": 3000.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Defective",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 3000.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat1",
           "profile": "Adaptive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 3000.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Defective",
+          "belonging": "Prepared"
         },
         {
           "time": 3000.0,
@@ -1017615,18 +1017615,18 @@
         },
         {
           "time": 3000.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat2",
+          "health": "Defective",
+          "belonging": "Prepared"
+        },
+        {
+          "time": 3000.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat3",
           "profile": "Adaptive",
           "health": "Defective",
           "belonging": "Disengaged"
-        },
-        {
-          "time": 3000.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat2",
-          "health": "Defective",
-          "belonging": "Prepared"
         },
         {
           "time": 3000.0,
@@ -1029044,18 +1029044,18 @@
         },
         {
           "time": 2940.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 2940.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat1",
           "profile": "Adaptive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 2940.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
+          "belonging": "Prepared"
         },
         {
           "time": 2940.0,
@@ -1051592,18 +1051592,18 @@
         },
         {
           "time": 3000.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 3000.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat1",
           "profile": "Adaptive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 3000.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
+          "belonging": "Prepared"
         },
         {
           "time": 3000.0,
@@ -1130936,18 +1130936,18 @@
         },
         {
           "time": 1800.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat1",
+          "health": "Ideal",
+          "belonging": "Prepared"
+        },
+        {
+          "time": 1800.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat3",
           "profile": "Adaptive",
           "health": "Ideal",
           "belonging": "Disengaged"
-        },
-        {
-          "time": 1800.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
-          "health": "Ideal",
-          "belonging": "Prepared"
         },
         {
           "event": "sos_departure_request",
@@ -1159529,18 +1159529,18 @@
         },
         {
           "time": 3000.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Defective",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 3000.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat2",
           "profile": "Adaptive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 3000.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Defective",
+          "belonging": "Prepared"
         },
         {
           "time": 3000.0,
@@ -1172698,15 +1172698,15 @@
         {
           "time": 3000.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
+          "unit": "ReserveBoat1",
+          "health": "Faulty",
           "belonging": "Prepared"
         },
         {
           "time": 3000.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
-          "health": "Faulty",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
           "belonging": "Prepared"
         },
         {
@@ -1173121,17 +1173121,17 @@
         {
           "time": 3060.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "profile": "Adaptive",
-          "health": "Ideal",
+          "health": "Faulty",
           "belonging": "Disengaged"
         },
         {
           "time": 3060.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "profile": "Adaptive",
-          "health": "Faulty",
+          "health": "Ideal",
           "belonging": "Disengaged"
         },
         {
@@ -1210494,18 +1210494,18 @@
         },
         {
           "time": 2940.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 2940.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat1",
           "profile": "Adaptive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 2940.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
+          "belonging": "Prepared"
         },
         {
           "time": 2940.0,
@@ -1232049,18 +1232049,18 @@
         },
         {
           "time": 2940.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 2940.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat1",
           "profile": "Adaptive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 2940.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
+          "belonging": "Prepared"
         },
         {
           "time": 2940.0,
@@ -1245643,18 +1245643,18 @@
         },
         {
           "time": 3000.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 3000.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat2",
           "profile": "Adaptive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 3000.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
+          "belonging": "Prepared"
         },
         {
           "time": 3000.0,
@@ -1305168,15 +1305168,15 @@
         {
           "time": 3180.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
+          "unit": "ReserveBoat1",
+          "health": "Defective",
           "belonging": "Prepared"
         },
         {
           "time": 3180.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
-          "health": "Defective",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
           "belonging": "Prepared"
         },
         {
@@ -1305280,17 +1305280,17 @@
         {
           "time": 3240.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "profile": "Adaptive",
-          "health": "Ideal",
+          "health": "Defective",
           "belonging": "Disengaged"
         },
         {
           "time": 3240.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "profile": "Adaptive",
-          "health": "Defective",
+          "health": "Ideal",
           "belonging": "Disengaged"
         },
         {
@@ -1330422,18 +1330422,18 @@
         },
         {
           "time": 3000.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 3000.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat1",
           "profile": "Adaptive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 3000.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
+          "belonging": "Prepared"
         },
         {
           "time": 3000.0,
@@ -1355554,18 +1355554,18 @@
         },
         {
           "time": 3000.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Defective",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 3000.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat1",
           "profile": "Adaptive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 3000.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Defective",
+          "belonging": "Prepared"
         },
         {
           "time": 3000.0,
@@ -1394630,18 +1394630,18 @@
         },
         {
           "time": 2940.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 2940.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat1",
           "profile": "Adaptive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 2940.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
+          "belonging": "Prepared"
         },
         {
           "time": 2940.0,
@@ -1421670,18 +1421670,18 @@
         },
         {
           "time": 3000.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 3000.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat1",
           "profile": "Adaptive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 3000.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
+          "belonging": "Prepared"
         },
         {
           "time": 3000.0,
@@ -1446001,18 +1446001,18 @@
         },
         {
           "time": 3000.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 3000.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat1",
           "profile": "Adaptive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 3000.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
+          "belonging": "Prepared"
         },
         {
           "time": 3000.0,
@@ -1485322,18 +1485322,18 @@
         },
         {
           "time": 3000.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 3000.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat1",
           "profile": "Adaptive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 3000.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
+          "belonging": "Prepared"
         },
         {
           "time": 3000.0,
@@ -1546458,15 +1546458,15 @@
         {
           "time": 3000.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
+          "unit": "ReserveBoat1",
+          "health": "Faulty",
           "belonging": "Prepared"
         },
         {
           "time": 3000.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
-          "health": "Faulty",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
           "belonging": "Prepared"
         },
         {
@@ -1546936,17 +1546936,17 @@
         {
           "time": 3060.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "profile": "Adaptive",
-          "health": "Ideal",
+          "health": "Faulty",
           "belonging": "Disengaged"
         },
         {
           "time": 3060.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "profile": "Adaptive",
-          "health": "Faulty",
+          "health": "Ideal",
           "belonging": "Disengaged"
         },
         {
@@ -1581873,18 +1581873,18 @@
         },
         {
           "time": 2940.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 2940.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat1",
           "profile": "Adaptive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 2940.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
+          "belonging": "Prepared"
         },
         {
           "time": 2940.0,
@@ -1611237,18 +1611237,18 @@
         },
         {
           "time": 1740.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat1",
+          "health": "Ideal",
+          "belonging": "Prepared"
+        },
+        {
+          "time": 1740.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat3",
           "profile": "Adaptive",
           "health": "Ideal",
           "belonging": "Disengaged"
-        },
-        {
-          "time": 1740.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
-          "health": "Ideal",
-          "belonging": "Prepared"
         },
         {
           "time": 1740.0,
@@ -1622786,18 +1622786,18 @@
         },
         {
           "time": 1800.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat1",
+          "health": "Ideal",
+          "belonging": "Prepared"
+        },
+        {
+          "time": 1800.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat3",
           "profile": "Adaptive",
           "health": "Ideal",
           "belonging": "Disengaged"
-        },
-        {
-          "time": 1800.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
-          "health": "Ideal",
-          "belonging": "Prepared"
         },
         {
           "time": 1800.0,
@@ -1648572,15 +1648572,15 @@
         {
           "time": 2940.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
+          "unit": "ReserveBoat2",
+          "health": "Defective",
           "belonging": "Prepared"
         },
         {
           "time": 2940.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat2",
-          "health": "Defective",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
           "belonging": "Prepared"
         },
         {
@@ -1648828,17 +1648828,17 @@
         {
           "time": 3000.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat2",
           "profile": "Adaptive",
-          "health": "Ideal",
+          "health": "Defective",
           "belonging": "Disengaged"
         },
         {
           "time": 3000.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat2",
+          "unit": "ReserveBoat3",
           "profile": "Adaptive",
-          "health": "Defective",
+          "health": "Ideal",
           "belonging": "Disengaged"
         },
         {
@@ -1667191,18 +1667191,18 @@
         },
         {
           "time": 1080.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 1080.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat1",
           "profile": "Adaptive",
           "health": "Ideal",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 1080.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
+          "belonging": "Prepared"
         },
         {
           "event": "sos_departure_request",
@@ -1695310,18 +1695310,18 @@
         },
         {
           "time": 3000.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 3000.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat1",
           "profile": "Adaptive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 3000.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
+          "belonging": "Prepared"
         },
         {
           "time": 3000.0,
@@ -1706989,15 +1706989,15 @@
         {
           "time": 2520.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat5",
-          "health": "Ideal",
+          "unit": "ReserveBoat1",
+          "health": "Defective",
           "belonging": "Prepared"
         },
         {
           "time": 2520.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
-          "health": "Defective",
+          "unit": "ReserveBoat5",
+          "health": "Ideal",
           "belonging": "Prepared"
         },
         {
@@ -1707242,17 +1707242,17 @@
         {
           "time": 2580.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat5",
+          "unit": "ReserveBoat1",
           "profile": "Adaptive",
-          "health": "Ideal",
+          "health": "Defective",
           "belonging": "Disengaged"
         },
         {
           "time": 2580.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat5",
           "profile": "Adaptive",
-          "health": "Defective",
+          "health": "Ideal",
           "belonging": "Disengaged"
         },
         {
@@ -1716600,18 +1716600,18 @@
         },
         {
           "time": 1800.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat1",
+          "health": "Ideal",
+          "belonging": "Prepared"
+        },
+        {
+          "time": 1800.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat3",
           "profile": "Adaptive",
           "health": "Ideal",
           "belonging": "Disengaged"
-        },
-        {
-          "time": 1800.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
-          "health": "Ideal",
-          "belonging": "Prepared"
         },
         {
           "event": "sos_departure_request",
@@ -1778968,18 +1778968,18 @@
         },
         {
           "time": 3000.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Defective",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 3000.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat2",
           "profile": "Adaptive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 3000.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Defective",
+          "belonging": "Prepared"
         },
         {
           "event": "sos_departure_request",
@@ -1788207,14 +1788207,14 @@
         {
           "time": 2400.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "health": "Defective",
           "belonging": "Prepared"
         },
         {
           "time": 2400.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "health": "Defective",
           "belonging": "Prepared"
         },
@@ -1788533,7 +1788533,7 @@
         {
           "time": 2460.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "profile": "Adaptive",
           "health": "Defective",
           "belonging": "Disengaged"
@@ -1788541,7 +1788541,7 @@
         {
           "time": 2460.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "profile": "Adaptive",
           "health": "Defective",
           "belonging": "Disengaged"
@@ -1845916,18 +1845916,18 @@
         },
         {
           "time": 2400.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Defective",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 2400.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat2",
           "profile": "Adaptive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 2400.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Defective",
+          "belonging": "Prepared"
         },
         {
           "event": "sos_departure_request",
@@ -1904061,18 +1904061,18 @@
         },
         {
           "time": 3120.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Faulty",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 3120.0,
           "event": "health_repaired_unit_returned_to_backup",
           "unit": "ReserveBoat2",
           "profile": "Adaptive",
           "health": "Faulty",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 3120.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Faulty",
+          "belonging": "Prepared"
         },
         {
           "unit": "ReserveBoat2",
@@ -1917193,14 +1917193,14 @@
         {
           "time": 3060.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat2",
           "health": "Faulty",
           "belonging": "Prepared"
         },
         {
           "time": 3060.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat2",
+          "unit": "ReserveBoat3",
           "health": "Faulty",
           "belonging": "Prepared"
         },
@@ -1917385,23 +1917385,6 @@
         {
           "time": 3120.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat3",
-          "from": "Adaptive",
-          "to": "Reactive",
-          "strategy": "mixed",
-          "water_level": 2.728936135364929
-        },
-        {
-          "time": 3120.0,
-          "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
-          "profile": "Reactive",
-          "health": "Faulty",
-          "belonging": "Disengaged"
-        },
-        {
-          "time": 3120.0,
-          "event": "profile_changed",
           "unit": "ReserveBoat2",
           "from": "Adaptive",
           "to": "Reactive",
@@ -1917422,6 +1917405,23 @@
           "unit": "ReserveBoat6",
           "health": "Ideal",
           "belonging": "Prepared"
+        },
+        {
+          "time": 3120.0,
+          "event": "profile_changed",
+          "unit": "ReserveBoat3",
+          "from": "Adaptive",
+          "to": "Reactive",
+          "strategy": "mixed",
+          "water_level": 2.728936135364929
+        },
+        {
+          "time": 3120.0,
+          "event": "health_repaired_unit_returned_to_backup",
+          "unit": "ReserveBoat3",
+          "profile": "Reactive",
+          "health": "Faulty",
+          "belonging": "Disengaged"
         },
         {
           "time": 3120.0,
@@ -1923998,14 +1923998,14 @@
         {
           "time": 1020.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "health": "Ideal",
           "belonging": "Prepared"
         },
         {
           "time": 1020.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "health": "Ideal",
           "belonging": "Prepared"
         },
@@ -1924243,7 +1924243,7 @@
         {
           "time": 1080.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "from": "Controlled",
           "to": "Reactive",
           "strategy": "mixed",
@@ -1924252,7 +1924252,7 @@
         {
           "time": 1080.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -1924260,7 +1924260,7 @@
         {
           "time": 1080.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "from": "Controlled",
           "to": "Reactive",
           "strategy": "mixed",
@@ -1924269,7 +1924269,7 @@
         {
           "time": 1080.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -1926884,14 +1926884,14 @@
         {
           "time": 1980.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "health": "Ideal",
           "belonging": "Prepared"
         },
         {
           "time": 1980.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "health": "Ideal",
           "belonging": "Prepared"
         },
@@ -1927362,7 +1927362,7 @@
         {
           "time": 2040.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "from": "Adaptive",
           "to": "Reactive",
           "strategy": "mixed",
@@ -1927371,7 +1927371,7 @@
         {
           "time": 2040.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -1927379,7 +1927379,7 @@
         {
           "time": 2040.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "from": "Adaptive",
           "to": "Reactive",
           "strategy": "mixed",
@@ -1927388,7 +1927388,7 @@
         {
           "time": 2040.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -1938847,6 +1938847,13 @@
         },
         {
           "time": 2940.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat2",
+          "health": "Ideal",
+          "belonging": "Prepared"
+        },
+        {
+          "time": 2940.0,
           "event": "profile_changed",
           "unit": "ReserveBoat3",
           "from": "Adaptive",
@@ -1938861,13 +1938868,6 @@
           "profile": "Reactive",
           "health": "Defective",
           "belonging": "Disengaged"
-        },
-        {
-          "time": 2940.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat2",
-          "health": "Ideal",
-          "belonging": "Prepared"
         },
         {
           "event": "sos_departure_request",
@@ -1968551,6 +1968551,13 @@
         },
         {
           "time": 1200.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat2",
+          "health": "Ideal",
+          "belonging": "Prepared"
+        },
+        {
+          "time": 1200.0,
           "event": "profile_changed",
           "unit": "ReserveBoat3",
           "from": "Controlled",
@@ -1968565,13 +1968572,6 @@
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
-        },
-        {
-          "time": 1200.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat2",
-          "health": "Ideal",
-          "belonging": "Prepared"
         },
         {
           "unit": "ReserveBoat2",
@@ -1994619,13 +1994619,6 @@
         },
         {
           "time": 3000.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat5",
-          "health": "Defective",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 3000.0,
           "event": "profile_changed",
           "unit": "ReserveBoat6",
           "from": "Adaptive",
@@ -1994640,6 +1994633,13 @@
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 3000.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat5",
+          "health": "Defective",
+          "belonging": "Prepared"
         },
         {
           "time": 3000.0,
@@ -2003322,6 +2003322,13 @@
         },
         {
           "time": 1200.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat1",
+          "health": "Ideal",
+          "belonging": "Prepared"
+        },
+        {
+          "time": 1200.0,
           "event": "profile_changed",
           "unit": "ReserveBoat3",
           "from": "Controlled",
@@ -2003336,13 +2003343,6 @@
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
-        },
-        {
-          "time": 1200.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
-          "health": "Ideal",
-          "belonging": "Prepared"
         },
         {
           "time": 1200.0,
@@ -2041743,13 +2041743,6 @@
         },
         {
           "time": 2940.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 2940.0,
           "event": "profile_changed",
           "unit": "ReserveBoat1",
           "from": "Adaptive",
@@ -2041764,6 +2041757,13 @@
           "profile": "Reactive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 2940.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
+          "belonging": "Prepared"
         },
         {
           "time": 2940.0,
@@ -2072353,14 +2072353,14 @@
         {
           "time": 1140.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "health": "Ideal",
           "belonging": "Prepared"
         },
         {
           "time": 1140.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "health": "Ideal",
           "belonging": "Prepared"
         },
@@ -2072534,7 +2072534,7 @@
         {
           "time": 1200.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "from": "Controlled",
           "to": "Reactive",
           "strategy": "mixed",
@@ -2072543,7 +2072543,7 @@
         {
           "time": 1200.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -2072551,7 +2072551,7 @@
         {
           "time": 1200.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "from": "Controlled",
           "to": "Reactive",
           "strategy": "mixed",
@@ -2072560,7 +2072560,7 @@
         {
           "time": 1200.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -2075911,15 +2075911,15 @@
         {
           "time": 3000.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Defective",
+          "unit": "ReserveBoat1",
+          "health": "Faulty",
           "belonging": "Prepared"
         },
         {
           "time": 3000.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
-          "health": "Faulty",
+          "unit": "ReserveBoat3",
+          "health": "Defective",
           "belonging": "Prepared"
         },
         {
@@ -2076147,23 +2076147,6 @@
         {
           "time": 3060.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat3",
-          "from": "Adaptive",
-          "to": "Reactive",
-          "strategy": "mixed",
-          "water_level": 2.5831220619556774
-        },
-        {
-          "time": 3060.0,
-          "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
-          "profile": "Reactive",
-          "health": "Defective",
-          "belonging": "Disengaged"
-        },
-        {
-          "time": 3060.0,
-          "event": "profile_changed",
           "unit": "ReserveBoat1",
           "from": "Adaptive",
           "to": "Reactive",
@@ -2076176,6 +2076159,23 @@
           "unit": "ReserveBoat1",
           "profile": "Reactive",
           "health": "Faulty",
+          "belonging": "Disengaged"
+        },
+        {
+          "time": 3060.0,
+          "event": "profile_changed",
+          "unit": "ReserveBoat3",
+          "from": "Adaptive",
+          "to": "Reactive",
+          "strategy": "mixed",
+          "water_level": 2.5831220619556774
+        },
+        {
+          "time": 3060.0,
+          "event": "health_repaired_unit_returned_to_backup",
+          "unit": "ReserveBoat3",
+          "profile": "Reactive",
+          "health": "Defective",
           "belonging": "Disengaged"
         },
         {
@@ -2150829,14 +2150829,14 @@
         {
           "time": 1860.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "health": "Ideal",
           "belonging": "Prepared"
         },
         {
           "time": 1860.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "health": "Ideal",
           "belonging": "Prepared"
         },
@@ -2151092,7 +2151092,7 @@
         {
           "time": 1920.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "from": "Controlled",
           "to": "Reactive",
           "strategy": "mixed",
@@ -2151101,7 +2151101,7 @@
         {
           "time": 1920.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -2151109,7 +2151109,7 @@
         {
           "time": 1920.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "from": "Controlled",
           "to": "Reactive",
           "strategy": "mixed",
@@ -2151118,7 +2151118,7 @@
         {
           "time": 1920.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -2174644,13 +2174644,6 @@
         },
         {
           "time": 2940.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 2940.0,
           "event": "profile_changed",
           "unit": "ReserveBoat1",
           "from": "Adaptive",
@@ -2174665,6 +2174658,13 @@
           "profile": "Reactive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 2940.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
+          "belonging": "Prepared"
         },
         {
           "unit": "ReserveBoat1",
@@ -2206527,13 +2206527,6 @@
         },
         {
           "time": 3000.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Defective",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 3000.0,
           "event": "profile_changed",
           "unit": "ReserveBoat1",
           "from": "Adaptive",
@@ -2206548,6 +2206541,13 @@
           "profile": "Reactive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 3000.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Defective",
+          "belonging": "Prepared"
         },
         {
           "unit": "ReserveBoat1",
@@ -2214103,13 +2214103,6 @@
         },
         {
           "time": 1080.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 1080.0,
           "event": "profile_changed",
           "unit": "ReserveBoat5",
           "from": "Controlled",
@@ -2214124,6 +2214117,13 @@
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 1080.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
+          "belonging": "Prepared"
         },
         {
           "time": 1080.0,
@@ -2278766,13 +2278766,6 @@
         },
         {
           "time": 2940.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat5",
-          "health": "Ideal",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 2940.0,
           "event": "profile_changed",
           "unit": "ReserveBoat1",
           "from": "Adaptive",
@@ -2278787,6 +2278780,13 @@
           "profile": "Reactive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 2940.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat5",
+          "health": "Ideal",
+          "belonging": "Prepared"
         },
         {
           "time": 2940.0,
@@ -2303701,14 +2303701,14 @@
         {
           "time": 3240.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat4",
+          "unit": "ReserveBoat6",
           "health": "Ideal",
           "belonging": "Prepared"
         },
         {
           "time": 3240.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat6",
+          "unit": "ReserveBoat4",
           "health": "Ideal",
           "belonging": "Prepared"
         },
@@ -2303858,7 +2303858,7 @@
         {
           "time": 3300.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat4",
+          "unit": "ReserveBoat6",
           "from": "Adaptive",
           "to": "Reactive",
           "strategy": "mixed",
@@ -2303867,7 +2303867,7 @@
         {
           "time": 3300.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat4",
+          "unit": "ReserveBoat6",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -2303875,7 +2303875,7 @@
         {
           "time": 3300.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat6",
+          "unit": "ReserveBoat4",
           "from": "Adaptive",
           "to": "Reactive",
           "strategy": "mixed",
@@ -2303884,7 +2303884,7 @@
         {
           "time": 3300.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat6",
+          "unit": "ReserveBoat4",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -2349634,15 +2349634,15 @@
         {
           "time": 3000.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
+          "unit": "ReserveBoat6",
+          "health": "Defective",
           "belonging": "Prepared"
         },
         {
           "time": 3000.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat6",
-          "health": "Defective",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
           "belonging": "Prepared"
         },
         {
@@ -2349879,23 +2349879,6 @@
         {
           "time": 3060.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat3",
-          "from": "Adaptive",
-          "to": "Reactive",
-          "strategy": "mixed",
-          "water_level": 2.5424172097415205
-        },
-        {
-          "time": 3060.0,
-          "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
-          "profile": "Reactive",
-          "health": "Ideal",
-          "belonging": "Disengaged"
-        },
-        {
-          "time": 3060.0,
-          "event": "profile_changed",
           "unit": "ReserveBoat6",
           "from": "Adaptive",
           "to": "Reactive",
@@ -2349908,6 +2349891,23 @@
           "unit": "ReserveBoat6",
           "profile": "Reactive",
           "health": "Defective",
+          "belonging": "Disengaged"
+        },
+        {
+          "time": 3060.0,
+          "event": "profile_changed",
+          "unit": "ReserveBoat3",
+          "from": "Adaptive",
+          "to": "Reactive",
+          "strategy": "mixed",
+          "water_level": 2.5424172097415205
+        },
+        {
+          "time": 3060.0,
+          "event": "health_repaired_unit_returned_to_backup",
+          "unit": "ReserveBoat3",
+          "profile": "Reactive",
+          "health": "Ideal",
           "belonging": "Disengaged"
         },
         {
@@ -2360748,13 +2360748,6 @@
         },
         {
           "time": 3540.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat5",
-          "health": "Defective",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 3540.0,
           "event": "profile_changed",
           "unit": "ReserveBoat6",
           "from": "Adaptive",
@@ -2360769,6 +2360762,13 @@
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 3540.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat5",
+          "health": "Defective",
+          "belonging": "Prepared"
         },
         {
           "time": 3540.0,
@@ -2371553,13 +2371553,6 @@
         },
         {
           "time": 2940.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat5",
-          "health": "Defective",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 2940.0,
           "event": "profile_changed",
           "unit": "ReserveBoat6",
           "from": "Adaptive",
@@ -2371574,6 +2371567,13 @@
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 2940.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat5",
+          "health": "Defective",
+          "belonging": "Prepared"
         },
         {
           "time": 2940.0,
@@ -2386611,13 +2386611,6 @@
         },
         {
           "time": 2940.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat5",
-          "health": "Defective",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 2940.0,
           "event": "profile_changed",
           "unit": "ReserveBoat1",
           "from": "Adaptive",
@@ -2386632,6 +2386625,13 @@
           "profile": "Reactive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 2940.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat5",
+          "health": "Defective",
+          "belonging": "Prepared"
         },
         {
           "time": 2940.0,
@@ -2472621,13 +2472621,6 @@
         },
         {
           "time": 3000.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 3000.0,
           "event": "profile_changed",
           "unit": "ReserveBoat1",
           "from": "Adaptive",
@@ -2472642,6 +2472635,13 @@
           "profile": "Reactive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 3000.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
+          "belonging": "Prepared"
         },
         {
           "time": 3000.0,
@@ -2507443,14 +2507443,14 @@
         {
           "time": 1860.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat2",
           "health": "Ideal",
           "belonging": "Prepared"
         },
         {
           "time": 1860.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat2",
+          "unit": "ReserveBoat3",
           "health": "Ideal",
           "belonging": "Prepared"
         },
@@ -2507688,7 +2507688,7 @@
         {
           "time": 1920.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat2",
           "from": "Controlled",
           "to": "Reactive",
           "strategy": "mixed",
@@ -2507697,7 +2507697,7 @@
         {
           "time": 1920.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat2",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -2507705,7 +2507705,7 @@
         {
           "time": 1920.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat2",
+          "unit": "ReserveBoat3",
           "from": "Controlled",
           "to": "Reactive",
           "strategy": "mixed",
@@ -2507714,7 +2507714,7 @@
         {
           "time": 1920.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat2",
+          "unit": "ReserveBoat3",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -2535757,6 +2535757,13 @@
         },
         {
           "time": 3000.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat1",
+          "health": "Ideal",
+          "belonging": "Prepared"
+        },
+        {
+          "time": 3000.0,
           "event": "profile_changed",
           "unit": "ReserveBoat3",
           "from": "Adaptive",
@@ -2535771,13 +2535778,6 @@
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
-        },
-        {
-          "time": 3000.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
-          "health": "Ideal",
-          "belonging": "Prepared"
         },
         {
           "unit": "ReserveBoat1",
@@ -2547514,13 +2547514,6 @@
         },
         {
           "time": 2880.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 2880.0,
           "event": "profile_changed",
           "unit": "ReserveBoat1",
           "from": "Adaptive",
@@ -2547535,6 +2547528,13 @@
           "profile": "Reactive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 2880.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
+          "belonging": "Prepared"
         },
         {
           "time": 2880.0,
@@ -2559028,13 +2559028,6 @@
         },
         {
           "time": 2400.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat5",
-          "health": "Defective",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 2400.0,
           "event": "profile_changed",
           "unit": "ReserveBoat1",
           "from": "Adaptive",
@@ -2559049,6 +2559042,13 @@
           "profile": "Reactive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 2400.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat5",
+          "health": "Defective",
+          "belonging": "Prepared"
         },
         {
           "time": 2400.0,
@@ -2560658,14 +2560658,14 @@
         {
           "time": 3000.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat2",
           "health": "Defective",
           "belonging": "Prepared"
         },
         {
           "time": 3000.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat2",
+          "unit": "ReserveBoat3",
           "health": "Defective",
           "belonging": "Prepared"
         },
@@ -2560856,7 +2560856,7 @@
         {
           "time": 3060.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat2",
           "from": "Adaptive",
           "to": "Reactive",
           "strategy": "mixed",
@@ -2560865,7 +2560865,7 @@
         {
           "time": 3060.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat2",
           "profile": "Reactive",
           "health": "Defective",
           "belonging": "Disengaged"
@@ -2560873,7 +2560873,7 @@
         {
           "time": 3060.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat2",
+          "unit": "ReserveBoat3",
           "from": "Adaptive",
           "to": "Reactive",
           "strategy": "mixed",
@@ -2560882,7 +2560882,7 @@
         {
           "time": 3060.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat2",
+          "unit": "ReserveBoat3",
           "profile": "Reactive",
           "health": "Defective",
           "belonging": "Disengaged"
@@ -2619965,6 +2619965,13 @@
         },
         {
           "time": 1800.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat2",
+          "health": "Ideal",
+          "belonging": "Prepared"
+        },
+        {
+          "time": 1800.0,
           "event": "profile_changed",
           "unit": "ReserveBoat3",
           "from": "Adaptive",
@@ -2619979,13 +2619986,6 @@
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
-        },
-        {
-          "time": 1800.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat2",
-          "health": "Ideal",
-          "belonging": "Prepared"
         },
         {
           "unit": "RescueBoat",
@@ -2641833,15 +2641833,15 @@
         {
           "time": 3000.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Defective",
+          "unit": "ReserveBoat1",
+          "health": "Faulty",
           "belonging": "Prepared"
         },
         {
           "time": 3000.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
-          "health": "Faulty",
+          "unit": "ReserveBoat3",
+          "health": "Defective",
           "belonging": "Prepared"
         },
         {
@@ -2642096,23 +2642096,6 @@
         {
           "time": 3060.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat3",
-          "from": "Adaptive",
-          "to": "Reactive",
-          "strategy": "mixed",
-          "water_level": 2.690323732307476
-        },
-        {
-          "time": 3060.0,
-          "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
-          "profile": "Reactive",
-          "health": "Defective",
-          "belonging": "Disengaged"
-        },
-        {
-          "time": 3060.0,
-          "event": "profile_changed",
           "unit": "ReserveBoat1",
           "from": "Adaptive",
           "to": "Reactive",
@@ -2642125,6 +2642108,23 @@
           "unit": "ReserveBoat1",
           "profile": "Reactive",
           "health": "Faulty",
+          "belonging": "Disengaged"
+        },
+        {
+          "time": 3060.0,
+          "event": "profile_changed",
+          "unit": "ReserveBoat3",
+          "from": "Adaptive",
+          "to": "Reactive",
+          "strategy": "mixed",
+          "water_level": 2.690323732307476
+        },
+        {
+          "time": 3060.0,
+          "event": "health_repaired_unit_returned_to_backup",
+          "unit": "ReserveBoat3",
+          "profile": "Reactive",
+          "health": "Defective",
           "belonging": "Disengaged"
         },
         {
@@ -2677152,14 +2677152,14 @@
         {
           "time": 1200.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "health": "Ideal",
           "belonging": "Prepared"
         },
         {
           "time": 1200.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "health": "Ideal",
           "belonging": "Prepared"
         },
@@ -2677408,7 +2677408,7 @@
         {
           "time": 1260.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "from": "Controlled",
           "to": "Reactive",
           "strategy": "mixed",
@@ -2677417,7 +2677417,7 @@
         {
           "time": 1260.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -2677425,7 +2677425,7 @@
         {
           "time": 1260.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "from": "Controlled",
           "to": "Reactive",
           "strategy": "mixed",
@@ -2677434,7 +2677434,7 @@
         {
           "time": 1260.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -2699917,13 +2699917,6 @@
         },
         {
           "time": 1500.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
-          "health": "Ideal",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 1500.0,
           "event": "profile_changed",
           "unit": "ReserveBoat6",
           "from": "Controlled",
@@ -2699938,6 +2699931,13 @@
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 1500.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat1",
+          "health": "Ideal",
+          "belonging": "Prepared"
         },
         {
           "time": 1500.0,
@@ -2712140,14 +2712140,14 @@
         {
           "time": 1500.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat4",
+          "unit": "ReserveBoat6",
           "health": "Ideal",
           "belonging": "Prepared"
         },
         {
           "time": 1500.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat6",
+          "unit": "ReserveBoat4",
           "health": "Ideal",
           "belonging": "Prepared"
         },
@@ -2712333,7 +2712333,7 @@
         {
           "time": 1560.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat4",
+          "unit": "ReserveBoat6",
           "from": "Controlled",
           "to": "Reactive",
           "strategy": "mixed",
@@ -2712342,7 +2712342,7 @@
         {
           "time": 1560.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat4",
+          "unit": "ReserveBoat6",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -2712350,7 +2712350,7 @@
         {
           "time": 1560.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat6",
+          "unit": "ReserveBoat4",
           "from": "Controlled",
           "to": "Reactive",
           "strategy": "mixed",
@@ -2712359,7 +2712359,7 @@
         {
           "time": 1560.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat6",
+          "unit": "ReserveBoat4",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -2725945,13 +2725945,6 @@
         },
         {
           "time": 2940.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Defective",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 2940.0,
           "event": "profile_changed",
           "unit": "ReserveBoat1",
           "from": "Adaptive",
@@ -2725966,6 +2725959,13 @@
           "profile": "Reactive",
           "health": "Defective",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 2940.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Defective",
+          "belonging": "Prepared"
         },
         {
           "unit": "ReserveBoat1",
@@ -2752815,14 +2752815,14 @@
         {
           "time": 720.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat2",
           "health": "Ideal",
           "belonging": "Prepared"
         },
         {
           "time": 720.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat2",
+          "unit": "ReserveBoat3",
           "health": "Ideal",
           "belonging": "Prepared"
         },
@@ -2752990,7 +2752990,7 @@
         {
           "time": 780.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat2",
           "from": "Proactive",
           "to": "Reactive",
           "strategy": "mixed",
@@ -2752999,7 +2752999,7 @@
         {
           "time": 780.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat2",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -2753007,7 +2753007,7 @@
         {
           "time": 780.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat2",
+          "unit": "ReserveBoat3",
           "from": "Proactive",
           "to": "Reactive",
           "strategy": "mixed",
@@ -2753016,7 +2753016,7 @@
         {
           "time": 780.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat2",
+          "unit": "ReserveBoat3",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -2763701,14 +2763701,14 @@
         {
           "time": 1140.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat2",
           "health": "Ideal",
           "belonging": "Prepared"
         },
         {
           "time": 1140.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat2",
+          "unit": "ReserveBoat3",
           "health": "Ideal",
           "belonging": "Prepared"
         },
@@ -2763886,7 +2763886,7 @@
         {
           "time": 1200.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat2",
           "from": "Controlled",
           "to": "Reactive",
           "strategy": "mixed",
@@ -2763895,7 +2763895,7 @@
         {
           "time": 1200.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat2",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -2763903,7 +2763903,7 @@
         {
           "time": 1200.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat2",
+          "unit": "ReserveBoat3",
           "from": "Controlled",
           "to": "Reactive",
           "strategy": "mixed",
@@ -2763912,7 +2763912,7 @@
         {
           "time": 1200.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat2",
+          "unit": "ReserveBoat3",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -2766216,6 +2766216,13 @@
         },
         {
           "time": 2400.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat1",
+          "health": "Ideal",
+          "belonging": "Prepared"
+        },
+        {
+          "time": 2400.0,
           "event": "profile_changed",
           "unit": "ReserveBoat5",
           "from": "Adaptive",
@@ -2766230,13 +2766237,6 @@
           "profile": "Reactive",
           "health": "Defective",
           "belonging": "Disengaged"
-        },
-        {
-          "time": 2400.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
-          "health": "Ideal",
-          "belonging": "Prepared"
         },
         {
           "time": 2400.0,
@@ -2775272,6 +2775272,13 @@
         },
         {
           "time": 1200.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat1",
+          "health": "Ideal",
+          "belonging": "Prepared"
+        },
+        {
+          "time": 1200.0,
           "event": "profile_changed",
           "unit": "ReserveBoat3",
           "from": "Controlled",
@@ -2775286,13 +2775293,6 @@
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
-        },
-        {
-          "time": 1200.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
-          "health": "Ideal",
-          "belonging": "Prepared"
         },
         {
           "time": 1200.0,
@@ -2836556,13 +2836556,6 @@
         },
         {
           "time": 1740.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 1740.0,
           "event": "profile_changed",
           "unit": "ReserveBoat6",
           "from": "Controlled",
@@ -2836577,6 +2836570,13 @@
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 1740.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
+          "belonging": "Prepared"
         },
         {
           "time": 1740.0,
@@ -2836836,6 +2836836,13 @@
         },
         {
           "time": 1800.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat2",
+          "health": "Ideal",
+          "belonging": "Prepared"
+        },
+        {
+          "time": 1800.0,
           "event": "profile_changed",
           "unit": "ReserveBoat3",
           "from": "Adaptive",
@@ -2836850,13 +2836857,6 @@
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
-        },
-        {
-          "time": 1800.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat2",
-          "health": "Ideal",
-          "belonging": "Prepared"
         },
         {
           "event": "sos_departure_request",
@@ -2865598,14 +2865598,14 @@
         {
           "time": 1380.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat6",
           "health": "Ideal",
           "belonging": "Prepared"
         },
         {
           "time": 1380.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat6",
+          "unit": "ReserveBoat3",
           "health": "Ideal",
           "belonging": "Prepared"
         },
@@ -2865773,7 +2865773,7 @@
         {
           "time": 1440.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat6",
           "from": "Controlled",
           "to": "Reactive",
           "strategy": "mixed",
@@ -2865782,7 +2865782,7 @@
         {
           "time": 1440.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat6",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -2865790,7 +2865790,7 @@
         {
           "time": 1440.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat6",
+          "unit": "ReserveBoat3",
           "from": "Controlled",
           "to": "Reactive",
           "strategy": "mixed",
@@ -2865799,7 +2865799,7 @@
         {
           "time": 1440.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat6",
+          "unit": "ReserveBoat3",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -2869034,14 +2869034,14 @@
         {
           "time": 3000.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat2",
           "health": "Defective",
           "belonging": "Prepared"
         },
         {
           "time": 3000.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat2",
+          "unit": "ReserveBoat3",
           "health": "Defective",
           "belonging": "Prepared"
         },
@@ -2869232,7 +2869232,7 @@
         {
           "time": 3060.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat2",
           "from": "Adaptive",
           "to": "Reactive",
           "strategy": "mixed",
@@ -2869241,7 +2869241,7 @@
         {
           "time": 3060.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat2",
           "profile": "Reactive",
           "health": "Defective",
           "belonging": "Disengaged"
@@ -2869249,7 +2869249,7 @@
         {
           "time": 3060.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat2",
+          "unit": "ReserveBoat3",
           "from": "Adaptive",
           "to": "Reactive",
           "strategy": "mixed",
@@ -2869258,7 +2869258,7 @@
         {
           "time": 3060.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat2",
+          "unit": "ReserveBoat3",
           "profile": "Reactive",
           "health": "Defective",
           "belonging": "Disengaged"
@@ -2885879,14 +2885879,14 @@
         {
           "time": 1800.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "health": "Ideal",
           "belonging": "Prepared"
         },
         {
           "time": 1800.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "health": "Ideal",
           "belonging": "Prepared"
         },
@@ -2886178,7 +2886178,7 @@
         {
           "time": 1860.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "from": "Adaptive",
           "to": "Reactive",
           "strategy": "mixed",
@@ -2886187,7 +2886187,7 @@
         {
           "time": 1860.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
+          "unit": "ReserveBoat1",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -2886195,7 +2886195,7 @@
         {
           "time": 1860.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "from": "Adaptive",
           "to": "Reactive",
           "strategy": "mixed",
@@ -2886204,7 +2886204,7 @@
         {
           "time": 1860.0,
           "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat1",
+          "unit": "ReserveBoat3",
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
@@ -2888887,15 +2888887,15 @@
         {
           "time": 3000.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Defective",
+          "unit": "ReserveBoat1",
+          "health": "Ideal",
           "belonging": "Prepared"
         },
         {
           "time": 3000.0,
           "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat1",
-          "health": "Ideal",
+          "unit": "ReserveBoat3",
+          "health": "Defective",
           "belonging": "Prepared"
         },
         {
@@ -2889063,23 +2889063,6 @@
         {
           "time": 3060.0,
           "event": "profile_changed",
-          "unit": "ReserveBoat3",
-          "from": "Adaptive",
-          "to": "Reactive",
-          "strategy": "mixed",
-          "water_level": 2.6770280904451442
-        },
-        {
-          "time": 3060.0,
-          "event": "health_repaired_unit_returned_to_backup",
-          "unit": "ReserveBoat3",
-          "profile": "Reactive",
-          "health": "Defective",
-          "belonging": "Disengaged"
-        },
-        {
-          "time": 3060.0,
-          "event": "profile_changed",
           "unit": "ReserveBoat1",
           "from": "Adaptive",
           "to": "Reactive",
@@ -2889092,6 +2889075,23 @@
           "unit": "ReserveBoat1",
           "profile": "Reactive",
           "health": "Ideal",
+          "belonging": "Disengaged"
+        },
+        {
+          "time": 3060.0,
+          "event": "profile_changed",
+          "unit": "ReserveBoat3",
+          "from": "Adaptive",
+          "to": "Reactive",
+          "strategy": "mixed",
+          "water_level": 2.6770280904451442
+        },
+        {
+          "time": 3060.0,
+          "event": "health_repaired_unit_returned_to_backup",
+          "unit": "ReserveBoat3",
+          "profile": "Reactive",
+          "health": "Defective",
           "belonging": "Disengaged"
         },
         {
@@ -2908343,13 +2908343,6 @@
         },
         {
           "time": 1740.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat3",
-          "health": "Ideal",
-          "belonging": "Prepared"
-        },
-        {
-          "time": 1740.0,
           "event": "profile_changed",
           "unit": "ReserveBoat5",
           "from": "Controlled",
@@ -2908364,6 +2908357,13 @@
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
+        },
+        {
+          "time": 1740.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat3",
+          "health": "Ideal",
+          "belonging": "Prepared"
         },
         {
           "time": 1740.0,
@@ -2908615,6 +2908615,13 @@
         },
         {
           "time": 1800.0,
+          "event": "health_repaired_unit_return_delayed",
+          "unit": "ReserveBoat2",
+          "health": "Ideal",
+          "belonging": "Prepared"
+        },
+        {
+          "time": 1800.0,
           "event": "profile_changed",
           "unit": "ReserveBoat3",
           "from": "Controlled",
@@ -2908629,13 +2908636,6 @@
           "profile": "Reactive",
           "health": "Ideal",
           "belonging": "Disengaged"
-        },
-        {
-          "time": 1800.0,
-          "event": "health_repaired_unit_return_delayed",
-          "unit": "ReserveBoat2",
-          "health": "Ideal",
-          "belonging": "Prepared"
         },
         {
           "unit": "ReserveBoat1",

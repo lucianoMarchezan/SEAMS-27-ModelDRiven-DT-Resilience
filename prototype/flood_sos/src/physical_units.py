@@ -15,7 +15,6 @@ class PhysicalUnit:
         self.hull_water_level = 0.0
         self.fault_exposure = 0.0
         self.rescue_progress = 0.0
-        self.task = None
         self.last_reading = {}
         self.last_update_time = 0.0
         self.last_exposure_update_time = 0.0
