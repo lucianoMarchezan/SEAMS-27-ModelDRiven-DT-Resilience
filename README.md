@@ -49,6 +49,13 @@ The experiments compare three strategies:
 
 Three autonomous departure-request-rate conditions are evaluated: **Low**, **Reference**, and **High**. The simulator also models health-dependent participation, repairs, reserve activation, and activity-based cost estimation.
 
+## Simulator architecture
+
+[![Simulator architecture](prototype/flood_sos/docs/architecture.png)](prototype/flood_sos/docs/architecture.pdf)
+ 
+
+The experiment runner loads the configuration and executes the simulation using SimPy. The coordinator assigns profiles and manages participation and mission tasks. Each digital twin connects a physical unit to a generated resilience-profile state machine, which governs its health and belonging transitions. The flood environment and scenario processes provide operational conditions and disturbances, while the message broker carries telemetry and task results. Recorded activity quantities feed the ABC cost model, and the resulting traces and metrics support the analysis notebook.
+
 ## Replication instructions
 
 The **[prototype README](prototype/flood_sos/README.md)** provides detailed installation, execution, configuration, and analysis instructions. Refer to it for command-line options and analysis dependencies.
