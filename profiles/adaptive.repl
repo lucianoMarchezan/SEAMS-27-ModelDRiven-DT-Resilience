@@ -1,40 +1,71 @@
-Reliability adaptive extends controlled { 
-    Belonging model: bm-adaptive
+// Standalone declaration avoids inheriting Controlled's different invitation guard.
+// The belonging model still inherits the Controlled structure.
+Reliability adaptive {
+    Health: hm
+    Belonging: bm-adaptive
 
-    policy constraint "Join participating requires acceptable health" {
-        when hm in {Ideal, Defective, Faulty} and bm-adaptive = Participating
-        then transition bm-adaptive::Participating -> bm-adaptive::FullRole
+    when Belonging::joinSos {
+        require Health in {Ideal, Defective, Faulty, Erroneous, Malfunctioning, Degraded}
     }
 
-    policy constraint "Join participating with restriced health" {
-        when hm in {Erroneous, Malfunctioning} and bm-adaptive = Participating
-        then transition bm-adaptive::Participating -> bm-adaptive::RestrictedRole
+    when Belonging::stopActive {
+        require Health = Failed
     }
 
-    policy constraint "Restricted role recovers acceptable health" {
-        when hm in {Ideal, Defective, Faulty} and bm-adaptive = RestrictedRole
-        then transition bm-adaptive::RestrictedRole -> bm-adaptive::FullRole
+    when Belonging::joinRequest {
+        require Health = Ideal
     }
 
-    policy constraint "Full role with restriced health" {
-        when hm in {Erroneous, Malfunctioning} and bm-adaptive = FullRole
-        then transition bm-adaptive::FullRole -> bm-adaptive::RestrictedRole
+    // Matches itemis CREATE: invitations require non-Ideal health.
+    when Belonging::joinInvitation {
+        require Health in {Defective, Faulty, Erroneous, Malfunctioning, Degraded, Failed}
     }
 
-    policy constraint "Participating health degrades" {
-        when hm = Degraded and bm-adaptive = Participating
-        then transition bm-adaptive::Participating -> bm-adaptive::PendingExit
+    when Belonging::restrictRole {
+        require Health in {Erroneous, Malfunctioning}
     }
 
-    policy constraint "Prevent participating with degraded health" {
-        when hm = Degraded
-        then deny transition bm-adaptive::PendingExit -> bm-adaptive::Participating
+    when Belonging::restoreRole {
+        require Health = Ideal
     }
 
-    policy adaptation "Adaptive behavior" {
-        step 1 {
-            when event = uncertainty exceeded and bm-adaptive = RestrictedRole
-            then transition bm-adaptive::RestrictedRole -> bm-adaptive::PendingExit
-        }
+    if Health::thresholdViolated and Health = Failed and Belonging = Active {
+        trigger Belonging::stopActive
+    }
+
+    if Health::thresholdViolated and Health = Failed and Belonging = Passive {
+        trigger Belonging::leaveSos
+    }
+
+    // stabilizationComplete maps to the generated three-second entry timer.
+    // FullRole is the default; these entry rules represent the health choice.
+    if Belonging::stabilizationComplete and Health in {Erroneous, Malfunctioning} {
+        trigger Belonging::restrictRole
+    }
+
+    if Belonging::stabilizationComplete and Health in {Degraded, Faulty} {
+        trigger Belonging::withdrawParticipation
+    }
+
+    // Re-entry after exit denial evaluates the same health choice.
+    if Belonging::exitDenied and Health in {Erroneous, Malfunctioning} {
+        trigger Belonging::restrictRole
+    }
+
+    if Belonging::exitDenied and Health in {Degraded, Faulty} {
+        trigger Belonging::withdrawParticipation
+    }
+
+    // Changes during participation follow health events, not general guards.
+    if Health::faultExercised and Health = Erroneous and Belonging = FullRole {
+        trigger Belonging::restrictRole
+    }
+
+    if Health::recovery and Health = Ideal and Belonging = RestrictedRole {
+        trigger Belonging::restoreRole
+    }
+
+    if Health::impactObserved and Health = Degraded and Belonging = Participating {
+        trigger Belonging::withdrawParticipation
     }
 }

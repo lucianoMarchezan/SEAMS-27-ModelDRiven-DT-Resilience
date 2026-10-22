@@ -2,14 +2,20 @@ Reliability proactive {
     Health: hm
     Belonging: bm-proactive
 
-    //guard for transitions
-    when Belonging::{stop-active, leave-sos} {
-     require Health = Failed
+    when Belonging::joinSos {
+        require Health in {Ideal, Defective, Faulty, Erroneous, Malfunctioning, Degraded}
     }
 
-    //triggering transitions
-    if Health::recovery and Belonging = Disengaged { 
-        trigger Belonging::prepare-for-SoS
+    when Belonging::stopActive {
+        require Health = Failed
     }
- 
+
+    // Failure initiates withdrawal; ordinary leaveSos remains unrestricted.
+    if Health::thresholdViolated and Health = Failed and Belonging = Active {
+        trigger Belonging::stopActive
+    }
+
+    if Health::thresholdViolated and Health = Failed and Belonging = Passive {
+        trigger Belonging::leaveSos
+    }
 }

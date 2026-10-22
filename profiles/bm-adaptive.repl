@@ -1,9 +1,12 @@
-Model Type.BELONGING bm-adaptive extends bm-controlled {
-    state Participating {
-        state FullRole
-        state RestrictedRole
-    }    
-    
-    transition FullRole -> RestrictedRole
-    transition RestrictedRole -> FullRole 
+model BELONGING bm-adaptive extends bm-controlled {
+  refine Participating {
+    // Entry rules in adaptive select another outcome when required by health.
+    initial FullRole
+    states FullRole, RestrictedRole
+  }
+
+  transition FullRole -> RestrictedRole restrictRole
+  transition RestrictedRole -> FullRole restoreRole
+  transition Participating -> PendingExit withdrawParticipation
+  transition RestrictedRole -> PendingExit uncertaintyExceeded
 }
