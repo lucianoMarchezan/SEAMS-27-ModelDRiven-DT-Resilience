@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ecore:EPackage xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmi:version="2.0" name="repl" nsURI="urn:repl:metamodel:1.0" nsPrefix="repl">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="Simplified REPL metamodel for health and belonging state models, resilience profiles, scoped policies, and ordered meta-policies. Conditions and scope selectors are textual expressions in this conceptual model; their parsing and evaluation require an interpreter or an Xtext implementation. Documentation describes semantic obligations; no executable validators are bundled." />
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EEnum" name="ModelKind">
+    <eLiterals name="HEALTH" value="0" literal="HEALTH" />
+    <eLiterals name="BELONGING" value="1" literal="BELONGING" />
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="StateModel">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A health or belonging finite-state region. Inherited model elements are referenced through superModel rather than copied into local containment lists." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" />
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="kind" lowerBound="1" eType="#//ModelKind" />
+    <eStructuralFeatures xsi:type="ecore:EReference" name="superModel" lowerBound="0" upperBound="1" eType="#//StateModel">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Optional model extended by this declaration. Inheritance must be acyclic and preserve model kind." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="states" lowerBound="0" upperBound="-1" eType="#//State" containment="true" resolveProxies="false" ordered="true" unique="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Locally declared states; additional states can be inherited." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="initial" lowerBound="0" upperBound="1" eType="#//State">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Local initial state, or omitted when inherited. The effective model must have exactly one initial state." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="transitions" lowerBound="0" upperBound="-1" eType="#//Transition" containment="true" resolveProxies="false" ordered="true" unique="true" />
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="State">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A state, optionally composite or refining an inherited state. Refinement retains a reference to the corresponding abstract state." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" />
+    <eStructuralFeatures xsi:type="ecore:EReference" name="substates" lowerBound="0" upperBound="-1" eType="#//State" containment="true" resolveProxies="false" ordered="true" unique="true" />
+    <eStructuralFeatures xsi:type="ecore:EReference" name="initialSubstate" lowerBound="0" upperBound="1" eType="#//State">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Must reference a directly contained substate whenever a local composite-state entry is specified." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="refines" lowerBound="0" upperBound="1" eType="#//State">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="An inherited abstract state refined by this state. Formal refinement also requires preservation of transitions and constraints." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Transition">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="event" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Event label used by the transition, for example recovery or joinConstellation. Qualified DSL references must resolve within the relevant model scope." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sources" lowerBound="1" upperBound="-1" eType="#//State" ordered="true" unique="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Multiple sources represent the DSL shorthand for transitions sharing an event and target." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1" upperBound="1" eType="#//State" />
+    <eStructuralFeatures xsi:type="ecore:EReference" name="overrides" lowerBound="0" upperBound="1" eType="#//Transition">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="An inherited transition replaced by this transition. Requires semantic validation of refinement preservation." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ResilienceProfile">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" />
+    <eStructuralFeatures xsi:type="ecore:EReference" name="health" lowerBound="0" upperBound="1" eType="#//StateModel">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Local health binding, or omitted when inherited. The effective binding must reference one HEALTH model." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="belonging" lowerBound="0" upperBound="1" eType="#//StateModel">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Local belonging binding, or omitted when inherited. The effective binding must reference one BELONGING model." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="superProfile" lowerBound="0" upperBound="1" eType="#//ResilienceProfile">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Optional profile inheritance. This reference alone does not establish the formal guarantee-preserving refinement relation." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="constraints" lowerBound="0" upperBound="-1" eType="#//CrossRegionConstraint" containment="true" resolveProxies="false" ordered="true" unique="true" />
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CrossRegionConstraint" abstract="true">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Directional interaction from health to belonging. Referenced health states must belong to the effective health model; the referenced transition must belong to the effective belonging model." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="belongingTransition" lowerBound="1" upperBound="1" eType="#//Transition" />
+    <eStructuralFeatures xsi:type="ecore:EReference" name="healthStates" lowerBound="1" upperBound="-1" eType="#//State" ordered="true" unique="true" />
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Guard" eSuperTypes="#//CrossRegionConstraint">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The belonging transition is enabled only when the current health state belongs to healthStates. Multiple applicable guards are conjunctive unless a different replacement semantics is explicitly defined by the language implementation." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Trigger" eSuperTypes="#//CrossRegionConstraint">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Entering a referenced health state requests the belonging transition when its source is the current belonging state. Describes the formal core; arbitrary event expressions require a richer expression model." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ScopedPolicy">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A scoped mapping from constituents to resilience profiles, represented by one or more uniform assignments. Conflicting assignments within one policy must be rejected or given explicit precedence by the language implementation." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="assignments" lowerBound="1" upperBound="-1" eType="#//ProfileAssignment" containment="true" resolveProxies="false" ordered="true" unique="true" />
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ProfileAssignment">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="profile" lowerBound="1" upperBound="1" eType="#//ResilienceProfile" />
+    <eStructuralFeatures xsi:type="ecore:EReference" name="scope" lowerBound="1" upperBound="1" eType="#//Scope" containment="true" resolveProxies="false" />
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Scope">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A selector denoting a set of constituents, for example all units or operational rescue boats. Selectors are evaluated against runtime constituent information." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="selector" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" />
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MetaPolicy">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" />
+    <eStructuralFeatures xsi:type="ecore:EReference" name="basePolicy" lowerBound="1" upperBound="1" eType="#//ScopedPolicy" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Base assignments must cover all constituents in the evaluated universe." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="orderedRules" lowerBound="0" upperBound="-1" eType="#//AdaptationRule" containment="true" resolveProxies="false" ordered="true" unique="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Evaluate from the base policy in list order. Later applicable policies override earlier assignments in their scopes. Recompute from current runtime state so overrides lapse when their conditions cease to hold." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AdaptationRule">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="condition" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Boolean predicate over the runtime SoS and environment, for example maxWater &gt;= 0.5." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="policy" lowerBound="1" upperBound="1" eType="#//ScopedPolicy" containment="true" resolveProxies="false" />
+  </eClassifiers>
+</ecore:EPackage>
