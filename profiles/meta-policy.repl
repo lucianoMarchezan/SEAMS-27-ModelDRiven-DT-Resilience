@@ -1,0 +1,6 @@
+meta-policy flood-severity {
+  base reactive to all
+  when maxWater >= 0.5 apply proactive  to operational units
+  when maxWater >= 1.0 apply controlled to operational BOATS, pumps
+  when maxWater >= 1.8 apply adaptive   to operational rescue boats
+}
