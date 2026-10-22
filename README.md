@@ -8,7 +8,10 @@ The package supports a descriptive evaluation of how resilience-policy adaptatio
 
 ```text
 .
-├── profiles/                     Textual model and profile specifications (.relp)
+├── metamodel/
+│   ├── repl.ecore                EMF/Ecore metamodel for REPL
+│   └── repl.svg                  Metamodel class diagram
+├── profiles/                     REPL model, profile, and meta-policy specifications (.repl)
 ├── itemis-create/
 │   ├── *.scm                     Resilience-profile statechart models
 │   ├── figs/                     Statechart figures (SVG)
@@ -17,19 +20,31 @@ The package supports a descriptive evaluation of how resilience-policy adaptatio
 └── prototype/
     └── flood_sos/
         ├── README.md             Detailed prototype instructions
-        ├── requirements.md       Simulation and experiment requirements
         ├── requirements.txt      Simulator dependencies
-        ├── src/                  Simulation implementation
+        ├── src/                  Simulation implementation and experiment runners
+        │   ├── main.py           Baseline experiment runner
+        │   ├── run_flood_conditions.py  Runner for the three flood conditions
         │   └── generated/        Generated profile state machines
         ├── docs/                 Architecture diagram and documentation
-        ├── analysis.ipynb        Plots and printed numeric summaries
+        ├── analysis.ipynb        Baseline plots and descriptive metrics
+        ├── analysis_all_scenarios.ipynb  Comparison of the three flood conditions
         ├── output/               Simulation results
-        └── plots/                Figures exported by the notebook
+        │   ├── slower_flood/     0.5x baseline inflow
+        │   ├── baseline_flood/   1x baseline inflow
+        │   └── faster_flood/     2x baseline inflow
+        └── plots/                Exported analysis figures
+            └── all_scenarios/    Figures comparing all three flood conditions
 ```
 
 ### Model specifications
 
-The [profiles](profiles/) directory contains textual specifications of constituent health, SoS belonging, and the **Reactive**, **Proactive**, **Controlled**, and **Adaptive** resilience profiles. The specifications describe states, transitions, and profile-specific interactions using the approach's domain-specific language. The model-file extension is `.relp`; existing `.txt` files are being migrated to this extension.
+The [profiles](profiles/) directory contains textual specifications of constituent health, SoS belonging, and the **Reactive**, **Proactive**, **Controlled**, and **Adaptive** resilience profiles. The specifications describe states, transitions, and profile-specific interactions using the approach's domain-specific language. The specifications use the `.repl` extension.
+
+### REPL metamodel
+
+The [metamodel](metamodel/) directory contains the [EMF/Ecore metamodel](metamodel/repl.ecore) and its [SVG class diagram](metamodel/repl.svg). The metamodel describes health and belonging models, state refinements, resilience profiles, cross-region guards and triggers, scoped policies, and ordered meta-policy rules. Conditions and scope selectors are represented as text in this simplified model.
+
+[![REPL metamodel](metamodel/repl.svg)](metamodel/repl.svg)
 
 ### Statechart models and generated code
 
@@ -47,7 +62,7 @@ The experiments compare three strategies:
 - **Static restrictive:** Adaptive profiles throughout the mission.
 - **Dynamic:** profiles change according to flood severity and constituent role.
 
-Three autonomous departure-request-rate conditions are evaluated: **Low**, **Reference**, and **High**. The simulator also models health-dependent participation, repairs, reserve activation, and activity-based cost estimation.
+Three autonomous departure-request-rate conditions are evaluated: **Low**, **Reference**, and **High**. A separate runner compares **slower (0.5x)**, **baseline (1x)**, and **faster (2x)** flood inflows while keeping the remaining simulation settings unchanged. The simulator also models health-dependent participation, repairs, reserve activation, and activity-based cost estimation.
 
 ## Simulator architecture
 
@@ -74,7 +89,7 @@ After generating the results, open [analysis.ipynb](prototype/flood_sos/analysis
 
 ## Results and analysis
 
-Simulation results are written to `prototype/flood_sos/output/` by default:
+The baseline runner writes results to `prototype/flood_sos/output/` by default. The flood-condition runner writes the same files into `slower_flood/`, `baseline_flood/`, and `faster_flood/` beneath that directory, for the selected conditions:
 
 | File | Contents |
 | --- | --- |
@@ -82,7 +97,7 @@ Simulation results are written to `prototype/flood_sos/output/` by default:
 | `flood_history.csv` | Flood conditions and mission-objective achievement over simulated time |
 | `simulation_summary.json` | Experiment settings, aggregate results, run details, state transitions, and coordinator events |
 
-The analysis notebook exports figures to `prototype/flood_sos/plots/`. Metrics include mission success, objective achievement, health and belonging transitions, task outcomes, repairs, replacements, departure denials and deferrals, forced-retention time, and cost estimates.
+The baseline notebook exports figures to `prototype/flood_sos/plots/`. The [all-scenarios notebook](prototype/flood_sos/analysis_all_scenarios.ipynb) reads the three flood-condition subdirectories and exports comparative figures to `prototype/flood_sos/plots/all_scenarios/`. Metrics include mission success, objective achievement, health and belonging transitions, task outcomes, repairs, replacements, departure denials and deferrals, forced-retention time, and cost estimates.
 
 Strategies use matching random seeds and common scenario inputs. Actual event sequences may differ as participation and operational conditions evolve. The evaluation interprets quantitative metrics and execution traces descriptively within the modeled scenarios.
 
