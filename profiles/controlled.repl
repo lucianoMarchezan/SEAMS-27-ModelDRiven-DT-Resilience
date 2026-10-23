@@ -1,4 +1,4 @@
-Reliability controlled extends proactive {
+Resilience controlled extends proactive {
     Belonging: bm-controlled
 
     when Belonging::joinRequest {
