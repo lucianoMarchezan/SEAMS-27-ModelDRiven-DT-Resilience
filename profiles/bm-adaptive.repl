@@ -1,6 +1,5 @@
 model BELONGING bm-adaptive extends bm-controlled {
-  refine Participating {
-    // Entry rules in adaptive select another outcome when required by health.
+  refine Participating { 
     initial FullRole
     states FullRole, RestrictedRole
   }

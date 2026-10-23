@@ -1,5 +1,3 @@
-// Standalone declaration avoids inheriting Controlled's different invitation guard.
-// The belonging model still inherits the Controlled structure.
 Reliability adaptive {
     Health: hm
     Belonging: bm-adaptive
@@ -16,7 +14,6 @@ Reliability adaptive {
         require Health = Ideal
     }
 
-    // Matches itemis CREATE: invitations require non-Ideal health.
     when Belonging::joinInvitation {
         require Health in {Defective, Faulty, Erroneous, Malfunctioning, Degraded, Failed}
     }
@@ -37,8 +34,6 @@ Reliability adaptive {
         trigger Belonging::leaveSos
     }
 
-    // stabilizationComplete maps to the generated three-second entry timer.
-    // FullRole is the default; these entry rules represent the health choice.
     if Belonging::stabilizationComplete and Health in {Erroneous, Malfunctioning} {
         trigger Belonging::restrictRole
     }
@@ -47,7 +42,6 @@ Reliability adaptive {
         trigger Belonging::withdrawParticipation
     }
 
-    // Re-entry after exit denial evaluates the same health choice.
     if Belonging::exitDenied and Health in {Erroneous, Malfunctioning} {
         trigger Belonging::restrictRole
     }
@@ -55,8 +49,7 @@ Reliability adaptive {
     if Belonging::exitDenied and Health in {Degraded, Faulty} {
         trigger Belonging::withdrawParticipation
     }
-
-    // Changes during participation follow health events, not general guards.
+ 
     if Health::faultExercised and Health = Erroneous and Belonging = FullRole {
         trigger Belonging::restrictRole
     }

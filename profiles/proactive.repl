@@ -10,7 +10,6 @@ Reliability proactive {
         require Health = Failed
     }
 
-    // Failure initiates withdrawal; ordinary leaveSos remains unrestricted.
     if Health::thresholdViolated and Health = Failed and Belonging = Active {
         trigger Belonging::stopActive
     }
