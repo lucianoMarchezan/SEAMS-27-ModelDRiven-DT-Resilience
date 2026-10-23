@@ -1,0 +1,13 @@
+scope RESCUE_BOATS {
+  boat1, boat2, boat3, boat4, boat5, boat6, boat7, boat8
+}
+
+policy fleet-controlled {
+  scope RESCUE_BOATS
+  assign controlled
+}
+
+policy fleet-adaptive-boat3 {
+  scope {boat3}
+  assign adaptive
+}
